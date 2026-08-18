@@ -1,79 +1,38 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ドキュメント — AgentMux セットアップ＆運用ガイド</title>
-<meta name="description" content="AgentMuxの完全ドキュメント：macOS / Windows / Linuxへのインストール、ホストとエージェントの追加、ターミナルペインウォール、キーボードショートカット、ブロードキャスト、Ollamaによるオーケストレーター設定、トラブルシューティング。">
-<meta name="keywords" content="AgentMux, チュートリアル, インストール, ドキュメント, AIエージェント管理, Claude Code, tmux, SSH, リモート開発">
-<link rel="canonical" href="https://agentmux.pro/docs-ja.html">
-<link rel="alternate" hreflang="zh-CN" href="https://agentmux.pro/docs.html">
-<link rel="alternate" hreflang="en" href="https://agentmux.pro/docs-en.html">
-<link rel="alternate" hreflang="ja" href="https://agentmux.pro/docs-ja.html">
-<link rel="alternate" hreflang="ru" href="https://agentmux.pro/docs-ru.html">
-<link rel="alternate" hreflang="x-default" href="https://agentmux.pro/docs.html">
-<meta property="og:title" content="AgentMuxドキュメント — セットアップ＆運用ガイド">
-<meta property="og:description" content="ダウンロードから日々の運用まで：ホスト、エージェント、ターミナルウォール、ブロードキャスト、オーケストレーターの設定、トラブルシューティング — すべての手順を解説。">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://agentmux.pro/docs-ja.html">
-<meta property="og:image" content="https://agentmux.pro/assets/img/terminal.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/png" href="assets/img/icon.png">
-<link rel="stylesheet" href="assets/css/style.css?v=6">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "AgentMuxドキュメント — セットアップ＆運用ガイド",
-  "description": "AgentMuxの完全ドキュメント：インストール、ホストとエージェント、ターミナル操作、ブロードキャスト、オーケストレーターの設定、トラブルシューティング。",
-  "inLanguage": "ja",
-  "author": { "@type": "Person", "name": "tan-zhuo", "url": "https://tanzhuo.xyz" },
-  "about": { "@type": "SoftwareApplication", "name": "AgentMux", "operatingSystem": "macOS, Windows, Linux", "applicationCategory": "DeveloperApplication" }
-}
-</script>
-</head>
-<body>
+---
+import Base from '../layouts/Base.astro';
 
-<nav class="nav">
-  <div class="nav-inner">
-    <a class="brand" href="ja.html">
-      <img src="assets/img/icon-256.png" alt="AgentMuxのロゴ">
-      <span>AgentMux</span>
-    </a>
-    <div class="nav-links">
-      <a href="ja.html#capabilities">主な機能</a>
-      <a href="ja.html#features">ツアー</a>
-      <a href="ja.html#security">セキュリティ</a>
-      <a href="docs-ja.html" style="color:var(--text)">ドキュメント</a>
-      <a href="ja.html#quickstart">はじめる</a>
-      <a href="ja.html#download">ダウンロード</a>
-      <a href="ja.html#faq">FAQ</a>
-    </div>
-    <div class="nav-spacer"></div>
-    <div class="nav-actions">
-      <div class="lang-menu">
-        <button class="lang-switch" aria-haspopup="true" aria-label="言語">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></svg>
-          日本語
-          <svg class="caret" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-        <div class="lang-drop">
-          <a href="docs.html" lang="zh-CN">中文</a>
-          <a href="docs-en.html" lang="en">English</a>
-          <a href="docs-ja.html" class="current" lang="ja">日本語</a>
-          <a href="docs-ru.html" lang="ru">Русский</a>
-        </div>
-      </div>
-      <a class="gh-btn" href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">
-        <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-        <span>GitHub</span>
-      </a>
-      <button class="nav-burger" aria-label="メニュー">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-    </div>
-  </div>
-</nav>
+const meta = {
+  "title": "ドキュメント — AgentMux セットアップ＆運用ガイド",
+  "description": "AgentMuxの完全ドキュメント：macOS / Windows / Linuxへのインストール、ホストとエージェントの追加、ターミナルペインウォール、キーボードショートカット、ブロードキャスト、Ollamaによるオーケストレーター設定、トラブルシューティング。",
+  "keywords": "AgentMux, チュートリアル, インストール, ドキュメント, AIエージェント管理, Claude Code, tmux, SSH, リモート開発",
+  "ogTitle": "AgentMuxドキュメント — セットアップ＆運用ガイド",
+  "ogDescription": "ダウンロードから日々の運用まで：ホスト、エージェント、ターミナルウォール、ブロードキャスト、オーケストレーターの設定、トラブルシューティング — すべての手順を解説。",
+  "ogType": "article"
+};
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "AgentMuxドキュメント — セットアップ＆運用ガイド",
+    "description": "AgentMuxの完全ドキュメント：インストール、ホストとエージェント、ターミナル操作、ブロードキャスト、オーケストレーターの設定、トラブルシューティング。",
+    "inLanguage": "ja",
+    "author": {
+      "@type": "Person",
+      "name": "tan-zhuo",
+      "url": "https://tanzhuo.xyz"
+    },
+    "about": {
+      "@type": "SoftwareApplication",
+      "name": "AgentMux",
+      "operatingSystem": "macOS, Windows, Linux",
+      "applicationCategory": "DeveloperApplication"
+    }
+  }
+];
+---
+
+<Base lang="ja" kind="docs" title={meta.title} description={meta.description} keywords={meta.keywords} ogTitle={meta.ogTitle} ogDescription={meta.ogDescription} ogType={meta.ogType} jsonLd={jsonLd}>
 
 <div class="docs-shell">
   <!-- ============ sidebar ============ -->
@@ -469,6 +428,4 @@ go build -tags gtk3 -o agentmux .</code></pre>
   </main>
 </div>
 
-<script src="assets/js/main.js?v=6"></script>
-</body>
-</html>
+</Base>

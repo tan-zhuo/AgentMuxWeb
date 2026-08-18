@@ -1,0 +1,76 @@
+---
+import { UI, LANGS, GITHUB, BLOG } from '../i18n/ui.js';
+
+const { lang } = Astro.props;
+const f = UI[lang].footer;
+const otherLangs = LANGS.filter((l) => l.code !== lang);
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
+---
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand-col">
+      <div class="footer-brand">
+        <img src="/assets/img/icon-256.png" alt="AgentMux" />
+        <span>AgentMux</span>
+      </div>
+      <p class="footer-tagline">{f.tagline}</p>
+      <div class="footer-social">
+        <a href={GITHUB} {...ext} aria-label={f.social.github} title={f.social.github}>
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        </a>
+        <a href={`${GITHUB}/releases/latest`} {...ext} aria-label={f.social.download} title={f.social.download}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5"/><path d="M4 19h16"/></svg>
+        </a>
+        <a href={`${GITHUB}/issues`} {...ext} aria-label={f.social.issues} title={f.social.issues}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.8"/></svg>
+        </a>
+        <a href={BLOG} {...ext} aria-label={f.social.blog} title={f.social.blog}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.5 3.6 5.4 3.6 8.5s-1.2 6-3.6 8.5c-2.4-2.5-3.6-5.4-3.6-8.5s1.2-6 3.6-8.5Z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>{f.productTitle}</h4>
+      <ul>
+        <li><a href="#capabilities">{f.product.capabilities}</a></li>
+        <li><a href="#features">{f.product.features}</a></li>
+        <li><a href="#security">{f.product.security}</a></li>
+        <li><a href="#download">{f.product.download}</a></li>
+        <li><a href="#faq">{f.product.faq}</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>{f.resourcesTitle}</h4>
+      <ul>
+        <li><a href="#quickstart">{f.resources.quickstart}</a></li>
+        <li><a href={LANGS.find((l) => l.code === lang).docs}>{f.resources.docs}</a></li>
+        <li><a href={`${GITHUB}/blob/main/docs/development.md`} {...ext}>{f.resources.dev}<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href={`${GITHUB}/blob/main/docs/orchestrator-blueprint.md`} {...ext}>{f.resources.orchestrator}<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href={`${GITHUB}/releases`} {...ext}>{f.resources.releases}<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>{f.communityTitle}</h4>
+      <ul>
+        <li><a href={GITHUB} {...ext}>{f.community.github}<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href={`${GITHUB}/issues`} {...ext}>{f.community.issues}<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href={`${GITHUB}/pulls`} {...ext}>{f.community.contribute}<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href={BLOG} {...ext}>{f.community.blog}<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        {otherLangs.map((l) => <li><a href={l.landing} lang={l.hreflang}>{l.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <div class="footer-legal">
+        <span>© 2026 AgentMux</span>
+        <span class="sep">|</span>
+        <a href={`${GITHUB}/blob/main/LICENSE`} {...ext}>{f.license}</a>
+        <span class="sep">|</span>
+        <span>{f.motto}</span>
+      </div>
+      <span class="footer-status"><span class="dot"></span>{f.status}</span>
+    </div>
+  </div>
+</footer>

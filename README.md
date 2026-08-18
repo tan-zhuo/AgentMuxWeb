@@ -1,63 +1,71 @@
 # AgentMux 官网
 
-AgentMux（<https://github.com/tan-zhuo/AgentMux>）的宣传官网。纯静态站点，无构建步骤、无外部依赖。
+AgentMux（<https://github.com/tan-zhuo/AgentMux>）的宣传官网。基于 **Astro** 的静态站点，
+产物为纯静态 HTML，默认零客户端框架 JS。
+
+## 开发
+
+```bash
+npm install
+npm run dev      # 开发服务器（热更新）
+npm run build    # 构建到 dist/
+npm run preview  # 本地预览构建产物
+```
 
 ## 结构
 
 ```
-index.html          中文主页（默认）
-en.html / ja.html / ru.html        英 / 日 / 俄语主页
-docs.html           中文使用文档（安装 / 快速开始 / 操作 / 编排器 / 故障排查）
-docs-en.html / docs-ja.html / docs-ru.html   英 / 日 / 俄语使用文档
-sitemap.xml         站点地图（8 个 URL，含 hreflang，SEO）
-robots.txt          爬虫规则（SEO）
-assets/css/style.css  全站样式（设计系统：深海军蓝 + 信号蓝 + 翠绿，取自应用图标）
-assets/js/main.js     交互（吸顶导航、语言下拉、滚动渐显、Hero 活动流动画、文档侧栏 scrollspy、GitHub 星标）
-assets/img/           图标与产品实拍截图（来自主仓库 docs/）
+astro.config.mjs        site: agentmux.pro；build.format 'file' 保持 en.html 等平铺 URL
+src/
+  layouts/Base.astro    head（SEO/hreflang/OG/JSON-LD）+ 导航 + 脚本（含 Vercel 监控）
+  components/Nav.astro  导航（含语言下拉），文案取自 i18n 字典
+  components/Footer.astro  页脚（仅落地页使用）
+  i18n/ui.js            四种语言的公共区文案（导航/页脚/无障碍标签）与语言表
+  pages/                8 个页面：index/en/ja/ru（落地页）+ docs 四语（正文按语言各自维护）
+  styles/global.css     全站样式（设计系统：深海军蓝 + 信号蓝 + 翠绿，取自应用图标）
+  scripts/site.js       交互（吸顶导航、语言下拉、滚动渐显、Hero 活动流、scrollspy、GitHub 星标）
+public/
+  assets/img/           图标与产品实拍截图（来自主仓库 docs/）
+  sitemap.xml           站点地图（8 个 URL，含 hreflang）
+  robots.txt
 ```
 
-语言切换为导航右上角的下拉菜单；四种语言通过 hreflang 互链，新增语言时记得同步
-所有页面的 hreflang 块、语言下拉与 sitemap。
+改公共区（导航/页脚/SEO 头部）只需动 `src/i18n/ui.js` 或对应组件，一处生效全部 8 页。
+新增语言：在 `ui.js` 的 `LANGS` 与 `UI` 加一项，再添加两个 pages 文件即可。
+资产缓存指纹由 Astro 自动处理（`_astro/*.hash.css`），无需手动版本号。
+
+## 部署（Vercel）
+
+仓库导入 Vercel 即可——自动识别 Astro，构建命令 `astro build`，输出 `dist/`。
+
+- **监控**：代码已接入 `@vercel/analytics`（访问统计）与 `@vercel/speed-insights`
+  （Core Web Vitals），仅在生产构建注入。首次部署后需在 Vercel 项目里启用
+  **Analytics** 与 **Speed Insights** 两个开关，数据才开始采集。
+  非 Vercel 环境下探针脚本 404，静默无副作用。
+- 其他静态托管同样可用：`npm run build` 后发布 `dist/` 目录。
 
 ## 域名与 SEO 策略
 
-**主域名：`agentmux.pro`** —— canonical / hreflang / og:url / 结构化数据 / sitemap 全部指向它。
+**主域名：`agentmux.pro`** —— canonical / hreflang / og:url / 结构化数据 / sitemap 全部指向它
+（写在 `astro.config.mjs` 的 `site` 与 `src/i18n/ui.js` 的 `SITE`）。
 
-**辅域名：`agentmux.ink`** —— 必须配置 **301 永久重定向**到 agentmux.pro 的对应路径
-（保留 path，如 `agentmux.ink/docs.html` → `agentmux.pro/docs.html`）。
-两个域名同时提供内容会被搜索引擎判为重复内容、分散权重，切勿双解析到同一站点。
+**辅域名：`agentmux.ink`** —— 配置 **301 永久重定向**到 agentmux.pro 的对应路径。
+两个域名同时出内容会被判重复内容、分散权重。
 
-301 配置方式（按托管平台选其一）：
-
-- **Cloudflare**（推荐）：两个域名都接入，agentmux.ink 加 Redirect Rule：
-  `(http.host eq "agentmux.ink")` → 动态重定向 `concat("https://agentmux.pro", http.request.uri.path)`，301。
-- **Nginx / Caddy 自托管**：agentmux.ink 的 server 块只写一条
-  `return 301 https://agentmux.pro$request_uri;`（Caddy：`redir https://agentmux.pro{uri} permanent`）。
-- **GitHub Pages**：Pages 只支持单个自定义域名，绑 agentmux.pro；agentmux.ink 用域名注册商
-  的 URL 转发（选 301）指到 https://agentmux.pro。
+- **Vercel**：两个域名都加到项目 Domains，把 agentmux.ink 设为
+  "Redirect to agentmux.pro"（308/301），Vercel 会自动保留路径。
+- **Cloudflare**：agentmux.ink 加 Redirect Rule 动态重定向
+  `concat("https://agentmux.pro", http.request.uri.path)`，301。
+- **Nginx / Caddy**：`return 301 https://agentmux.pro$request_uri;`
+  （Caddy：`redir https://agentmux.pro{uri} permanent`）。
 
 上线后到 Google Search Console / Bing Webmaster 提交 `https://agentmux.pro/sitemap.xml`。
-
-## 本地预览
-
-```bash
-python3 -m http.server 8931
-# 打开 http://localhost:8931/
-```
-
-## 部署
-
-任何静态托管均可：GitHub Pages、Cloudflare Pages、Vercel、Netlify、对象存储 + CDN。
-把整个目录作为站点根目录发布即可，无需构建命令。
-
-- GitHub Pages：推送本目录到仓库，Settings → Pages → 选择分支根目录。
-- 自定义域名：在托管平台绑定后，如需可添加 `CNAME` 文件。
 
 ## 更新截图
 
 产品截图直接取自主仓库：
 
 ```bash
-cp /root/AgentMux/docs/{terminal,broadcast,install,themes}.png assets/img/
-cp /root/AgentMux/docs/demo.gif assets/img/
+cp /root/AgentMux/docs/{terminal,broadcast,install,themes}.png public/assets/img/
+cp /root/AgentMux/docs/demo.gif public/assets/img/
 ```

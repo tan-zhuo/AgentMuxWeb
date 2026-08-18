@@ -1,0 +1,67 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import { SITE, LANGS } from '../i18n/ui.js';
+
+// lang: 'zh' | 'en' | 'ja' | 'ru'
+// kind: 'landing' | 'docs' —— 决定 hreflang 组指向落地页还是文档页
+const {
+  lang,
+  kind,
+  title,
+  description,
+  keywords,
+  ogTitle = Astro.props.title,
+  ogDescription = Astro.props.description,
+  ogType = 'website',
+  jsonLd = [],
+} = Astro.props;
+
+const meta = LANGS.find((l) => l.code === lang);
+const fileOf = (l) => (kind === 'docs' ? l.docs : l.landing);
+const urlOf = (l) => SITE + '/' + (fileOf(l) === 'index.html' ? '' : fileOf(l));
+const canonical = urlOf(meta);
+const xDefault = urlOf(LANGS[0]);
+const ogImage = SITE + '/assets/img/terminal.png';
+---
+
+<!DOCTYPE html>
+<html lang={meta.htmlLang}>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{keywords && <meta name="keywords" content={keywords} />}
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href={canonical} />
+{LANGS.map((l) => <link rel="alternate" hreflang={l.hreflang} href={urlOf(l)} />)}
+<link rel="alternate" hreflang="x-default" href={xDefault} />
+<meta property="og:title" content={ogTitle} />
+<meta property="og:description" content={ogDescription} />
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:site_name" content="AgentMux" />
+<meta property="og:locale" content={meta.ogLocale} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={ogTitle} />
+<meta name="twitter:description" content={ogDescription} />
+<meta name="twitter:image" content={ogImage} />
+<link rel="icon" type="image/png" href="/assets/img/icon.png" />
+{jsonLd.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
+</head>
+<body>
+<Nav lang={lang} kind={kind} />
+<slot />
+<script>
+  import '../scripts/site.js';
+  import { inject } from '@vercel/analytics';
+  import { injectSpeedInsights } from '@vercel/speed-insights';
+  if (import.meta.env.PROD) {
+    inject();
+    injectSpeedInsights();
+  }
+</script>
+</body>
+</html>

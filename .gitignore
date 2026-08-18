@@ -1,2 +1,5 @@
 .server.log
 .gstack/
+node_modules/
+dist/
+.astro/
