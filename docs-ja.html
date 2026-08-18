@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ドキュメント — AgentMux セットアップ＆運用ガイド</title>
+<meta name="description" content="AgentMuxの完全ドキュメント：macOS / Windows / Linuxへのインストール、ホストとエージェントの追加、ターミナルペインウォール、キーボードショートカット、ブロードキャスト、Ollamaによるオーケストレーター設定、トラブルシューティング。">
+<meta name="keywords" content="AgentMux, チュートリアル, インストール, ドキュメント, AIエージェント管理, Claude Code, tmux, SSH, リモート開発">
+<link rel="canonical" href="https://agentmux.tanzhuo.xyz/docs-ja.html">
+<link rel="alternate" hreflang="zh-CN" href="https://agentmux.tanzhuo.xyz/docs.html">
+<link rel="alternate" hreflang="en" href="https://agentmux.tanzhuo.xyz/docs-en.html">
+<link rel="alternate" hreflang="ja" href="https://agentmux.tanzhuo.xyz/docs-ja.html">
+<link rel="alternate" hreflang="ru" href="https://agentmux.tanzhuo.xyz/docs-ru.html">
+<link rel="alternate" hreflang="x-default" href="https://agentmux.tanzhuo.xyz/docs.html">
+<meta property="og:title" content="AgentMuxドキュメント — セットアップ＆運用ガイド">
+<meta property="og:description" content="ダウンロードから日々の運用まで：ホスト、エージェント、ターミナルウォール、ブロードキャスト、オーケストレーターの設定、トラブルシューティング — すべての手順を解説。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agentmux.tanzhuo.xyz/docs-ja.html">
+<meta property="og:image" content="https://agentmux.tanzhuo.xyz/assets/img/terminal.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/img/icon.png">
+<link rel="stylesheet" href="assets/css/style.css?v=6">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "AgentMuxドキュメント — セットアップ＆運用ガイド",
+  "description": "AgentMuxの完全ドキュメント：インストール、ホストとエージェント、ターミナル操作、ブロードキャスト、オーケストレーターの設定、トラブルシューティング。",
+  "inLanguage": "ja",
+  "author": { "@type": "Person", "name": "tan-zhuo", "url": "https://tanzhuo.xyz" },
+  "about": { "@type": "SoftwareApplication", "name": "AgentMux", "operatingSystem": "macOS, Windows, Linux", "applicationCategory": "DeveloperApplication" }
+}
+</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="ja.html">
+      <img src="assets/img/icon-256.png" alt="AgentMuxのロゴ">
+      <span>AgentMux</span>
+    </a>
+    <div class="nav-links">
+      <a href="ja.html#capabilities">主な機能</a>
+      <a href="ja.html#features">ツアー</a>
+      <a href="docs-ja.html" style="color:var(--text)">ドキュメント</a>
+      <a href="ja.html#download">ダウンロード</a>
+      <a href="ja.html#faq">FAQ</a>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-actions">
+      <div class="lang-menu">
+        <button class="lang-switch" aria-haspopup="true" aria-label="言語">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></svg>
+          日本語
+          <svg class="caret" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="lang-drop">
+          <a href="docs.html" lang="zh-CN">中文</a>
+          <a href="docs-en.html" lang="en">English</a>
+          <a href="docs-ja.html" class="current" lang="ja">日本語</a>
+          <a href="docs-ru.html" lang="ru">Русский</a>
+        </div>
+      </div>
+      <a class="gh-btn" href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <button class="nav-burger" aria-label="メニュー">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <!-- ============ sidebar ============ -->
+  <aside class="docs-side" data-toc>
+    <h5>はじめに</h5>
+    <a href="#intro">AgentMuxとは</a>
+    <a href="#requirements">動作要件</a>
+    <a href="#install">インストール</a>
+    <a href="#quickstart">クイックスタート</a>
+    <h5>日々の運用</h5>
+    <a href="#panes">ターミナルウォール</a>
+    <a href="#shortcuts">キーボードショートカット</a>
+    <a href="#broadcast">ブロードキャストと送達確認</a>
+    <a href="#hosts">ホストの運用</a>
+    <h5>応用</h5>
+    <a href="#orchestrator">オーケストレーターとOllama</a>
+    <a href="#lifecycle">ライフサイクルの意味論</a>
+    <a href="#build">ソースからのビルド</a>
+    <h5>リファレンス</h5>
+    <a href="#troubleshooting">トラブルシューティング</a>
+    <a href="#help">サポートを受ける</a>
+  </aside>
+
+  <!-- ============ main ============ -->
+  <main class="docs-main">
+    <h1 class="docs-title">ドキュメント</h1>
+    <p class="docs-lede">
+      ダウンロードから日々の運用までを網羅した完全ガイドです。「はじめに」のパート（約10分）を読めば、
+      最初の管理対象AIコーディングエージェントをリモートサーバー上で動かせるようになります。
+    </p>
+
+    <section id="intro">
+      <h2>AgentMuxとは<a class="anchor" href="#intro">#</a></h2>
+      <p>
+        AgentMuxは、リモートホストと手元のPCで実行されるAIコーディングエージェント — Claude Code、Codex、
+        Gemini CLI、OpenCode、Aider、Cursor CLI — を運用するための<b>デスクトップアプリケーション</b>です。
+        中核の仕組みは、一文で説明できます。
+      </p>
+      <div class="callout callout-info">
+        <b>中核の仕組み</b>
+        各エージェントは<b>そのホスト上の</b>tmuxセッション内で動作し、AgentMuxはプロセスを所有する代わりに
+        そのセッションにアタッチします。したがって、クライアントを閉じても、ノートPCをスリープさせても、
+        ネットワークが切れても、進行中の作業には一切影響しません — 永続性は構造そのものによって保証されます。
+      </div>
+      <p>
+        配布形態はシングルバイナリです。サーバーも、デーモンも、アカウントもありません。すべての状態は、
+        アプリケーションデータディレクトリ内のSQLiteファイル1つに収まります。各リモートホストへの接続は
+        多重化された1本のSSH接続で、ターミナル・コマンド・ファイル転送はその上のチャネルです。そのため、
+        1つのホストにターミナルを10枚開いても認証は1回だけ。アイドル状態の接続は10分後に閉じられます。
+      </p>
+    </section>
+
+    <section id="requirements">
+      <h2>動作要件<a class="anchor" href="#requirements">#</a></h2>
+      <h3>AgentMuxを実行するコンピュータ</h3>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>プラットフォーム</th><th>要件</th></tr>
+        <tr><td>macOS</td><td>macOS 11（Big Sur）以降。IntelとApple Silicon両対応のユニバーサルバイナリ</td></tr>
+        <tr><td>Windows</td><td>Windows 10以降</td></tr>
+        <tr><td>Linux</td><td>実行時にGTK3とWebKitGTK 4.1が必要 — Debian/Ubuntuでは<code>libwebkit2gtk-4.1-0</code>、Fedoraでは<code>webkit2gtk4.1</code></td></tr>
+      </table></div>
+      <h3>管理対象ホスト</h3>
+      <ul class="docs-list">
+        <li><b>リモートホスト</b>：POSIXシェル、<code>tmux</code>、SSHアカウント。tmuxがなくても問題ありません — インストールパネルから導入できます。リモートのWindowsホストはサポートされません。</li>
+        <li><b>手元のPC（Linux / macOS）</b>：ローカルの<code>tmux</code>だけ — sshdも認証情報も不要です。</li>
+        <li><b>手元のPC（Windows）</b>：同じマシンが2つのホストを提供します — デフォルトの<b>WSLディストリビューション</b>（tmuxが動く場所）と、<b>ネイティブWindows</b>（PowerShell、Windowsのパスとツールチェーン。MSVCビルドやWPF、ビルドしたばかりの.exeの実行に）。ネイティブセッションはAgentMux内蔵のセッションデーモンで永続化されるため、ウィンドウを閉じてもネイティブの作業は止まりません。</li>
+      </ul>
+      <h3>オプション：オーケストレーターとセマンティック検索</h3>
+      <p>
+        ローカルオーケストレーションとセマンティックメモリ検索には
+        <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">Ollama</a>
+        と、チャットモデル1つ・埋め込みモデル1つが必要です。<b>Ollamaがなくても、他の機能はすべて利用できます</b>。
+      </p>
+    </section>
+
+    <section id="install">
+      <h2>インストール<a class="anchor" href="#install">#</a></h2>
+      <p>
+        各<a href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">リリース</a>には、
+        タグ付きコミットからGitHub Actionsが生成したプラットフォームごとのビルドが1つずつ、
+        <code>.sha256</code>付きで用意されています。ビルドはまだコード署名・公証されていないため、
+        初回起動時に各プラットフォームで1回だけ追加の確認が必要です。
+      </p>
+
+      <h3>macOS</h3>
+      <ol class="docs-list">
+        <li><code>agentmux-macos-universal.zip</code>をダウンロードして解凍し、<code>AgentMux.app</code>をアプリケーションフォルダにドラッグします。</li>
+        <li>未署名ビルドに対するダイアログを、お使いのmacOSバージョンに応じて処理します（下表参照）。</li>
+        <li>以降は通常どおり起動できます。</li>
+      </ol>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>macOSバージョン</th><th>手順</th></tr>
+        <tr><td>15 Sequoia以降</td><td>一度開いてブロックさせる → システム設定 → プライバシーとセキュリティ → セキュリティ → <b>このまま開く</b></td></tr>
+        <tr><td>14 Sonoma以前</td><td>アプリをControlキーを押しながらクリック → <b>開く</b> → 開く</td></tr>
+        <tr><td>すべてのバージョン</td><td><code>xattr -dr com.apple.quarantine /Applications/AgentMux.app</code> を実行し、通常どおり開く</td></tr>
+      </table></div>
+      <div class="callout callout-info">
+        <b>隔離フローを丸ごとスキップする</b>
+        隔離属性を付けるのはブラウザであって、アーカイブ自体ではありません。
+        <code>curl -L -O &lt;url&gt;</code> でダウンロードすれば、そもそも付与されません。
+      </div>
+
+      <h3>Windows</h3>
+      <ol class="docs-list">
+        <li><code>agentmux-windows-amd64.zip</code>をダウンロードして解凍します — <code>agentmux.exe</code>とインストールスクリプトが含まれています。</li>
+        <li>ダブルクリックで実行し、SmartScreenが表示されたら<b>詳細情報</b> → <b>実行</b>を選択します。</li>
+        <li>正式にインストールする場合（<code>%LOCALAPPDATA%\Programs\AgentMux</code>へ配置、デスクトップとスタートメニューにショートカット作成、管理者権限は不要）は、解凍したフォルダで次を実行します。</li>
+      </ol>
+      <pre><code>powershell -ExecutionPolicy Bypass -File install-windows.ps1</code></pre>
+      <p>同じスクリプトに<code>-Uninstall</code>を付けるとアンインストールされます。<code>%APPDATA%\AgentMux</code>内のデータには触れません。</p>
+
+      <h3>Linux</h3>
+      <ol class="docs-list">
+        <li>まずランタイム依存をインストールします：Debian/Ubuntuでは<code>sudo apt install libwebkit2gtk-4.1-0</code>、Fedoraでは<code>sudo dnf install webkit2gtk4.1</code>。</li>
+        <li><code>agentmux-linux-amd64.tar.gz</code>をダウンロードして展開します — バイナリ、アイコン、<code>.desktop</code>エントリ、<code>install.sh</code>が含まれます。</li>
+        <li><code>./install.sh</code>を実行するか、バイナリを直接起動します。</li>
+      </ol>
+
+      <h3>ダウンロードの検証</h3>
+      <pre><code><span class="cm"># すべてのファイルに.sha256が付属します:</span>
+shasum -a 256 -c agentmux-macos-universal.zip.sha256   <span class="cm"># macOS</span>
+sha256sum -c agentmux-linux-amd64.tar.gz.sha256        <span class="cm"># Linux</span></code></pre>
+    </section>
+
+    <section id="quickstart">
+      <h2>クイックスタート<a class="anchor" href="#quickstart">#</a></h2>
+      <p>最初の管理対象エージェントまで4ステップです。ここで扱う操作はすべて<code>Ctrl/⌘ K</code>のコマンドパレットからも実行できます — あらゆる操作への最短経路です。</p>
+
+      <h3>ステップ1：ホストを追加</h3>
+      <p><b>リモートホスト</b>に必要なのは3つです。</p>
+      <ul class="docs-list">
+        <li><b>アドレスとユーザー</b> — <code>ssh user@host</code>で使うものと同じです。</li>
+        <li><b>3つの認証方式のいずれか</b>：ssh-agent（推奨 — 入力不要）、鍵ファイル（パスフレーズ対応）、またはパスワード。</li>
+        <li><b>ジャンプホスト（任意）</b> — 踏み台サーバー越しの環境向け。</li>
+      </ul>
+      <div class="callout callout-ok">
+        <b>ホストキーは初回接続時にピン留めされます</b>
+        ホストキーは最初の接続時に記録されます。以降に不一致が起きると、理由の説明とともに接続を中止します —
+        これは中間者攻撃への防御であって、バグではありません。ホストが本当に再インストールされた場合は、
+        ホストのレコードを削除して追加し直してください。
+      </div>
+      <p>
+        <b>手元のPC</b>に必要なのは名前だけです — sshdも認証情報も要りません。Windowsでは2つのローカルホストが
+        表示されます：WSLディストリビューションとネイティブWindowsです。ワークロードに応じて使い分けてください —
+        UnixツールチェーンはWSLへ、MSVC/WPFはネイティブへ。
+      </p>
+
+      <h3>ステップ2：プロジェクトとワークスペースを追加</h3>
+      <p>ワークスペースはホスト上の作業ディレクトリ（通常はリポジトリのルート）です。追加方法は2つあります。</p>
+      <ul class="docs-list">
+        <li><b>フォームから</b>：ホストを選び、パスを入力します。</li>
+        <li><b>ファイルブラウザから（速い）</b>：ホストのファイルをブラウズし、目的のディレクトリを見つけて、その場で「プロジェクトとして追加」します — 名前・パス・ホストはすでに分かっています。</li>
+      </ul>
+
+      <h3>ステップ3：エージェントを追加して起動</h3>
+      <p>エージェントは「名前」と「起動コマンド」の組み合わせです — ターミナルで打つのと同じコマンドを指定します。</p>
+      <pre><code><span class="cm"># 典型的な起動コマンド。好みに合わせて調整してください</span>
+claude                    <span class="cm"># Claude Code</span>
+codex                     <span class="cm"># OpenAI Codex CLI</span>
+gemini                    <span class="cm"># Gemini CLI</span>
+aider --model sonnet      <span class="cm"># Aider</span>
+opencode                  <span class="cm"># OpenCode</span></code></pre>
+      <p>
+        <b>Start</b>を押せば、ホスト上のtmux内で稼働が始まります。エージェントのAPIキーはホスト側
+        （エージェント自身の設定や環境変数）で設定します — AgentMuxはそれを読み取りもプロキシもしません。
+      </p>
+
+      <h3>ステップ4：アタッチして作業する</h3>
+      <p>
+        エージェントをクリックするか、<code>Ctrl/⌘ K</code>で名前を検索します。そこにあるのは<b>本物の
+        ターミナル</b>です — 色、マウス、選択、検索。いつでも割り込んで入力し、エージェントの軌道を修正し、
+        制御を戻せます — 再起動は不要です。サイドパネルには起動 / 停止 / 再起動 / アタッチの操作、
+        プロセスの状態、直近の出力が表示されます。
+      </p>
+      <div class="callout callout-info">
+        <b>永続性を実際に確かめる</b>
+        実行中のエージェントにアタッチし、AgentMuxを完全に終了してから再び開いてみてください —
+        スクロールバックもそのままに、同じペインに戻れます。エージェントは、あなたが離れたことに気づきもしません。
+      </div>
+    </section>
+
+    <section id="panes">
+      <h2>ターミナルウォール<a class="anchor" href="#panes">#</a></h2>
+      <p>
+        ターミナル領域は最大<b>9ペイン（3×3）</b>に分割でき、各ペインが独自のセッションを保持します —
+        1つのホストでも複数のホストでも、それぞれ独立して操作できます。
+      </p>
+      <ul class="docs-list">
+        <li><b>ペインの追加</b>：<code>Ctrl/⌘ \</code>。開いているタブの空きがあれば即座に分割され、なければホスト、ワークスペースのディレクトリ、実行中のエージェント、開いているタブから選ぶダイアログが表示されます。</li>
+        <li><b>レイアウトは自動調整</b>：ペインはピクセルではなく比率で領域を分け合います。読めないほど狭い列は畳まれるため、ウィンドウを狭めても3×3のウォールは9本の細切れではなく、縦長のグリッドに折り返されます。</li>
+        <li><b>境界をドラッグ</b>してペインをリサイズします。</li>
+        <li><b>一時的なズーム</b>：ペインのタブをダブルクリック（または<code>Ctrl/⌘ ⇧ ↵</code>）で領域全体に拡大し、もう一度で元に戻します。下にある分割はそのまま保たれます。</li>
+        <li><b>ペインはビューであってセッションではない</b>：ペインを閉じても（<code>Ctrl/⌘ ⇧ \</code>）、ターミナルの表示が消えるだけで、タブとそのシェルはアタッチされたままです。ペイン数は次回起動時に復元されます。</li>
+      </ul>
+    </section>
+
+    <section id="shortcuts">
+      <h2>キーボードショートカット<a class="anchor" href="#shortcuts">#</a></h2>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>ショートカット</th><th>操作</th></tr>
+        <tr><td><code>Ctrl/⌘ K</code></td><td>コマンドパレット — アタッチ、シェルを開く、CLIのインストール、テーマ変更への最短経路</td></tr>
+        <tr><td><code>Ctrl/⌘ B</code></td><td>ツリーの表示／非表示</td></tr>
+        <tr><td><code>Ctrl/⌘ \</code></td><td>ペインを追加 — 次に開いているタブがあれば即座に、なければ何をアタッチするか確認</td></tr>
+        <tr><td><code>Ctrl/⌘ ⇧ \</code></td><td>ペインを閉じる（タブとそのシェルは開いたまま）</td></tr>
+        <tr><td><code>Ctrl/⌘ ⇧ ↵</code></td><td>フォーカス中のペインで領域全体を表示／元に戻す</td></tr>
+        <tr><td><code>Ctrl/⌘ ⌥ ←</code> <code>→</code></td><td>ペイン間を移動 — ズーム中は1枚ずつ順に表示</td></tr>
+      </table></div>
+    </section>
+
+    <section id="broadcast">
+      <h2>ブロードキャストと送達確認<a class="anchor" href="#broadcast">#</a></h2>
+      <p>
+        ブロードキャストパネルから、選択した任意のエージェント — プロジェクトやホストをまたいで — に
+        1つの指示を送信できます。各ターミナルにペーストして回るのと違い、各エージェントが<b>送達確認</b>を返すため、
+        指示が実際に届いたかどうかが分かります。
+      </p>
+      <ul class="docs-list">
+        <li>プロジェクト単位、ホスト単位、または個別にエージェントをチェックしてターゲットを指定。</li>
+        <li>エージェントごとの配信状況を表示。失敗した配信は目立って表示され、個別に再試行できます。</li>
+        <li>典型的な用途：フリート全体の一時停止、新しい制約の通達（「今後のコミットメッセージはすべて英語で」）、エージェント横断での進捗確認。</li>
+      </ul>
+    </section>
+
+    <section id="hosts">
+      <h2>ホストの運用<a class="anchor" href="#hosts">#</a></h2>
+
+      <h3>インストールパネル：新しいホストのプロビジョニング</h3>
+      <p>
+        インストールパネルは<b>まずホストを検査し</b>、実際にサポートできるエージェントCLIとランタイムだけを提示します。
+        利用できないものは理由付きで示されます。インストールはtmux内で実行されるため、接続が中断されても
+        中途半端なパッケージツリーが残ることはありません。tmux自体も、なければここからインストールできます。
+      </p>
+
+      <h3>ホストのテレメトリ</h3>
+      <p>ホストごとのメトリクスは1つのコマンドでまとめて収集されます。</p>
+      <ul class="docs-list">
+        <li>モード別・コア別のCPU、メモリ、負荷</li>
+        <li>ディスクの使用量とスループット、ネットワーク、ファイルディスクリプタ</li>
+        <li>NVIDIA GPUがある場合はその使用率</li>
+      </ul>
+
+      <h3>SFTPブラウザとエディタ</h3>
+      <p>
+        ファイルアクセスは同じSSH接続に相乗りします。書き込みは<b>アトミック</b>で、変更チェック付きです。
+        同じディレクトリで作業中のエージェントがそのファイルを変更していた場合、保存は黙って上書きせずに拒否されます —
+        まず何が変わったかを確認してから判断してください。
+      </p>
+    </section>
+
+    <section id="orchestrator">
+      <h2>オーケストレーターとOllama<a class="anchor" href="#orchestrator">#</a></h2>
+      <p>
+        オーケストレーターは<b>ローカルモデル</b>で動く運用アシスタントです。目的（たとえば「agent-3の進捗が
+        止まった原因を調べて」）を与えると、フリートの状態を調べ、過去のコンテキストを取り出し、ツール呼び出しを
+        1つずつ進めます。<b>自分で有効化するまでは無効</b>のままです。
+      </p>
+
+      <h3>前提条件</h3>
+      <ol class="docs-list">
+        <li><a href="https://ollama.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">Ollama</a>をインストールし、起動しておきます。</li>
+        <li>チャットモデルと埋め込みモデルを1つずつ取得します。例：</li>
+      </ol>
+      <pre><code>ollama pull qwen3             <span class="cm"># チャットモデル（一例 — ハードウェアに合わせて選択）</span>
+ollama pull nomic-embed-text  <span class="cm"># 埋め込みモデル。セマンティック検索に使用</span></code></pre>
+
+      <h3>承認フロー</h3>
+      <ul class="docs-list">
+        <li><b>ホストを変更する</b>操作はすべて、明示的な承認まで保留されます。承認カードには、ツール、その完全な引数、対象ホスト、モデルが述べた根拠が表示されます。</li>
+        <li><b>破壊的な操作</b>は、信頼レベルにかかわらず、すべてのホストで確認されます。</li>
+        <li>ツールは固定のホワイトリストで、各ツールには宣言時に固定されたリスク階層が付きます。実行は、階層 × ホストの信頼レベル × 実行トリガーを組み合わせた単一のゲートを通過します。</li>
+        <li>リモートの出力はデータとしてマークされてモデルに渡され、指示のように見えるテキストには承認カードと意思決定ログでフラグが立ちます（プロンプトインジェクション対策）。</li>
+        <li>すべての実行の全ステップが記録されます — 拒否・却下・未回答のまま残った提案も含めて。</li>
+      </ul>
+
+      <h3>定期パトロール</h3>
+      <p>
+        オーケストレーターはスケジュールに沿ってフリートをパトロールし、停滞したエージェントを報告できます。
+        スケジュール実行では<b>読み取り以外のツールがすべて無条件に拒否</b>され、この制限は設定で変更できません。
+        パトロールは問題を見つけられますが、対処は常にあなたの判断を待ちます。
+      </p>
+
+      <h3>スキルとメモリ</h3>
+      <ul class="docs-list">
+        <li><b>スキル</b>：再利用可能な手順 — 適用条件、手順、使用ツール、制約 — で、同じ条件が再び現れると自動でマッチします。オーケストレーターが提案したスキルはレビューキューに入り、承認されるまで一切効力を持ちません。</li>
+        <li><b>メモリ</b>：プロジェクトの事実、表明された好み、エージェントの活動をインデックス化し、語句でも意味でも検索できます。埋め込みはローカルで計算され、データがマシンの外に出ることはありません。既知のパターンに一致する認証情報は、保存前にマスキングされます。</li>
+      </ul>
+    </section>
+
+    <section id="lifecycle">
+      <h2>ライフサイクルの意味論<a class="anchor" href="#lifecycle">#</a></h2>
+      <p>これを頭に入れておけば、「今タスクを消してしまった？」と焦る瞬間は二度と訪れません。</p>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>操作</th><th>実際に起きること</th></tr>
+        <tr><td>AgentMuxを終了する</td><td>何も止まりません。すべてのエージェントは各ホストのtmux内で動き続けます。</td></tr>
+        <tr><td>ペインを閉じる</td><td>ターミナルの表示が消えるだけ。タブとそのシェルはアタッチされたままです。</td></tr>
+        <tr><td>ワークスペース／エージェントのレコードを削除する</td><td>ローカルの記録が消えるだけ — tmuxセッションは動き続けます。</td></tr>
+        <tr><td>エージェントのプロセスが終了する</td><td>正しいディレクトリに使えるシェルが残ります — セッションは破棄されず、その場で調査や再起動ができます。</td></tr>
+        <tr><td>Stop</td><td>エージェントのプロセスを停止します。セッションとシェルは残ります。</td></tr>
+        <tr><td><b>Kill</b></td><td>実行中のtmuxセッションを破棄する唯一の操作。何が失われるかを提示して、必ず事前に確認します。</td></tr>
+        <tr><td>ネットワーク切断／PCを閉じる</td><td>エージェントには影響なし。スクロールバックもそのままに、同じペインへ再アタッチできます。</td></tr>
+        <tr><td>10分間のアイドル</td><td>何も掴んでいないSSH接続は閉じられ、次に使うときに自動的に再構築されます。</td></tr>
+      </table></div>
+    </section>
+
+    <section id="build">
+      <h2>ソースからのビルド<a class="anchor" href="#build">#</a></h2>
+      <p>Go 1.25+とNode 20+が必要です。先にフロントエンドをビルドし（バイナリに埋め込まれます）、次にGoをビルドします。</p>
+      <pre><code>git clone git@github.com:tan-zhuo/AgentMux.git
+cd AgentMux
+cd frontend && npm install && npm run build && cd ..
+go build -o agentmux .
+./agentmux</code></pre>
+      <p><b>Linux</b>ではWebKitGTKのヘッダと<code>gtk3</code>ビルドタグが必要です。</p>
+      <pre><code>sudo apt-get install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
+go build -tags gtk3 -o agentmux .</code></pre>
+      <p><b>Windows</b>で、コンソールウィンドウなしのダブルクリック起動できるGUIバイナリを作るには次のとおりです。</p>
+      <pre><code>go build -ldflags "-H windowsgui" -o agentmux.exe .</code></pre>
+      <p>
+        より詳しい情報（テスト、リリースの作成）は
+        <a href="https://github.com/tan-zhuo/AgentMux/blob/main/docs/development.md" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">docs/development.md</a>
+        を参照してください。
+      </p>
+    </section>
+
+    <section id="troubleshooting">
+      <h2>トラブルシューティング<a class="anchor" href="#troubleshooting">#</a></h2>
+
+      <h3>macOSで「壊れている」と表示される／開けない</h3>
+      <p>
+        未署名ビルドに対する通常のゲートであって、ファイルの破損ではありません。
+        <a href="#install" style="color:var(--blue-soft)">インストール</a>の表に従うか、コマンド1つで解決できます：
+        <code>xattr -dr com.apple.quarantine /Applications/AgentMux.app</code>。
+      </p>
+
+      <h3>Linuxで起動しない／ライブラリが見つからない</h3>
+      <p>
+        ほぼ確実にWebKitGTKランタイムです。Debian/Ubuntu：<code>sudo apt install libwebkit2gtk-4.1-0</code>、
+        Fedora：<code>sudo dnf install webkit2gtk4.1</code>。
+      </p>
+
+      <h3>Windowsでウィンドウがまったく表示されない</h3>
+      <p>
+        GUIビルドにはエラーを表示するコンソールがありません。データディレクトリ
+        （<code>%APPDATA%\AgentMux</code>）の<code>startup-error.log</code>を確認してください — 実際の失敗理由がそこに書かれています。
+      </p>
+
+      <h3>接続時に「Host key mismatch」と表示される</h3>
+      <p>
+        ホストのキーが、初回接続時にピン留めされたものと異なっています。<b>まず原因を突き止めてください</b>。
+        ホストの再インストールやIPの再割り当てなら正常です — ホストのレコードを削除して追加し直してください。
+        何も変わっていないはずなら、中間者攻撃の可能性として扱い、フィンガープリントを別経路で検証してください。
+      </p>
+
+      <h3>ステータスバーにキーチェーンが利用できないと表示される</h3>
+      <p>
+        暗号化のマスターキーは通常、OSのキーチェーン（Keychain / 資格情報マネージャー / Secret Service）に
+        置かれます。キーチェーンが使えない環境（最小構成のLinuxデスクトップでよくあります）では、AgentMuxは
+        パーミッション<code>0600</code>のファイルにフォールバックし、その旨をステータスバーに表示します。
+        動作には支障ありません。Linuxでキーチェーン保存に戻すには、gnome-keyringなどのSecret Service実装を
+        インストールして有効化してください。
+      </p>
+
+      <h3>対象ホストにtmuxがない</h3>
+      <p>そのホストのインストールパネルを開いてください — 一覧にtmuxがあり、AgentMuxが適切なパッケージマネージャでインストールします。</p>
+
+      <h3>オーケストレーター／セマンティック検索が使えない</h3>
+      <p>
+        Ollamaが起動していること（<code>ollama list</code>でモデルが表示されること）、チャットモデルと
+        埋め込みモデルの両方が取得済みであることを確認してください。Ollamaがない場合、この2機能は無効のままですが、
+        他の機能には影響しません。
+      </p>
+
+      <h3>データはどこに保存されますか？</h3>
+      <p>
+        すべての状態は、アプリケーションデータディレクトリ（Windowsでは<code>%APPDATA%\AgentMux</code>）内の
+        SQLiteファイル1つに収まります。このディレクトリをバックアップすればすべてのバックアップになり、
+        削除すれば完全なリセットになります。認証情報はAES-256-GCMで暗号化して保存され、鍵はOSのキーチェーンにあります。
+      </p>
+    </section>
+
+    <section id="help">
+      <h2>サポートを受ける<a class="anchor" href="#help">#</a></h2>
+      <ul class="docs-list">
+        <li><a href="https://github.com/tan-zhuo/AgentMux/issues" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">GitHubのissue</a>を作成してください — プラットフォーム、バージョン、（あれば）<code>startup-error.log</code>を添えると、解決が大幅に早くなります。</li>
+        <li>オーケストレーターの内部（ツールゲート、信頼レベル、メモリとスキルのレイヤー）は<a href="https://github.com/tan-zhuo/AgentMux/blob/main/docs/orchestrator-blueprint.md" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">オーケストレーター設計ドキュメント</a>に記載されています。</li>
+        <li>作者のブログ：<a href="https://tanzhuo.xyz" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">tanzhuo.xyz</a></li>
+      </ul>
+      <div class="docs-foot">
+        <span>答えが見つかりませんでしたか？<a href="https://github.com/tan-zhuo/AgentMux/issues" target="_blank" rel="noopener noreferrer">issueを作成</a>してください — たいてい当日中に回答があります。</span>
+        <a href="ja.html">← ホームに戻る</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/main.js?v=6"></script>
+</body>
+</html>

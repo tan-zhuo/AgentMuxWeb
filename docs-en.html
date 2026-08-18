@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation — AgentMux Setup &amp; Operations Guide</title>
+<meta name="description" content="Complete AgentMux documentation: macOS / Windows / Linux installation, adding hosts and agents, the terminal pane wall, keyboard shortcuts, broadcast, orchestrator setup with Ollama, and troubleshooting.">
+<meta name="keywords" content="AgentMux, tutorial, installation, documentation, AI agent management, Claude Code, tmux, SSH, remote development">
+<link rel="canonical" href="https://agentmux.tanzhuo.xyz/docs-en.html">
+<link rel="alternate" hreflang="zh-CN" href="https://agentmux.tanzhuo.xyz/docs.html">
+<link rel="alternate" hreflang="en" href="https://agentmux.tanzhuo.xyz/docs-en.html">
+<link rel="alternate" hreflang="ja" href="https://agentmux.tanzhuo.xyz/docs-ja.html">
+<link rel="alternate" hreflang="ru" href="https://agentmux.tanzhuo.xyz/docs-ru.html">
+<link rel="alternate" hreflang="x-default" href="https://agentmux.tanzhuo.xyz/docs.html">
+<meta property="og:title" content="AgentMux Documentation — Setup &amp; Operations Guide">
+<meta property="og:description" content="From download to daily operations: hosts, agents, the terminal wall, broadcast, orchestrator configuration, and troubleshooting — every step explained.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agentmux.tanzhuo.xyz/docs-en.html">
+<meta property="og:image" content="https://agentmux.tanzhuo.xyz/assets/img/terminal.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/img/icon.png">
+<link rel="stylesheet" href="assets/css/style.css?v=6">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "AgentMux Documentation — Setup & Operations Guide",
+  "description": "Complete AgentMux documentation: installation, hosts and agents, terminal operations, broadcast, orchestrator configuration, and troubleshooting.",
+  "inLanguage": "en",
+  "author": { "@type": "Person", "name": "tan-zhuo", "url": "https://tanzhuo.xyz" },
+  "about": { "@type": "SoftwareApplication", "name": "AgentMux", "operatingSystem": "macOS, Windows, Linux", "applicationCategory": "DeveloperApplication" }
+}
+</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="en.html">
+      <img src="assets/img/icon-256.png" alt="AgentMux logo">
+      <span>AgentMux</span>
+    </a>
+    <div class="nav-links">
+      <a href="en.html#capabilities">Capabilities</a>
+      <a href="en.html#features">Tour</a>
+      <a href="docs-en.html" style="color:var(--text)">Docs</a>
+      <a href="en.html#download">Download</a>
+      <a href="en.html#faq">FAQ</a>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-actions">
+      <div class="lang-menu">
+        <button class="lang-switch" aria-haspopup="true" aria-label="Language">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></svg>
+          English
+          <svg class="caret" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="lang-drop">
+          <a href="docs.html" lang="zh-CN">中文</a>
+          <a href="docs-en.html" class="current" lang="en">English</a>
+          <a href="docs-ja.html" lang="ja">日本語</a>
+          <a href="docs-ru.html" lang="ru">Русский</a>
+        </div>
+      </div>
+      <a class="gh-btn" href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <button class="nav-burger" aria-label="Menu">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <!-- ============ sidebar ============ -->
+  <aside class="docs-side" data-toc>
+    <h5>Getting Started</h5>
+    <a href="#intro">What is AgentMux</a>
+    <a href="#requirements">Requirements</a>
+    <a href="#install">Installation</a>
+    <a href="#quickstart">Quick Start</a>
+    <h5>Daily Operations</h5>
+    <a href="#panes">The Terminal Wall</a>
+    <a href="#shortcuts">Keyboard Shortcuts</a>
+    <a href="#broadcast">Broadcast &amp; Receipts</a>
+    <a href="#hosts">Host Operations</a>
+    <h5>Advanced</h5>
+    <a href="#orchestrator">Orchestrator &amp; Ollama</a>
+    <a href="#lifecycle">Lifecycle Semantics</a>
+    <a href="#build">Building from Source</a>
+    <h5>Reference</h5>
+    <a href="#troubleshooting">Troubleshooting</a>
+    <a href="#help">Getting Help</a>
+  </aside>
+
+  <!-- ============ main ============ -->
+  <main class="docs-main">
+    <h1 class="docs-title">Documentation</h1>
+    <p class="docs-lede">
+      The complete guide, from download to daily operations. Read the Getting Started part
+      (about 10 minutes) and you'll have your first managed AI coding agent running on a remote server.
+    </p>
+
+    <section id="intro">
+      <h2>What is AgentMux<a class="anchor" href="#intro">#</a></h2>
+      <p>
+        AgentMux is a <b>desktop application</b> for operating AI coding agents — Claude Code, Codex,
+        Gemini CLI, OpenCode, Aider, Cursor CLI — that execute on remote hosts and on this computer.
+        Its core mechanism fits in one sentence:
+      </p>
+      <div class="callout callout-info">
+        <b>The core mechanism</b>
+        Every agent runs inside a tmux session <b>on its host</b>; AgentMux attaches to that session
+        instead of owning the process. Closing the client, suspending the laptop, or losing the network
+        therefore has no effect on work in progress — persistence is guaranteed by construction.
+      </div>
+      <p>
+        It ships as a single binary: no server, no daemon, no account. All state is one SQLite file in
+        the application data directory. Each remote host gets one multiplexed SSH connection — terminals,
+        commands, and file transfers are channels on it, so ten terminals against one host is one
+        authentication. Idle connections close after ten minutes.
+      </p>
+    </section>
+
+    <section id="requirements">
+      <h2>Requirements<a class="anchor" href="#requirements">#</a></h2>
+      <h3>The computer running AgentMux</h3>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>Platform</th><th>Requirement</th></tr>
+        <tr><td>macOS</td><td>macOS 11 (Big Sur) or later; universal binary for Intel and Apple Silicon</td></tr>
+        <tr><td>Windows</td><td>Windows 10 or later</td></tr>
+        <tr><td>Linux</td><td>GTK3 and WebKitGTK 4.1 at run time — <code>libwebkit2gtk-4.1-0</code> on Debian/Ubuntu, <code>webkit2gtk4.1</code> on Fedora</td></tr>
+      </table></div>
+      <h3>Managed hosts</h3>
+      <ul class="docs-list">
+        <li><b>Remote hosts</b>: a POSIX shell, <code>tmux</code>, and an SSH account. Missing tmux is fine — the install panel can install it. Remote Windows hosts are not supported.</li>
+        <li><b>This computer (Linux / macOS)</b>: just a local <code>tmux</code> — no sshd, no credentials.</li>
+        <li><b>This computer (Windows)</b>: the same machine offers two hosts — the default <b>WSL distribution</b> (where tmux lives) and <b>native Windows</b> (PowerShell, Windows paths and toolchains, for MSVC builds, WPF, and running the .exe you just built). Native sessions persist through AgentMux's own session daemon, so closing the window doesn't stop native work either.</li>
+      </ul>
+      <h3>Optional: orchestrator and semantic search</h3>
+      <p>
+        Local orchestration and semantic memory search require
+        <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">Ollama</a>
+        plus one chat model and one embedding model. <b>Without Ollama, everything else is fully functional</b>.
+      </p>
+    </section>
+
+    <section id="install">
+      <h2>Installation<a class="anchor" href="#install">#</a></h2>
+      <p>
+        Each <a href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">release</a>
+        provides one build per platform, produced by GitHub Actions from the tagged commit, with a
+        <code>.sha256</code> alongside. Builds are not yet code-signed or notarized, so the first launch
+        takes one extra confirmation per platform.
+      </p>
+
+      <h3>macOS</h3>
+      <ol class="docs-list">
+        <li>Download <code>agentmux-macos-universal.zip</code>, unzip, and drag <code>AgentMux.app</code> into Applications.</li>
+        <li>Handle the unsigned-build prompt per your macOS version (table below).</li>
+        <li>After that, it opens normally.</li>
+      </ol>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>macOS version</th><th>Procedure</th></tr>
+        <tr><td>15 Sequoia or later</td><td>Open once and let it be blocked → System Settings → Privacy &amp; Security → Security → <b>Open Anyway</b></td></tr>
+        <tr><td>14 Sonoma or earlier</td><td>Control-click the app → <b>Open</b> → Open</td></tr>
+        <tr><td>Any version</td><td>Run <code>xattr -dr com.apple.quarantine /Applications/AgentMux.app</code>, then open normally</td></tr>
+      </table></div>
+      <div class="callout callout-info">
+        <b>Skipping the quarantine flow entirely</b>
+        The quarantine attribute is applied by the browser, not by the archive. Downloading with
+        <code>curl -L -O &lt;url&gt;</code> avoids it altogether.
+      </div>
+
+      <h3>Windows</h3>
+      <ol class="docs-list">
+        <li>Download and unzip <code>agentmux-windows-amd64.zip</code> — it contains <code>agentmux.exe</code> and an install script.</li>
+        <li>Double-click to run; when SmartScreen appears, choose <b>More info</b> → <b>Run anyway</b>.</li>
+        <li>For a proper install (to <code>%LOCALAPPDATA%\Programs\AgentMux</code>, with desktop and Start menu shortcuts, no administrator rights), run from the unzipped folder:</li>
+      </ol>
+      <pre><code>powershell -ExecutionPolicy Bypass -File install-windows.ps1</code></pre>
+      <p>The same script with <code>-Uninstall</code> reverses it, without touching the data in <code>%APPDATA%\AgentMux</code>.</p>
+
+      <h3>Linux</h3>
+      <ol class="docs-list">
+        <li>Install the runtime dependency first: <code>sudo apt install libwebkit2gtk-4.1-0</code> on Debian/Ubuntu, <code>sudo dnf install webkit2gtk4.1</code> on Fedora.</li>
+        <li>Download and extract <code>agentmux-linux-amd64.tar.gz</code> — binary, icon, <code>.desktop</code> entry, and <code>install.sh</code>.</li>
+        <li>Run <code>./install.sh</code>, or execute the binary directly.</li>
+      </ol>
+
+      <h3>Verifying downloads</h3>
+      <pre><code><span class="cm"># every file ships with a .sha256:</span>
+shasum -a 256 -c agentmux-macos-universal.zip.sha256   <span class="cm"># macOS</span>
+sha256sum -c agentmux-linux-amd64.tar.gz.sha256        <span class="cm"># Linux</span></code></pre>
+    </section>
+
+    <section id="quickstart">
+      <h2>Quick Start<a class="anchor" href="#quickstart">#</a></h2>
+      <p>Four steps to your first managed agent. Everything here is also reachable through the <code>Ctrl/⌘ K</code> command palette — the fastest route to any action.</p>
+
+      <h3>Step 1: Add a host</h3>
+      <p>A <b>remote host</b> needs three things:</p>
+      <ul class="docs-list">
+        <li><b>Address and user</b> — the same ones you'd use with <code>ssh user@host</code>.</li>
+        <li><b>One of three auth methods</b>: ssh-agent (recommended — nothing to fill in), a key file (passphrase supported), or a password.</li>
+        <li><b>Jump hosts (optional)</b> for environments behind a bastion.</li>
+      </ul>
+      <div class="callout callout-ok">
+        <b>Host keys are pinned on first connection</b>
+        The host key is recorded the first time you connect. A later mismatch aborts the connection with
+        an explanation — that's man-in-the-middle protection, not a bug. If the host genuinely got
+        reinstalled, delete the host record and add it again.
+      </div>
+      <p>
+        <b>This computer</b> asks for nothing but a name — no sshd, no credentials. On Windows you'll see
+        two local hosts: the WSL distribution and native Windows. Pick per workload — Unix toolchains go
+        to WSL; MSVC/WPF go native.
+      </p>
+
+      <h3>Step 2: Add a project and workspace</h3>
+      <p>A workspace is a working directory on the host (usually a repository root). Two ways to add one:</p>
+      <ul class="docs-list">
+        <li><b>The form</b>: pick a host, enter a path.</li>
+        <li><b>The file browser (faster)</b>: browse the host's files, find the directory, and "add as project" in place — its name, path, and host are already known.</li>
+      </ul>
+
+      <h3>Step 3: Add an agent and start it</h3>
+      <p>An agent is a name plus the command that starts it — the same command you'd type in a terminal:</p>
+      <pre><code><span class="cm"># typical start commands, adjust to taste</span>
+claude                    <span class="cm"># Claude Code</span>
+codex                     <span class="cm"># OpenAI Codex CLI</span>
+gemini                    <span class="cm"># Gemini CLI</span>
+aider --model sonnet      <span class="cm"># Aider</span>
+opencode                  <span class="cm"># OpenCode</span></code></pre>
+      <p>
+        Hit <b>Start</b> and it's running inside tmux on the host. Agent API keys are configured on the
+        host side (the agent's own config or environment) — AgentMux neither reads nor proxies them.
+      </p>
+
+      <h3>Step 4: Attach and work</h3>
+      <p>
+        Click the agent, or search its name via <code>Ctrl/⌘ K</code>. What you get is a <b>real
+        terminal</b> — colour, mouse, selection, search. Step in and type at any time, correct the
+        agent's course, hand control back — no restart needed. The side panel provides
+        Start / Stop / Restart / Attach, process state, and recent output.
+      </p>
+      <div class="callout callout-info">
+        <b>Verify the persistence claim</b>
+        Attach to a running agent, quit AgentMux entirely, reopen it — you're back in the same pane with
+        scrollback intact. The agent never noticed you left.
+      </div>
+    </section>
+
+    <section id="panes">
+      <h2>The Terminal Wall<a class="anchor" href="#panes">#</a></h2>
+      <p>
+        The terminal area divides into up to <b>nine panes (3×3)</b>, each holding its own session — on
+        one host or several, each independently interactive:
+      </p>
+      <ul class="docs-list">
+        <li><b>Add a pane</b>: <code>Ctrl/⌘ \</code>. With an open tab spare it splits instantly; otherwise a dialog offers hosts, workspace directories, running agents, and open tabs.</li>
+        <li><b>The layout adapts</b>: panes divide the area in proportions, not pixels. A column too narrow to read is dropped, so a narrowed window wraps the 3×3 wall into a taller grid instead of nine slivers.</li>
+        <li><b>Drag the seams</b> to resize panes.</li>
+        <li><b>Temporary zoom</b>: double-click a pane's tab (or <code>Ctrl/⌘ ⇧ ↵</code>) to fill the area; again to restore. The split underneath is untouched.</li>
+        <li><b>A pane is a view, not a session</b>: closing one (<code>Ctrl/⌘ ⇧ \</code>) hides the terminal while the tab and its shell stay attached. The pane count is restored on next start.</li>
+      </ul>
+    </section>
+
+    <section id="shortcuts">
+      <h2>Keyboard Shortcuts<a class="anchor" href="#shortcuts">#</a></h2>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>Shortcut</th><th>Action</th></tr>
+        <tr><td><code>Ctrl/⌘ K</code></td><td>Command palette — the fastest route to attaching, opening shells, installing CLIs, changing theme</td></tr>
+        <tr><td><code>Ctrl/⌘ B</code></td><td>Show or hide the tree</td></tr>
+        <tr><td><code>Ctrl/⌘ \</code></td><td>Add a pane — instantly with the next open tab, otherwise asking what to attach</td></tr>
+        <tr><td><code>Ctrl/⌘ ⇧ \</code></td><td>Close the pane, leaving the tab and its shell open</td></tr>
+        <tr><td><code>Ctrl/⌘ ⇧ ↵</code></td><td>Fill the area with the focused pane, and back again</td></tr>
+        <tr><td><code>Ctrl/⌘ ⌥ ←</code> <code>→</code></td><td>Move between panes — zoomed, this reads them one at a time</td></tr>
+      </table></div>
+    </section>
+
+    <section id="broadcast">
+      <h2>Broadcast &amp; Receipts<a class="anchor" href="#broadcast">#</a></h2>
+      <p>
+        The Broadcast panel sends one instruction to any selection of agents — across projects and hosts.
+        Unlike pasting into each terminal, every agent returns a <b>delivery receipt</b> telling you
+        whether the instruction actually arrived.
+      </p>
+      <ul class="docs-list">
+        <li>Target by project, by host, or tick agents individually.</li>
+        <li>Per-agent delivery status; failed deliveries stand out and can be retried individually.</li>
+        <li>Typical uses: pausing the whole fleet, issuing a new constraint ("all commit messages in English from now on"), polling progress across agents.</li>
+      </ul>
+    </section>
+
+    <section id="hosts">
+      <h2>Host Operations<a class="anchor" href="#hosts">#</a></h2>
+
+      <h3>The install panel: provisioning a new host</h3>
+      <p>
+        The install panel <b>inspects the host first</b> and offers only the agent CLIs and runtimes it
+        can actually support, stating why others are unavailable. Installation runs inside tmux, so an
+        interrupted connection cannot leave a partial package tree. tmux itself can be installed from
+        here when missing.
+      </p>
+
+      <h3>Host telemetry</h3>
+      <p>Per-host metrics are collected in a single command:</p>
+      <ul class="docs-list">
+        <li>CPU by mode and by core, memory, load</li>
+        <li>Disk usage and throughput, network, file descriptors</li>
+        <li>NVIDIA GPU utilisation where present</li>
+      </ul>
+
+      <h3>SFTP browser and editor</h3>
+      <p>
+        File access rides the same SSH connection. Writes are <b>atomic</b> and carry a modification
+        check: if an agent working in the same directory changed the file, the save is refused rather
+        than silently overwriting — look at what changed first, then decide.
+      </p>
+    </section>
+
+    <section id="orchestrator">
+      <h2>Orchestrator &amp; Ollama<a class="anchor" href="#orchestrator">#</a></h2>
+      <p>
+        The orchestrator is an operations assistant driven by a <b>local model</b>: give it an objective
+        (say, "work out why agent-3 stopped progressing") and it inspects fleet state, retrieves prior
+        context, and proceeds one tool call at a time. It is <b>disabled until you enable it</b>.
+      </p>
+
+      <h3>Prerequisites</h3>
+      <ol class="docs-list">
+        <li>Install <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">Ollama</a> and keep it running.</li>
+        <li>Pull one chat model and one embedding model, for example:</li>
+      </ol>
+      <pre><code>ollama pull qwen3             <span class="cm"># chat model (example — pick for your hardware)</span>
+ollama pull nomic-embed-text  <span class="cm"># embedding model, used for semantic search</span></code></pre>
+
+      <h3>The approval flow</h3>
+      <ul class="docs-list">
+        <li>Every operation that <b>modifies a host</b> is held for your explicit approval. The approval card shows: the tool, its full arguments, the target host, and the model's stated justification.</li>
+        <li><b>Destructive operations</b> are confirmed on every host, regardless of its trust level.</li>
+        <li>Tools are a fixed whitelist, each carrying a risk tier fixed at declaration. Execution passes a single gate combining tier × host trust level × the run's trigger.</li>
+        <li>Remote output enters the model marked as data; instruction-shaped text raises a flag on the approval card and in the decision log (prompt-injection defence).</li>
+        <li>Every step of every run is recorded — including proposals refused, rejected, or left unanswered.</li>
+      </ul>
+
+      <h3>Scheduled patrols</h3>
+      <p>
+        The orchestrator can patrol the fleet on a schedule and report stalled agents. Scheduled runs are
+        refused <b>every non-read tool unconditionally</b> — the restriction is not configurable. Patrols
+        can find problems; acting on them always waits for you.
+      </p>
+
+      <h3>Skills and memory</h3>
+      <ul class="docs-list">
+        <li><b>Skills</b>: reusable procedures — the conditions under which one applies, the steps, the tools, the constraints — matched automatically when those conditions recur. Skills proposed by the orchestrator enter a review queue and have no effect until approved.</li>
+        <li><b>Memory</b>: project facts, stated preferences, and agent activity are indexed for retrieval by wording or by meaning. Embeddings are computed locally; nothing leaves the machine. Credentials matching known patterns are redacted before storage.</li>
+      </ul>
+    </section>
+
+    <section id="lifecycle">
+      <h2>Lifecycle Semantics<a class="anchor" href="#lifecycle">#</a></h2>
+      <p>Internalise these and you'll never have a "did I just lose my task?" moment:</p>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>Action</th><th>What actually happens</th></tr>
+        <tr><td>Quitting AgentMux</td><td>Nothing stops. All agents keep running in tmux on their hosts.</td></tr>
+        <tr><td>Closing a pane</td><td>Hides the terminal view; the tab and its shell stay attached.</td></tr>
+        <tr><td>Deleting a workspace / agent record</td><td>Removes the local record only — the tmux session keeps running.</td></tr>
+        <tr><td>The agent process exits</td><td>Leaves a usable shell in the correct directory — the session isn't destroyed; investigate or restart in place.</td></tr>
+        <tr><td>Stop</td><td>Stops the agent process; session and shell remain.</td></tr>
+        <tr><td><b>Kill</b></td><td>The one control that destroys a running tmux session. It always confirms first, stating what is lost.</td></tr>
+        <tr><td>Network drop / lid close</td><td>Agents unaffected; reattach to the same pane with scrollback intact.</td></tr>
+        <tr><td>Ten idle minutes</td><td>An SSH connection with nothing holding it closes; it's rebuilt automatically on next use.</td></tr>
+      </table></div>
+    </section>
+
+    <section id="build">
+      <h2>Building from Source<a class="anchor" href="#build">#</a></h2>
+      <p>Go 1.25+ and Node 20+. The frontend builds first (it's embedded in the binary), then Go:</p>
+      <pre><code>git clone git@github.com:tan-zhuo/AgentMux.git
+cd AgentMux
+cd frontend && npm install && npm run build && cd ..
+go build -o agentmux .
+./agentmux</code></pre>
+      <p><b>Linux</b> needs the WebKitGTK headers and the <code>gtk3</code> build tag:</p>
+      <pre><code>sudo apt-get install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
+go build -tags gtk3 -o agentmux .</code></pre>
+      <p><b>Windows</b>, for a double-clickable GUI binary with no console window:</p>
+      <pre><code>go build -ldflags "-H windowsgui" -o agentmux.exe .</code></pre>
+      <p>
+        More detail (testing, cutting a release) in
+        <a href="https://github.com/tan-zhuo/AgentMux/blob/main/docs/development.md" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">docs/development.md</a>.
+      </p>
+    </section>
+
+    <section id="troubleshooting">
+      <h2>Troubleshooting<a class="anchor" href="#troubleshooting">#</a></h2>
+
+      <h3>macOS says the app "is damaged" or won't open</h3>
+      <p>
+        That's the normal gate for unsigned builds, not corruption. Follow the table in
+        <a href="#install" style="color:var(--blue-soft)">Installation</a>, or fix it in one command:
+        <code>xattr -dr com.apple.quarantine /Applications/AgentMux.app</code>.
+      </p>
+
+      <h3>Linux fails to start / missing library</h3>
+      <p>
+        Almost always the WebKitGTK runtime. Debian/Ubuntu: <code>sudo apt install libwebkit2gtk-4.1-0</code>;
+        Fedora: <code>sudo dnf install webkit2gtk4.1</code>.
+      </p>
+
+      <h3>Windows: no window appears at all</h3>
+      <p>
+        GUI builds have no console for errors. Check <code>startup-error.log</code> in the data directory
+        (<code>%APPDATA%\AgentMux</code>) — the actual failure reason is written there.
+      </p>
+
+      <h3>"Host key mismatch" when connecting</h3>
+      <p>
+        The host's key differs from the one pinned on first connection. <b>Establish why first</b>: a
+        reinstalled host or a re-assigned IP is normal — delete the host record and re-add it. If nothing
+        should have changed, treat it as a possible man-in-the-middle and verify the fingerprint out of band.
+      </p>
+
+      <h3>Status bar reports the keychain is unavailable</h3>
+      <p>
+        The encryption master key normally lives in the OS keychain (Keychain / Credential Manager /
+        Secret Service). Where no keychain is available (common on minimal Linux desktops), AgentMux
+        falls back to a <code>0600</code> file and says so in the status bar. Nothing breaks; to restore
+        keychain storage on Linux, install and enable gnome-keyring or another Secret Service implementation.
+      </p>
+
+      <h3>The target host has no tmux</h3>
+      <p>Open that host's install panel — tmux is on the list, and AgentMux installs it with the right package manager.</p>
+
+      <h3>Orchestrator / semantic search unavailable</h3>
+      <p>
+        Check that Ollama is running (<code>ollama list</code> shows your models) and that both a chat
+        model and an embedding model are pulled. Without Ollama these two features stay disabled;
+        everything else is unaffected.
+      </p>
+
+      <h3>Where is my data?</h3>
+      <p>
+        All state is one SQLite file in the application data directory (<code>%APPDATA%\AgentMux</code>
+        on Windows). Back up that directory to back up everything; delete it for a full reset.
+        Credentials are stored AES-256-GCM-encrypted, with the key in the OS keychain.
+      </p>
+    </section>
+
+    <section id="help">
+      <h2>Getting Help<a class="anchor" href="#help">#</a></h2>
+      <ul class="docs-list">
+        <li>File a <a href="https://github.com/tan-zhuo/AgentMux/issues" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">GitHub issue</a> — including platform, version, and <code>startup-error.log</code> (if any) speeds things up considerably.</li>
+        <li>Orchestrator internals (the tool gate, trust levels, memory and skill layers) are documented in the <a href="https://github.com/tan-zhuo/AgentMux/blob/main/docs/orchestrator-blueprint.md" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">orchestrator design doc</a>.</li>
+        <li>Author's blog: <a href="https://tanzhuo.xyz" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">tanzhuo.xyz</a></li>
+      </ul>
+      <div class="docs-foot">
+        <span>Didn't find your answer? <a href="https://github.com/tan-zhuo/AgentMux/issues" target="_blank" rel="noopener noreferrer">Open an issue</a> — usually answered same-day.</span>
+        <a href="en.html">← Back to home</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/main.js?v=6"></script>
+</body>
+</html>

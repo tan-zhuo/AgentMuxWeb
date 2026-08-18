@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Документация — руководство по установке и работе с AgentMux</title>
+<meta name="description" content="Полная документация AgentMux: установка на macOS / Windows / Linux, добавление хостов и агентов, стена терминалов, горячие клавиши, рассылка, настройка оркестратора с Ollama и устранение неполадок.">
+<meta name="keywords" content="AgentMux, руководство, установка, документация, управление ИИ-агентами, Claude Code, tmux, SSH, удалённая разработка">
+<link rel="canonical" href="https://agentmux.tanzhuo.xyz/docs-ru.html">
+<link rel="alternate" hreflang="zh-CN" href="https://agentmux.tanzhuo.xyz/docs.html">
+<link rel="alternate" hreflang="en" href="https://agentmux.tanzhuo.xyz/docs-en.html">
+<link rel="alternate" hreflang="ja" href="https://agentmux.tanzhuo.xyz/docs-ja.html">
+<link rel="alternate" hreflang="ru" href="https://agentmux.tanzhuo.xyz/docs-ru.html">
+<link rel="alternate" hreflang="x-default" href="https://agentmux.tanzhuo.xyz/docs.html">
+<meta property="og:title" content="Документация AgentMux — руководство по установке и работе">
+<meta property="og:description" content="От загрузки до повседневной работы: хосты, агенты, стена терминалов, рассылка, настройка оркестратора и устранение неполадок — каждый шаг с пояснениями.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agentmux.tanzhuo.xyz/docs-ru.html">
+<meta property="og:image" content="https://agentmux.tanzhuo.xyz/assets/img/terminal.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/img/icon.png">
+<link rel="stylesheet" href="assets/css/style.css?v=6">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Документация AgentMux — руководство по установке и работе",
+  "description": "Полная документация AgentMux: установка, хосты и агенты, работа с терминалом, рассылка, настройка оркестратора и устранение неполадок.",
+  "inLanguage": "ru",
+  "author": { "@type": "Person", "name": "tan-zhuo", "url": "https://tanzhuo.xyz" },
+  "about": { "@type": "SoftwareApplication", "name": "AgentMux", "operatingSystem": "macOS, Windows, Linux", "applicationCategory": "DeveloperApplication" }
+}
+</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="ru.html">
+      <img src="assets/img/icon-256.png" alt="Логотип AgentMux">
+      <span>AgentMux</span>
+    </a>
+    <div class="nav-links">
+      <a href="ru.html#capabilities">Возможности</a>
+      <a href="ru.html#features">Обзор</a>
+      <a href="docs-ru.html" style="color:var(--text)">Документация</a>
+      <a href="ru.html#download">Скачать</a>
+      <a href="ru.html#faq">Вопросы</a>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-actions">
+      <div class="lang-menu">
+        <button class="lang-switch" aria-haspopup="true" aria-label="Язык">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></svg>
+          Русский
+          <svg class="caret" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="lang-drop">
+          <a href="docs.html" lang="zh-CN">中文</a>
+          <a href="docs-en.html" lang="en">English</a>
+          <a href="docs-ja.html" lang="ja">日本語</a>
+          <a href="docs-ru.html" class="current" lang="ru">Русский</a>
+        </div>
+      </div>
+      <a class="gh-btn" href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <button class="nav-burger" aria-label="Меню">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <!-- ============ sidebar ============ -->
+  <aside class="docs-side" data-toc>
+    <h5>Начало работы</h5>
+    <a href="#intro">Что такое AgentMux</a>
+    <a href="#requirements">Требования</a>
+    <a href="#install">Установка</a>
+    <a href="#quickstart">Быстрый старт</a>
+    <h5>Повседневная работа</h5>
+    <a href="#panes">Стена терминалов</a>
+    <a href="#shortcuts">Горячие клавиши</a>
+    <a href="#broadcast">Рассылка и подтверждения</a>
+    <a href="#hosts">Работа с хостами</a>
+    <h5>Продвинутые темы</h5>
+    <a href="#orchestrator">Оркестратор и Ollama</a>
+    <a href="#lifecycle">Семантика жизненного цикла</a>
+    <a href="#build">Сборка из исходников</a>
+    <h5>Справочник</h5>
+    <a href="#troubleshooting">Устранение неполадок</a>
+    <a href="#help">Где получить помощь</a>
+  </aside>
+
+  <!-- ============ main ============ -->
+  <main class="docs-main">
+    <h1 class="docs-title">Документация</h1>
+    <p class="docs-lede">
+      Полное руководство — от загрузки до повседневной работы. Прочитайте раздел «Начало работы»
+      (около 10 минут) — и ваш первый управляемый ИИ-агент уже будет работать на удалённом сервере.
+    </p>
+
+    <section id="intro">
+      <h2>Что такое AgentMux<a class="anchor" href="#intro">#</a></h2>
+      <p>
+        AgentMux — это <b>настольное приложение</b> для управления ИИ-агентами для написания кода — Claude Code, Codex,
+        Gemini CLI, OpenCode, Aider, Cursor CLI, — которые выполняются на удалённых хостах и на этом компьютере.
+        Его основной механизм умещается в одно предложение:
+      </p>
+      <div class="callout callout-info">
+        <b>Основной механизм</b>
+        Каждый агент работает внутри сессии tmux <b>на своём хосте</b>; AgentMux подключается к этой сессии,
+        а не владеет процессом. Поэтому закрытие клиента, сон ноутбука или потеря сети
+        никак не влияют на текущую работу — живучесть гарантирована самой конструкцией.
+      </div>
+      <p>
+        Приложение поставляется одним бинарным файлом: без сервера, демона и аккаунта. Всё состояние — один файл SQLite
+        в каталоге данных приложения. На каждый удалённый хост открывается одно мультиплексируемое SSH-соединение — терминалы,
+        команды и передача файлов идут по его каналам, так что десять терминалов к одному хосту — это одна
+        аутентификация. Простаивающие соединения закрываются через десять минут.
+      </p>
+    </section>
+
+    <section id="requirements">
+      <h2>Требования<a class="anchor" href="#requirements">#</a></h2>
+      <h3>Компьютер, на котором работает AgentMux</h3>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>Платформа</th><th>Требования</th></tr>
+        <tr><td>macOS</td><td>macOS 11 (Big Sur) или новее; универсальный бинарный файл для Intel и Apple Silicon</td></tr>
+        <tr><td>Windows</td><td>Windows 10 или новее</td></tr>
+        <tr><td>Linux</td><td>GTK3 и WebKitGTK 4.1 во время выполнения — <code>libwebkit2gtk-4.1-0</code> в Debian/Ubuntu, <code>webkit2gtk4.1</code> в Fedora</td></tr>
+      </table></div>
+      <h3>Управляемые хосты</h3>
+      <ul class="docs-list">
+        <li><b>Удалённые хосты</b>: POSIX-совместимая оболочка, <code>tmux</code> и учётная запись SSH. Отсутствие tmux не помеха — панель установки может его установить. Удалённые Windows-хосты не поддерживаются.</li>
+        <li><b>Этот компьютер (Linux / macOS)</b>: достаточно локального <code>tmux</code> — ни sshd, ни учётных данных.</li>
+        <li><b>Этот компьютер (Windows)</b>: одна машина даёт два хоста — дистрибутив <b>WSL</b> по умолчанию (где живёт tmux) и <b>нативный Windows</b> (PowerShell, пути и инструментарий Windows — для сборок MSVC, WPF и запуска только что собранного .exe). Нативные сессии сохраняются собственным сессионным демоном AgentMux, так что закрытие окна не останавливает и нативную работу.</li>
+      </ul>
+      <h3>По желанию: оркестратор и семантический поиск</h3>
+      <p>
+        Локальной оркестрации и семантическому поиску по памяти требуется
+        <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">Ollama</a>
+        плюс одна чат-модель и одна модель эмбеддингов. <b>Без Ollama всё остальное полностью работоспособно</b>.
+      </p>
+    </section>
+
+    <section id="install">
+      <h2>Установка<a class="anchor" href="#install">#</a></h2>
+      <p>
+        Каждый <a href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">выпуск</a>
+        содержит по одной сборке на платформу, собранной GitHub Actions из помеченного тегом коммита, с файлом
+        <code>.sha256</code> в комплекте. Сборки пока не подписаны и не нотарифицированы, поэтому первый запуск
+        потребует одного дополнительного подтверждения — на каждой платформе своего.
+      </p>
+
+      <h3>macOS</h3>
+      <ol class="docs-list">
+        <li>Скачайте <code>agentmux-macos-universal.zip</code>, распакуйте и перетащите <code>AgentMux.app</code> в «Программы».</li>
+        <li>Обработайте предупреждение о неподписанной сборке в зависимости от версии macOS (таблица ниже).</li>
+        <li>После этого приложение открывается как обычно.</li>
+      </ol>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>Версия macOS</th><th>Порядок действий</th></tr>
+        <tr><td>15 Sequoia и новее</td><td>Откройте приложение один раз и дождитесь блокировки → «Системные настройки» → «Конфиденциальность и безопасность» → «Безопасность» → <b>Всё равно открыть</b></td></tr>
+        <tr><td>14 Sonoma и старее</td><td>Щёлкните по приложению с зажатой клавишей Control → <b>Открыть</b> → «Открыть»</td></tr>
+        <tr><td>Любая версия</td><td>Выполните <code>xattr -dr com.apple.quarantine /Applications/AgentMux.app</code> и откройте как обычно</td></tr>
+      </table></div>
+      <div class="callout callout-info">
+        <b>Как вовсе обойтись без карантина</b>
+        Карантинный атрибут ставит браузер, а не сам архив. Загрузка через
+        <code>curl -L -O &lt;url&gt;</code> позволяет избежать его целиком.
+      </div>
+
+      <h3>Windows</h3>
+      <ol class="docs-list">
+        <li>Скачайте и распакуйте <code>agentmux-windows-amd64.zip</code> — внутри <code>agentmux.exe</code> и скрипт установки.</li>
+        <li>Запустите двойным щелчком; когда появится SmartScreen, выберите <b>Подробнее</b> → <b>Выполнить в любом случае</b>.</li>
+        <li>Для полноценной установки (в <code>%LOCALAPPDATA%\Programs\AgentMux</code>, с ярлыками на рабочем столе и в меню «Пуск», без прав администратора) выполните из распакованной папки:</li>
+      </ol>
+      <pre><code>powershell -ExecutionPolicy Bypass -File install-windows.ps1</code></pre>
+      <p>Тот же скрипт с параметром <code>-Uninstall</code> отменяет установку, не трогая данные в <code>%APPDATA%\AgentMux</code>.</p>
+
+      <h3>Linux</h3>
+      <ol class="docs-list">
+        <li>Сначала установите зависимость времени выполнения: <code>sudo apt install libwebkit2gtk-4.1-0</code> в Debian/Ubuntu, <code>sudo dnf install webkit2gtk4.1</code> в Fedora.</li>
+        <li>Скачайте и распакуйте <code>agentmux-linux-amd64.tar.gz</code> — бинарный файл, значок, <code>.desktop</code>-запись и <code>install.sh</code>.</li>
+        <li>Запустите <code>./install.sh</code> или сам бинарный файл напрямую.</li>
+      </ol>
+
+      <h3>Проверка загруженных файлов</h3>
+      <pre><code><span class="cm"># к каждому файлу прилагается .sha256:</span>
+shasum -a 256 -c agentmux-macos-universal.zip.sha256   <span class="cm"># macOS</span>
+sha256sum -c agentmux-linux-amd64.tar.gz.sha256        <span class="cm"># Linux</span></code></pre>
+    </section>
+
+    <section id="quickstart">
+      <h2>Быстрый старт<a class="anchor" href="#quickstart">#</a></h2>
+      <p>Четыре шага до первого управляемого агента. Всё описанное здесь доступно и через палитру команд <code>Ctrl/⌘ K</code> — самый быстрый путь к любому действию.</p>
+
+      <h3>Шаг 1. Добавьте хост</h3>
+      <p><b>Удалённому хосту</b> нужны три вещи:</p>
+      <ul class="docs-list">
+        <li><b>Адрес и пользователь</b> — те же, что и в <code>ssh user@host</code>.</li>
+        <li><b>Один из трёх способов аутентификации</b>: ssh-agent (рекомендуется — заполнять ничего не нужно), файл ключа (парольная фраза поддерживается) или пароль.</li>
+        <li><b>Jump-хосты (по желанию)</b> — для окружений за бастионом.</li>
+      </ul>
+      <div class="callout callout-ok">
+        <b>Ключ хоста закрепляется при первом подключении</b>
+        Ключ хоста записывается при первом соединении. Последующее несовпадение обрывает подключение
+        с объяснением причины — это защита от атаки «человек посередине», а не ошибка. Если хост
+        действительно переустановили, удалите запись хоста и добавьте её заново.
+      </div>
+      <p>
+        <b>Этому компьютеру</b> не нужно ничего, кроме имени — ни sshd, ни учётных данных. В Windows вы увидите
+        два локальных хоста: дистрибутив WSL и нативный Windows. Выбирайте по задаче: Unix-инструментарий —
+        в WSL, MSVC/WPF — в нативный.
+      </p>
+
+      <h3>Шаг 2. Добавьте проект и рабочую область</h3>
+      <p>Рабочая область — это рабочий каталог на хосте (обычно корень репозитория). Добавить её можно двумя способами:</p>
+      <ul class="docs-list">
+        <li><b>Через форму</b>: выберите хост, введите путь.</li>
+        <li><b>Через файловый браузер (быстрее)</b>: откройте файлы хоста, найдите каталог и «добавьте как проект» прямо на месте — его имя, путь и хост уже известны.</li>
+      </ul>
+
+      <h3>Шаг 3. Добавьте агента и запустите его</h3>
+      <p>Агент — это имя плюс команда запуска, та же самая, что вы набрали бы в терминале:</p>
+      <pre><code><span class="cm"># типичные команды запуска, настройте под себя</span>
+claude                    <span class="cm"># Claude Code</span>
+codex                     <span class="cm"># OpenAI Codex CLI</span>
+gemini                    <span class="cm"># Gemini CLI</span>
+aider --model sonnet      <span class="cm"># Aider</span>
+opencode                  <span class="cm"># OpenCode</span></code></pre>
+      <p>
+        Нажмите <b>Start</b> — и агент уже работает внутри tmux на хосте. API-ключи агента настраиваются на
+        стороне хоста (в конфигурации самого агента или его окружении) — AgentMux их не читает и не проксирует.
+      </p>
+
+      <h3>Шаг 4. Подключитесь и работайте</h3>
+      <p>
+        Щёлкните по агенту или найдите его по имени через <code>Ctrl/⌘ K</code>. Перед вами <b>настоящий
+        терминал</b> — цвет, мышь, выделение, поиск. Вмешивайтесь и печатайте в любой момент, корректируйте
+        курс агента, возвращайте ему управление — без перезапуска. Боковая панель даёт
+        Start / Stop / Restart / Attach, состояние процесса и последний вывод.
+      </p>
+      <div class="callout callout-info">
+        <b>Проверьте обещание живучести сами</b>
+        Подключитесь к работающему агенту, полностью закройте AgentMux, откройте снова — вы в той же панели,
+        история вывода на месте. Агент даже не заметил вашего отсутствия.
+      </div>
+    </section>
+
+    <section id="panes">
+      <h2>Стена терминалов<a class="anchor" href="#panes">#</a></h2>
+      <p>
+        Область терминала делится максимум на <b>девять панелей (3×3)</b>, каждая со своей сессией — на
+        одном хосте или на нескольких, и каждая интерактивна независимо:
+      </p>
+      <ul class="docs-list">
+        <li><b>Добавить панель</b>: <code>Ctrl/⌘ \</code>. Если есть свободная открытая вкладка, разделение происходит мгновенно; иначе диалог предложит хосты, каталоги рабочих областей, запущенных агентов и открытые вкладки.</li>
+        <li><b>Раскладка адаптируется</b>: панели делят область в пропорциях, а не в пикселях. Слишком узкая для чтения колонка убирается, поэтому в суженном окне стена 3×3 переливается в более высокую сетку, а не в девять щелей.</li>
+        <li><b>Перетаскивайте разделители</b>, чтобы менять размер панелей.</li>
+        <li><b>Временное увеличение</b>: двойной щелчок по вкладке панели (или <code>Ctrl/⌘ ⇧ ↵</code>) разворачивает её на всю область; повторно — возвращает обратно. Разбивка под ней не меняется.</li>
+        <li><b>Панель — это вид, а не сессия</b>: закрытие панели (<code>Ctrl/⌘ ⇧ \</code>) скрывает терминал, но вкладка и её оболочка остаются подключёнными. Количество панелей восстанавливается при следующем запуске.</li>
+      </ul>
+    </section>
+
+    <section id="shortcuts">
+      <h2>Горячие клавиши<a class="anchor" href="#shortcuts">#</a></h2>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>Сочетание</th><th>Действие</th></tr>
+        <tr><td><code>Ctrl/⌘ K</code></td><td>Палитра команд — самый быстрый путь к подключению, открытию оболочек, установке CLI, смене темы</td></tr>
+        <tr><td><code>Ctrl/⌘ B</code></td><td>Показать или скрыть дерево</td></tr>
+        <tr><td><code>Ctrl/⌘ \</code></td><td>Добавить панель — сразу со следующей открытой вкладкой, иначе с вопросом, что подключить</td></tr>
+        <tr><td><code>Ctrl/⌘ ⇧ \</code></td><td>Закрыть панель, оставив вкладку и её оболочку открытыми</td></tr>
+        <tr><td><code>Ctrl/⌘ ⇧ ↵</code></td><td>Развернуть активную панель на всю область — и обратно</td></tr>
+        <tr><td><code>Ctrl/⌘ ⌥ ←</code> <code>→</code></td><td>Переход между панелями — в развёрнутом режиме листает их по одной</td></tr>
+      </table></div>
+    </section>
+
+    <section id="broadcast">
+      <h2>Рассылка и подтверждения<a class="anchor" href="#broadcast">#</a></h2>
+      <p>
+        Панель рассылки отправляет одну инструкцию любой выборке агентов — по проектам и по хостам.
+        В отличие от вставки в каждый терминал вручную, каждый агент возвращает <b>подтверждение доставки</b>,
+        сообщающее, действительно ли инструкция дошла.
+      </p>
+      <ul class="docs-list">
+        <li>Выбор по проекту, по хосту или отметкой отдельных агентов.</li>
+        <li>Статус доставки по каждому агенту; неудачные доставки заметны сразу и повторяются по отдельности.</li>
+        <li>Типичные применения: приостановить весь парк, ввести новое требование («с этого момента все сообщения коммитов — на английском»), опросить прогресс по всем агентам.</li>
+      </ul>
+    </section>
+
+    <section id="hosts">
+      <h2>Работа с хостами<a class="anchor" href="#hosts">#</a></h2>
+
+      <h3>Панель установки: подготовка нового хоста</h3>
+      <p>
+        Панель установки <b>сначала обследует хост</b> и предлагает только те агентские CLI и среды выполнения,
+        которые он реально поддерживает, объясняя, почему остальные недоступны. Установка идёт внутри tmux, поэтому
+        оборванное соединение не оставит наполовину установленных пакетов. Сам tmux, если его нет,
+        тоже устанавливается отсюда.
+      </p>
+
+      <h3>Телеметрия хоста</h3>
+      <p>Метрики по каждому хосту собираются одной командой:</p>
+      <ul class="docs-list">
+        <li>CPU по режимам и по ядрам, память, нагрузка</li>
+        <li>Использование диска и пропускная способность, сеть, файловые дескрипторы</li>
+        <li>Загрузка NVIDIA GPU, если он есть</li>
+      </ul>
+
+      <h3>SFTP-браузер и редактор</h3>
+      <p>
+        Доступ к файлам идёт по тому же SSH-соединению. Запись <b>атомарна</b> и сопровождается проверкой
+        изменений: если агент, работающий в том же каталоге, изменил файл, сохранение будет отклонено вместо
+        тихой перезаписи — сначала посмотрите, что изменилось, а потом решайте.
+      </p>
+    </section>
+
+    <section id="orchestrator">
+      <h2>Оркестратор и Ollama<a class="anchor" href="#orchestrator">#</a></h2>
+      <p>
+        Оркестратор — это операционный помощник на <b>локальной модели</b>: дайте ему цель
+        (например, «выясни, почему agent-3 перестал продвигаться») — и он изучит состояние парка, поднимет
+        прошлый контекст и будет двигаться по одному вызову инструмента за раз. Он <b>выключен, пока вы его не включите</b>.
+      </p>
+
+      <h3>Предварительные условия</h3>
+      <ol class="docs-list">
+        <li>Установите <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">Ollama</a> и держите его запущенным.</li>
+        <li>Загрузите одну чат-модель и одну модель эмбеддингов, например:</li>
+      </ol>
+      <pre><code>ollama pull qwen3             <span class="cm"># чат-модель (пример — выбирайте под своё железо)</span>
+ollama pull nomic-embed-text  <span class="cm"># модель эмбеддингов, используется для семантического поиска</span></code></pre>
+
+      <h3>Процесс одобрения</h3>
+      <ul class="docs-list">
+        <li>Каждая операция, <b>изменяющая хост</b>, ждёт вашего явного одобрения. Карточка одобрения показывает инструмент, его полные аргументы, целевой хост и обоснование, приведённое моделью.</li>
+        <li><b>Разрушительные операции</b> подтверждаются на любом хосте, независимо от уровня доверия к нему.</li>
+        <li>Инструменты — фиксированный белый список, каждому уровень риска присвоен при объявлении раз и навсегда. Выполнение проходит единый шлюз: уровень риска × степень доверия к хосту × то, что запустило прогон.</li>
+        <li>Вывод с удалённых хостов попадает в модель с пометкой «данные»; текст, похожий на инструкции, помечается флагом на карточке одобрения и в журнале решений (защита от инъекций промптов).</li>
+        <li>Каждый шаг каждого прогона записывается — включая предложения, которые были отклонены или остались без ответа.</li>
+      </ul>
+
+      <h3>Плановые обходы</h3>
+      <p>
+        Оркестратор может обходить парк по расписанию и сообщать о застрявших агентах. Плановым прогонам
+        безусловно отказано во <b>всех инструментах, кроме читающих</b>, — и это ограничение не настраивается. Обходы
+        могут находить проблемы; действия по ним всегда ждут вас.
+      </p>
+
+      <h3>Навыки и память</h3>
+      <ul class="docs-list">
+        <li><b>Навыки</b>: переиспользуемые процедуры — условия применения, шаги, инструменты, ограничения — автоматически подбираются, когда эти условия повторяются. Навыки, предложенные оркестратором, попадают в очередь на проверку и не действуют до одобрения.</li>
+        <li><b>Память</b>: факты о проектах, высказанные предпочтения и активность агентов индексируются для поиска по формулировке или по смыслу. Эмбеддинги вычисляются локально; ничего не покидает машину. Учётные данные, совпадающие с известными шаблонами, вымарываются до сохранения.</li>
+      </ul>
+    </section>
+
+    <section id="lifecycle">
+      <h2>Семантика жизненного цикла<a class="anchor" href="#lifecycle">#</a></h2>
+      <p>Усвойте эти правила — и момента «я что, только что потерял задачу?» у вас не будет никогда:</p>
+      <div class="docs-table-wrap"><table class="docs-table">
+        <tr><th>Действие</th><th>Что происходит на самом деле</th></tr>
+        <tr><td>Выход из AgentMux</td><td>Ничего не останавливается. Все агенты продолжают работать в tmux на своих хостах.</td></tr>
+        <tr><td>Закрытие панели</td><td>Скрывает вид терминала; вкладка и её оболочка остаются подключёнными.</td></tr>
+        <tr><td>Удаление рабочей области / записи агента</td><td>Убирает только локальную запись — сессия tmux продолжает работать.</td></tr>
+        <tr><td>Процесс агента завершился</td><td>Остаётся рабочая оболочка в нужном каталоге — сессия не уничтожается; разбирайтесь или перезапускайте прямо там.</td></tr>
+        <tr><td>Stop</td><td>Останавливает процесс агента; сессия и оболочка сохраняются.</td></tr>
+        <tr><td><b>Kill</b></td><td>Единственный элемент управления, уничтожающий работающую сессию tmux. Он всегда сначала запрашивает подтверждение, сообщая, что будет потеряно.</td></tr>
+        <tr><td>Обрыв сети / закрытие крышки</td><td>Агенты не затронуты; переподключитесь к той же панели — история вывода на месте.</td></tr>
+        <tr><td>Десять минут простоя</td><td>SSH-соединение, которое никто не удерживает, закрывается; при следующем обращении оно восстанавливается автоматически.</td></tr>
+      </table></div>
+    </section>
+
+    <section id="build">
+      <h2>Сборка из исходников<a class="anchor" href="#build">#</a></h2>
+      <p>Go 1.25+ и Node 20+. Сначала собирается фронтенд (он встраивается в бинарный файл), затем Go:</p>
+      <pre><code>git clone git@github.com:tan-zhuo/AgentMux.git
+cd AgentMux
+cd frontend && npm install && npm run build && cd ..
+go build -o agentmux .
+./agentmux</code></pre>
+      <p><b>Linux</b> требует заголовков WebKitGTK и тега сборки <code>gtk3</code>:</p>
+      <pre><code>sudo apt-get install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
+go build -tags gtk3 -o agentmux .</code></pre>
+      <p><b>Windows</b> — для GUI-файла, запускаемого двойным щелчком, без консольного окна:</p>
+      <pre><code>go build -ldflags "-H windowsgui" -o agentmux.exe .</code></pre>
+      <p>
+        Подробности (тестирование, подготовка выпуска) — в
+        <a href="https://github.com/tan-zhuo/AgentMux/blob/main/docs/development.md" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">docs/development.md</a>.
+      </p>
+    </section>
+
+    <section id="troubleshooting">
+      <h2>Устранение неполадок<a class="anchor" href="#troubleshooting">#</a></h2>
+
+      <h3>macOS сообщает, что приложение «повреждено», или не открывает его</h3>
+      <p>
+        Это обычная преграда для неподписанных сборок, а не повреждение файла. Следуйте таблице в разделе
+        <a href="#install" style="color:var(--blue-soft)">«Установка»</a> или исправьте одной командой:
+        <code>xattr -dr com.apple.quarantine /Applications/AgentMux.app</code>.
+      </p>
+
+      <h3>Linux не запускается / не хватает библиотеки</h3>
+      <p>
+        Почти всегда дело в рантайме WebKitGTK. Debian/Ubuntu: <code>sudo apt install libwebkit2gtk-4.1-0</code>;
+        Fedora: <code>sudo dnf install webkit2gtk4.1</code>.
+      </p>
+
+      <h3>Windows: окно вообще не появляется</h3>
+      <p>
+        У GUI-сборок нет консоли для вывода ошибок. Загляните в <code>startup-error.log</code> в каталоге данных
+        (<code>%APPDATA%\AgentMux</code>) — настоящая причина сбоя записана там.
+      </p>
+
+      <h3>«Host key mismatch» при подключении</h3>
+      <p>
+        Ключ хоста отличается от закреплённого при первом подключении. <b>Сначала выясните почему</b>:
+        переустановленный хост или переназначенный IP — это нормально; удалите запись хоста и добавьте её заново. Если же
+        ничего меняться не должно было, рассматривайте это как возможную атаку «человек посередине» и сверьте отпечаток ключа по независимому каналу.
+      </p>
+
+      <h3>Строка состояния сообщает, что системное хранилище недоступно</h3>
+      <p>
+        Мастер-ключ шифрования обычно хранится в системном хранилище (Keychain / Диспетчер учётных данных /
+        Secret Service). Там, где хранилища нет (обычное дело на минималистичных рабочих столах Linux), AgentMux
+        переключается на файл с правами <code>0600</code> и сообщает об этом в строке состояния. Ничего не ломается; чтобы вернуть
+        хранение в системном хранилище на Linux, установите и включите gnome-keyring или другую реализацию Secret Service.
+      </p>
+
+      <h3>На целевом хосте нет tmux</h3>
+      <p>Откройте панель установки этого хоста — tmux есть в списке, и AgentMux установит его подходящим пакетным менеджером.</p>
+
+      <h3>Оркестратор / семантический поиск недоступны</h3>
+      <p>
+        Убедитесь, что Ollama запущен (<code>ollama list</code> показывает ваши модели) и что загружены и чат-модель,
+        и модель эмбеддингов. Без Ollama эти две функции остаются выключенными;
+        всё остальное не затронуто.
+      </p>
+
+      <h3>Где мои данные?</h3>
+      <p>
+        Всё состояние — один файл SQLite в каталоге данных приложения (<code>%APPDATA%\AgentMux</code>
+        в Windows). Резервная копия этого каталога — резервная копия всего; удалите его для полного сброса.
+        Учётные данные хранятся зашифрованными AES-256-GCM, а ключ — в системном хранилище ОС.
+      </p>
+    </section>
+
+    <section id="help">
+      <h2>Где получить помощь<a class="anchor" href="#help">#</a></h2>
+      <ul class="docs-list">
+        <li>Создайте <a href="https://github.com/tan-zhuo/AgentMux/issues" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">задачу на GitHub</a> — платформа, версия и <code>startup-error.log</code> (если есть) заметно ускорят разбор.</li>
+        <li>Внутреннее устройство оркестратора (шлюз инструментов, уровни доверия, слои памяти и навыков) описано в <a href="https://github.com/tan-zhuo/AgentMux/blob/main/docs/orchestrator-blueprint.md" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">проектном документе оркестратора</a>.</li>
+        <li>Блог автора: <a href="https://tanzhuo.xyz" target="_blank" rel="noopener noreferrer" style="color:var(--blue-soft)">tanzhuo.xyz</a></li>
+      </ul>
+      <div class="docs-foot">
+        <span>Не нашли ответа? <a href="https://github.com/tan-zhuo/AgentMux/issues" target="_blank" rel="noopener noreferrer">Создайте задачу</a> — обычно отвечаем в тот же день.</span>
+        <a href="ru.html">← На главную</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/main.js?v=6"></script>
+</body>
+</html>

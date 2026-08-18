@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentMux — настольная панель управления ИИ-агентами для кода</title>
+<meta name="description" content="AgentMux — настольная панель управления ИИ-агентами для написания кода: Claude Code, Codex, Gemini CLI, Aider и другие, на удалённых хостах и на этом компьютере. Сессии живут в tmux, многопанельная стена терминалов, рассылка с подтверждениями доставки и локальная оркестрация с обязательным одобрением человека. Один бинарный файл, без сервера, лицензия MIT.">
+<meta property="og:title" content="AgentMux — настольная панель управления ИИ-агентами для кода">
+<meta property="og:description" content="Управляйте агентами для написания кода на сборочных серверах, GPU-машинах, staging-хостах и на этом компьютере. Сессии переживают обрывы связи по самой своей конструкции. Один бинарный файл, лицензия MIT.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://agentmux.tanzhuo.xyz/ru.html">
+<meta property="og:image" content="https://agentmux.tanzhuo.xyz/assets/img/terminal.png">
+<meta property="og:site_name" content="AgentMux">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AgentMux — настольная панель управления ИИ-агентами для кода">
+<meta name="twitter:description" content="Управляйте агентами для написания кода на сборочных серверах, GPU-машинах, staging-хостах и на этом компьютере. Сессии переживают обрывы связи по самой своей конструкции. Один бинарный файл, лицензия MIT.">
+<meta name="twitter:image" content="https://agentmux.tanzhuo.xyz/assets/img/terminal.png">
+<meta name="keywords" content="AgentMux, ИИ-агент, Claude Code, Codex, Gemini CLI, Aider, tmux, SSH, удалённая разработка, управление агентами, настольная панель управления, открытый исходный код">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://agentmux.tanzhuo.xyz/ru.html">
+<link rel="alternate" hreflang="zh-CN" href="https://agentmux.tanzhuo.xyz/">
+<link rel="alternate" hreflang="en" href="https://agentmux.tanzhuo.xyz/en.html">
+<link rel="alternate" hreflang="ja" href="https://agentmux.tanzhuo.xyz/ja.html">
+<link rel="alternate" hreflang="ru" href="https://agentmux.tanzhuo.xyz/ru.html">
+<link rel="alternate" hreflang="x-default" href="https://agentmux.tanzhuo.xyz/">
+<link rel="icon" type="image/png" href="assets/img/icon.png">
+<link rel="stylesheet" href="assets/css/style.css?v=6">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AgentMux",
+  "description": "Настольная панель управления ИИ-агентами для написания кода: Claude Code, Codex, Gemini CLI, Aider и другие на удалённых хостах и на этом компьютере, с сессиями, живущими в tmux. Один бинарный файл, без сервера.",
+  "url": "https://agentmux.tanzhuo.xyz/ru.html",
+  "inLanguage": "ru",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "macOS 11+, Windows 10+, Linux",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "license": "https://github.com/tan-zhuo/AgentMux/blob/main/LICENSE",
+  "downloadUrl": "https://github.com/tan-zhuo/AgentMux/releases/latest",
+  "author": { "@type": "Person", "name": "tan-zhuo", "url": "https://tanzhuo.xyz" },
+  "softwareHelp": { "@type": "CreativeWork", "url": "https://agentmux.tanzhuo.xyz/docs-ru.html" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "inLanguage": "ru",
+  "mainEntity": [
+    { "@type": "Question", "name": "Решает ли AgentMux, что делают мои агенты?", "acceptedAnswer": { "@type": "Answer", "text": "Нет. Цели, промпты и соглашения репозитория остаются за вами. Оркестратор изучает ситуацию и предлагает действия; любая операция, изменяющая хост, выполняется только после вашего явного одобрения." } },
+    { "@type": "Question", "name": "Что требуется от хостов?", "acceptedAnswer": { "@type": "Answer", "text": "Удалённым хостам нужны POSIX-совместимая оболочка, tmux и SSH (AgentMux умеет устанавливать tmux там, где его нет). Этот компьютер подходит напрямую на Linux и macOS; в Windows доступны два локальных хоста — WSL и нативный PowerShell, причём нативные сессии сохраняет встроенный сессионный демон." } },
+    { "@type": "Question", "name": "Обязателен ли Ollama?", "acceptedAnswer": { "@type": "Answer", "text": "Нет. Ollama нужен только локальной оркестрации и семантическому поиску по памяти. Без него всё остальное полностью работоспособно." } },
+    { "@type": "Question", "name": "Может ли AgentMux учитывать или ограничивать расходы агентов на модели?", "acceptedAnswer": { "@type": "Answer", "text": "Нет — и это сознательное решение. Трафик агента идёт напрямую с хоста к провайдеру. AgentMux его не проксирует и не читает ключи." } },
+    { "@type": "Question", "name": "Рассчитан ли он на команды?", "acceptedAnswer": { "@type": "Answer", "text": "Один оператор на установку. Состояние, учётные данные и журнал решений хранятся на рабочей станции — без общего сервера, командного аккаунта и центрального хранилища аудита." } },
+    { "@type": "Question", "name": "Останавливает ли удаление чего-либо в AgentMux работу на удалённом хосте?", "acceptedAnswer": { "@type": "Answer", "text": "Никогда. Удаление рабочей области или записи агента убирает только локальную запись — сессия tmux продолжает работать. Единственный элемент управления, уничтожающий работающую сессию, называется Kill, и он сначала запрашивает подтверждение." } }
+  ]
+}
+</script>
+</head>
+<body>
+
+<!-- ============================== nav ============================== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <img src="assets/img/icon-256.png" alt="Логотип AgentMux">
+      <span>AgentMux</span>
+    </a>
+    <div class="nav-links">
+      <a href="#capabilities">Возможности</a>
+      <a href="#features">Обзор</a>
+      <a href="#security">Безопасность</a>
+      <a href="docs-ru.html">Документация</a>
+      <a href="#quickstart">Старт</a>
+      <a href="#download">Скачать</a>
+      <a href="#faq">Вопросы</a>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-actions">
+      <div class="lang-menu">
+        <button class="lang-switch" aria-haspopup="true" aria-label="Язык">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></svg>
+          Русский
+          <svg class="caret" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="lang-drop">
+          <a href="index.html" lang="zh-CN">中文</a>
+          <a href="en.html" lang="en">English</a>
+          <a href="ja.html" lang="ja">日本語</a>
+          <a href="ru.html" class="current" lang="ru">Русский</a>
+        </div>
+      </div>
+      <a class="gh-btn" href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        <span>GitHub</span>
+        <span class="gh-stars" style="display:none"><svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg><span data-gh-stars></span></span>
+      </a>
+      <button class="nav-burger" aria-label="Меню">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================== hero ============================== -->
+<header class="hero" id="top">
+  <div class="hero-backdrop" aria-hidden="true"></div>
+  <div class="hero-grid-lines" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <h1>Настольная панель управления<br><span class="accent">ИИ-агентами для кода</span></h1>
+    <p class="hero-sub">
+      Управляйте Claude Code, Codex, Gemini CLI, Aider и другими агентами — на сборочных серверах,
+      GPU-машинах, staging-хостах и на этом компьютере. Каждый агент работает в сессии <b>tmux</b> на своём хосте:
+      закройте клиент, отправьте ноутбук в сон, потеряйте сеть — работа продолжится.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#download">Скачать бесплатно<span class="arrow">→</span></a>
+      <a class="btn btn-ghost" href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        Исходный код
+      </a>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-glow" aria-hidden="true"></div>
+      <div class="showcase-grid">
+        <div class="term term-fleet">
+          <div class="term-bar">
+            <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+            <span class="term-title">обзор парка</span>
+          </div>
+          <div class="term-body">
+            <div class="tree-sect">ПРОЕКТЫ</div>
+            <div class="tree-line"><span class="ind">▾</span><span class="name">orbit-api</span><span class="meta">2 агента</span></div>
+            <div class="tree-line"><span class="ind">&nbsp;├</span><span class="st st-on"></span><span class="name">claude-code</span><span class="meta">gpu-01</span></div>
+            <div class="tree-line"><span class="ind">&nbsp;└</span><span class="st st-on"></span><span class="name">codex</span><span class="meta">dev-box</span></div>
+            <div class="tree-line"><span class="ind">▾</span><span class="name">novel-reader</span><span class="meta">3 агента</span></div>
+            <div class="tree-line"><span class="ind">&nbsp;├</span><span class="st st-on"></span><span class="name">aider</span><span class="meta">local</span></div>
+            <div class="tree-line"><span class="ind">&nbsp;├</span><span class="st st-idle"></span><span class="name">gemini-cli</span><span class="meta">staging</span></div>
+            <div class="tree-line"><span class="ind">&nbsp;└</span><span class="st st-off"></span><span class="name">opencode</span><span class="meta">простаивает</span></div>
+            <div class="tree-sect" style="margin-top:14px">СЕРВЕРЫ</div>
+            <div class="tree-line"><span class="st st-on"></span><span class="name">gpu-01</span><span class="meta">cpu 34% · gpu 81%</span></div>
+            <div class="tree-line"><span class="st st-on"></span><span class="name">dev-box</span><span class="meta">cpu 12% · mem 7.2G</span></div>
+            <div class="tree-line"><span class="st st-on"></span><span class="name">этот компьютер</span><span class="meta">tmux · без sshd</span></div>
+          </div>
+        </div>
+        <div class="term">
+          <div class="term-bar">
+            <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+            <span class="term-title">agentmux — события</span>
+          </div>
+          <div class="term-body" data-log>
+            <div class="log-line"><span class="log-tag tag-info">SSH</span><span class="log-text"><b>gpu-01</b> подключён · ключ хоста закреплён</span></div>
+            <div class="log-line"><span class="log-tag tag-info">TMUX</span><span class="log-text"><b>claude-code</b> переподключён · история вывода на месте</span></div>
+            <div class="log-line"><span class="log-tag tag-ok">RECV</span><span class="log-text">рассылка доставлена <b>5/5</b> · подтверждения получены</span></div>
+            <div class="log-line"><span class="log-tag tag-hold">HOLD</span><span class="log-text">оркестратор предлагает <b>перезапустить агента</b> · ждёт одобрения</span></div>
+            <div class="log-line"><span class="log-tag tag-info">MEM</span><span class="log-text">3 совпадения в памяти · эмбеддинги посчитаны локально</span></div>
+            <div class="log-line"><span class="log-tag tag-ok">OK</span><span class="log-text">парк готов · хостов: <b>3</b> · агентов запущено: <b>7</b></span></div>
+            <div class="tmux-bar"><span>[agentmux/0:fleet*]</span><span>3 хоста · 20:10 · ⌃K</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-cell"><span class="stat-num">6+</span><span class="stat-label">Поддерживаемых популярных агентских CLI</span></div>
+      <div class="stat-cell"><span class="stat-num">1</span><span class="stat-label">Бинарный файл — без сервера, демона и аккаунта</span></div>
+      <div class="stat-cell"><span class="stat-num">3×3</span><span class="stat-label">Стена терминалов с разных хостов на одном экране</span></div>
+      <div class="stat-cell"><span class="stat-num">MIT</span><span class="stat-label">Исходный код открыт на 100%</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================== ecosystem marquee ============================== -->
+<section class="eco">
+  <div class="section-head reveal" style="margin-bottom:0">
+    <span class="kicker">Экосистема</span>
+    <h2 class="section-title">Работает с агентами и инфраструктурой, которые у вас уже есть</h2>
+  </div>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-item hot">Claude Code</span>
+      <span class="marquee-item hot">Codex</span>
+      <span class="marquee-item hot">Gemini CLI</span>
+      <span class="marquee-item hot">OpenCode</span>
+      <span class="marquee-item hot">Aider</span>
+      <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item">tmux</span>
+      <span class="marquee-item">SSH</span>
+      <span class="marquee-item">SFTP</span>
+      <span class="marquee-item">SQLite</span>
+      <span class="marquee-item">Ollama</span>
+      <span class="marquee-item">WSL</span>
+      <span class="marquee-item">macOS</span>
+      <span class="marquee-item">Linux</span>
+      <span class="marquee-item">Windows</span>
+      <span class="marquee-item">Телеметрия NVIDIA GPU</span>
+      <span class="marquee-item">AES-256-GCM</span>
+      <span class="marquee-item hot">Claude Code</span>
+      <span class="marquee-item hot">Codex</span>
+      <span class="marquee-item hot">Gemini CLI</span>
+      <span class="marquee-item hot">OpenCode</span>
+      <span class="marquee-item hot">Aider</span>
+      <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item">tmux</span>
+      <span class="marquee-item">SSH</span>
+      <span class="marquee-item">SFTP</span>
+      <span class="marquee-item">SQLite</span>
+      <span class="marquee-item">Ollama</span>
+      <span class="marquee-item">WSL</span>
+      <span class="marquee-item">macOS</span>
+      <span class="marquee-item">Linux</span>
+      <span class="marquee-item">Windows</span>
+      <span class="marquee-item">Телеметрия NVIDIA GPU</span>
+      <span class="marquee-item">AES-256-GCM</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== capabilities ============================== -->
+<section class="section-pad" id="capabilities">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Возможности</span>
+      <h2 class="section-title">Всё необходимое для управления парком агентов</h2>
+      <p class="section-desc">
+        AgentMux никогда не владеет процессом агента — он подключается к сессии tmux на хосте.
+        Живучесть сессий гарантирована самой конструкцией, а не тем, что клиент остаётся в сети.
+      </p>
+    </div>
+    <div class="cap-grid">
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></div>
+        <h3>Живучесть сессий</h3>
+        <p>Закройте клиент, отправьте ноутбук в сон, потеряйте сеть — агенты продолжат работать. Откройте приложение снова — и вы в той же панели, история вывода на месте. Четырёхчасовая миграция больше не зависит от одного непрерывного SSH-соединения.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="m7 9 3 3-3 3"/><path d="M12.5 15H17"/></svg></div>
+        <h3>Прямой доступ к терминалу</h3>
+        <p>Панель каждого агента — полноценный терминал с цветом, поддержкой мыши, выделением и поиском, а не просмотр стенограммы. Вмешайтесь посреди задачи, поправьте агента и верните ему управление, не перезапуская работу.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M3 9.5h18M3 15h18M9.5 3v18M15 9.5V21"/></svg></div>
+        <h3>Стена терминалов</h3>
+        <p>Разделите область терминала на девять панелей — стена 3×3 с разными хостами, каждая панель интерактивна независимо. Перетаскивайте разделители, дважды щёлкните вкладку для увеличения — раскладка подстраивается под окно и восстанавливается при следующем запуске.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1a10 10 0 0 1 0-14.2M8.5 15.5a5 5 0 0 1 0-7M19.1 4.9a10 10 0 0 1 0 14.2M15.5 8.5a5 5 0 0 1 0 7"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg></div>
+        <h3>Рассылка с подтверждениями</h3>
+        <p>Отправьте одну инструкцию любой выборке агентов; каждый вернёт квитанцию, подтверждающую доставку. Рассылка по всему парку становится проверяемой, а не предполагаемой.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 4.5 5.6v5.2c0 4.6 3.1 8.4 7.5 9.9 4.4-1.5 7.5-5.3 7.5-9.9V5.6L12 2.8Z"/><path d="m8.8 11.6 2.3 2.3 4.1-4.4"/></svg></div>
+        <h3>Оркестрация под контролем</h3>
+        <p>Локальная модель, работающая через Ollama, может взять цель — например, выяснить, почему агент застрял, — и двигаться к ней по одному вызову инструмента за раз. Каждая изменяющая операция ждёт вашего явного одобрения; плановые обходы строго ограничены чтением.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-13"/><path d="M4.5 12c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3"/></svg></div>
+        <h3>Поисковая память — только локально</h3>
+        <p>Факты о проектах, предпочтения и активность агентов индексируются для поиска по формулировке или по смыслу. Эмбеддинги вычисляются локально; ничего не покидает машину. Учётные данные, совпадающие с известными шаблонами, вымарываются до сохранения.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== features / screenshots ============================== -->
+<section class="section-pad" id="features" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Обзор продукта</span>
+      <h2 class="section-title">Настоящие экраны, настоящие рабочие процессы</h2>
+      <p class="section-desc">Всё, что ниже, — реальные снимки экрана приложения, никаких концепт-рендеров.</p>
+    </div>
+
+    <div class="demo-banner reveal">
+      <img src="assets/img/demo.gif" alt="Демонстрация AgentMux" loading="lazy">
+    </div>
+
+    <div class="feature-rows">
+      <div class="feature-row reveal">
+        <div class="feature-copy">
+          <span class="kicker">Терминал</span>
+          <h3>Подключились — и перед вами настоящий терминал</h3>
+          <p>Подключайтесь к tmux-панели любого агента: полный цвет, поддержка мыши, поиск и выделение. Боковая панель показывает состояние процесса, последний вывод и элементы управления жизненным циклом.</p>
+          <ul class="feature-points">
+            <li>Start / Stop / Restart / Attach — весь жизненный цикл в одном ряду кнопок</li>
+            <li>Завершившийся агент оставляет рабочую оболочку, а не уничтожает сессию</li>
+            <li>Десять терминалов к одному хосту — по-прежнему одно SSH-соединение и одна аутентификация</li>
+          </ul>
+        </div>
+        <div class="feature-shot"><img src="assets/img/terminal.png" alt="Терминал, подключённый к агенту" loading="lazy"></div>
+      </div>
+
+      <div class="feature-row flip reveal">
+        <div class="feature-copy">
+          <span class="kicker">Координация</span>
+          <h3>Скажите всему парку — и узнайте, кто вас услышал</h3>
+          <p>Отправляйте одну и ту же инструкцию любой выборке агентов — по проектам и по хостам. Каждый агент возвращает подтверждение доставки, превращая рассылку из «наверное, дошло» в «подтверждено, по каждому отдельно».</p>
+          <ul class="feature-points">
+            <li>Выбор по проекту, по хосту или вручную</li>
+            <li>Статус доставки по каждому агенту с первого взгляда</li>
+            <li>Неудачные доставки заметны сразу, их можно повторить по отдельности</li>
+          </ul>
+        </div>
+        <div class="feature-shot"><img src="assets/img/broadcast.png" alt="Рассылка с подтверждениями доставки" loading="lazy"></div>
+      </div>
+
+      <div class="feature-row reveal">
+        <div class="feature-copy">
+          <span class="kicker">Развёртывание и эксплуатация</span>
+          <h3>Новый хост в строю за считаные минуты</h3>
+          <p>Панель установки сначала обследует хост и предлагает только те агентские CLI и среды выполнения, которые он реально поддерживает, объясняя, почему остальные недоступны. Установка идёт внутри tmux, поэтому оборванное соединение не оставит наполовину установленных пакетов.</p>
+          <ul class="feature-points">
+            <li>CPU по режимам и ядрам, память, диск, сеть, телеметрия NVIDIA GPU</li>
+            <li>SFTP-браузер и редактор с атомарной записью и проверкой конфликтов</li>
+            <li>Этот компьютер управляется без настройки: ни sshd, ни учётных данных</li>
+          </ul>
+        </div>
+        <div class="feature-shot"><img src="assets/img/install.png" alt="Панель установки на хост" loading="lazy"></div>
+      </div>
+
+      <div class="feature-row flip reveal">
+        <div class="feature-copy">
+          <span class="kicker">Интерфейс</span>
+          <h3>Комфортно даже за целый день наблюдения</h3>
+          <p>По умолчанию — системная палитра Apple, плюс шесть альтернативных тем, включая Nord, Solarized и светлую. Плотность информации подобрана для долгих сеансов наблюдения.</p>
+          <ul class="feature-points">
+            <li>Палитра команд Ctrl/⌘ K открывает доступ ко всему</li>
+            <li>Статус и последний вывод каждого агента прямо в дереве парка</li>
+            <li>Семь тем — тёмные и светлые</li>
+          </ul>
+        </div>
+        <div class="feature-shot"><img src="assets/img/themes.png" alt="Темы оформления" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== security ============================== -->
+<section class="security section-pad" id="security">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Модель безопасности</span>
+      <h2 class="section-title">Права, учётные данные и аудит — встроены в саму архитектуру</h2>
+      <p class="section-desc">
+        Это не настройки. Это проектные решения, и большинство из них отключить нельзя.
+      </p>
+    </div>
+    <div class="sec-grid">
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Шифрование учётных данных</h3>
+        <p>Пароли и парольные фразы ключей шифруются AES-256-GCM перед сохранением; ключ хранится в системном хранилище (Keychain, Диспетчер учётных данных, Secret Service). Если хранилище недоступно, используется файл с правами 0600, о чём сообщает строка состояния.</p>
+      </div>
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 4.5 5.6v5.2c0 4.6 3.1 8.4 7.5 9.9 4.4-1.5 7.5-5.3 7.5-9.9V5.6L12 2.8Z"/><path d="M12 8v4M12 15.5v.5"/></svg>Закрепление ключей хостов</h3>
+        <p>Ключ хоста закрепляется при первом подключении. Любое последующее несовпадение обрывает соединение с объяснением причины — подмена «человеком посередине» не пройдёт незамеченной.</p>
+      </div>
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12Z"/><path d="m4 4 16 16"/></svg>Секреты не попадают в UI</h3>
+        <p>Ни один секрет не пересекает границу процесса интерфейса. UI знает лишь, задан ли секрет, — но никогда его значение.</p>
+      </div>
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M12 9v6"/><circle cx="12" cy="12" r="9"/></svg>Шлюз инструментов с уровнями риска</h3>
+        <p>Оркестратор может вызывать только фиксированный белый список инструментов, каждому из которых уровень риска присвоен при объявлении раз и навсегда. Выполнение проходит через единый шлюз, учитывающий уровень риска, степень доверия к хосту и то, что запустило прогон.</p>
+      </div>
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>Без присмотра — только чтение</h3>
+        <p>Плановым обходам безусловно отказано во всех инструментах, кроме читающих, — и это ограничение не настраивается. Обход может сообщить о застрявшем агенте, но не имеет полномочий что-либо с ним делать.</p>
+      </div>
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5h12a2 2 0 0 1 2 2V19a1.5 1.5 0 0 1-1.5 1.5H4V4.5Z"/><path d="M7.5 9h7M7.5 12.5h7M7.5 16h4"/></svg>Полный аудит</h3>
+        <p>Каждый шаг каждого прогона записывается — включая предложения, которые были отклонены или остались без ответа. Вывод с удалённых хостов попадает в модель с пометкой «данные»; текст, похожий на инструкции, помечается флагом на карточке одобрения.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== scenarios ============================== -->
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Сценарии работы</span>
+      <h2 class="section-title">Создан для таких способов работы</h2>
+    </div>
+    <div class="scene-grid">
+      <div class="scene-card reveal"><h3><span class="num">01</span>Долгие задачи</h3><p>Миграции, рефакторинги и прогоны тестов, которые длятся дольше рабочего сеанса или сетевого соединения.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">02</span>Парки из многих хостов</h3><p>От трёх до пятидесяти хостов с одновременно работающими агентами — в одном дереве со статусом каждого агента.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">03</span>Согласованные изменения</h3><p>Одно действие — инструкция всему парку, с подтверждением того, что именно было доставлено.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">04</span>Развёртывание</h3><p>Доведите новый хост до рабочего состояния, не собирая команды установки вручную.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">05</span>Наблюдение без присмотра</h3><p>Плановые обходы в режиме «только чтение», которые сообщают о застрявших агентах — не имея полномочий вмешиваться.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">06</span>Ограниченные среды</h3><p>Планирование, эмбеддинги и память работают локально. Никакого проксирования трафика моделей и чтения API-ключей.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== quickstart ============================== -->
+<section class="section-pad" id="quickstart" style="background:var(--bg-raise);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="quick-layout">
+      <div class="quick-intro reveal">
+        <span class="kicker">Начало работы</span>
+        <h2 class="section-title">Четыре шага до первого управляемого агента</h2>
+        <p class="section-desc" style="margin-top:16px">
+          Удалённым хостам нужны только tmux и учётная запись SSH — AgentMux сам установит tmux там,
+          где его нет. С этим компьютером ещё проще: вообще никаких учётных данных.
+        </p>
+        <a class="quick-cta" href="docs-ru.html">Читать полную документацию<span class="arrow">→</span></a>
+      </div>
+      <ol class="quick-steps">
+        <li class="quick-step reveal">
+          <div class="quick-step-idx">1</div>
+          <div><h3>Добавьте хост</h3><p>Удалённый: адрес, пользователь и один из вариантов — ssh-agent, ключ или пароль; jump-хосты поддерживаются. Локальный: ничего, кроме имени.</p></div>
+        </li>
+        <li class="quick-step reveal">
+          <div class="quick-step-idx">2</div>
+          <div><h3>Добавьте проект и рабочую область</h3><p>Рабочий каталог на этом хосте. Или откройте файлы хоста в браузере и добавьте каталог прямо оттуда — его имя, путь и хост уже известны.</p></div>
+        </li>
+        <li class="quick-step reveal">
+          <div class="quick-step-idx">3</div>
+          <div><h3>Добавьте агента и запустите его</h3><p>Имя и команда запуска. Нажмите Start — и он уже работает внутри tmux на хосте.</p><code>claude --dangerously-skip-permissions</code></div>
+        </li>
+        <li class="quick-step reveal">
+          <div class="quick-step-idx">4</div>
+          <div><h3>⌃K открывает палитру команд</h3><p>Подключиться к агенту, открыть оболочку, установить CLI, сменить тему — самый быстрый путь ко всему этому.</p><code>Ctrl / ⌘ + K</code></div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="kbd-table reveal">
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>K</kbd></span><span>Палитра команд</span></div>
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>B</kbd></span><span>Показать или скрыть дерево</span></div>
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>\</kbd></span><span>Добавить панель — сразу со следующей открытой вкладкой, иначе с вопросом, что подключить</span></div>
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>⇧</kbd><kbd>\</kbd></span><span>Закрыть панель, оставив вкладку и её оболочку открытыми</span></div>
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>⇧</kbd><kbd>↵</kbd></span><span>Развернуть активную панель на всю область — и обратно</span></div>
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>⌥</kbd><kbd>←</kbd><kbd>→</kbd></span><span>Переход между панелями — в развёрнутом режиме листает их по одной</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== download ============================== -->
+<section class="section-pad" id="download">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Скачать</span>
+      <h2 class="section-title">Одна сборка на платформу — собрана GitHub Actions из помеченного тегом коммита</h2>
+      <p class="section-desc">К каждому файлу прилагается .sha256.</p>
+    </div>
+    <div class="dl-grid">
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.54c-.03-2.71 2.21-4.01 2.31-4.07-1.26-1.84-3.22-2.1-3.91-2.12-1.66-.17-3.25.98-4.09.98-.84 0-2.15-.96-3.54-.93-1.82.03-3.5 1.06-4.44 2.69-1.89 3.28-.48 8.14 1.36 10.8.9 1.3 1.98 2.77 3.39 2.72 1.36-.06 1.87-.88 3.52-.88 1.64 0 2.11.88 3.54.85 1.46-.02 2.39-1.33 3.28-2.64 1.03-1.51 1.46-2.98 1.48-3.05-.03-.02-2.85-1.09-2.88-4.33l-.02-.02ZM14.36 4.6c.75-.91 1.25-2.17 1.12-3.43-1.08.04-2.38.72-3.16 1.62-.69.8-1.3 2.09-1.14 3.32 1.21.09 2.43-.61 3.18-1.51Z"/></svg></div>
+        <h3>macOS</h3>
+        <p class="dl-req">macOS 11+ · универсальная сборка для Intel и Apple Silicon</p>
+        <p class="dl-file">agentmux-macos-universal.zip</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">Скачать <span class="arrow">↓</span></a>
+      </div>
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm0 13 7.5 1.1v-7H3v5.9Zm8.5 1.2 9.5 1.3v-8.5h-9.5v7.2Zm0-15.4v7.2H21V3L11.5 4.3Z"/></svg></div>
+        <h3>Windows</h3>
+        <p class="dl-req">Windows 10+ · локальные хосты WSL и нативный PowerShell</p>
+        <p class="dl-file">agentmux-windows-amd64.zip</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">Скачать <span class="arrow">↓</span></a>
+      </div>
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-2.8 0-4 2-4 4.5 0 1.7-.6 3-1.5 4.3C5.4 12.4 4 14.2 4 16.5 4 19.5 6.5 22 12 22s8-2.5 8-5.5c0-2.3-1.4-4.1-2.5-5.7C16.6 9.5 16 8.2 16 6.5 16 4 14.8 2 12 2Z"/><circle cx="9.8" cy="9" r="0.6" fill="currentColor"/><circle cx="14.2" cy="9" r="0.6" fill="currentColor"/><path d="M10.5 11.5c.5.6 2.5.6 3 0"/></svg></div>
+        <h3>Linux</h3>
+        <p class="dl-req">Требуются GTK3 и WebKitGTK 4.1 · amd64</p>
+        <p class="dl-file">agentmux-linux-amd64.tar.gz</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">Скачать <span class="arrow">↓</span></a>
+      </div>
+    </div>
+    <div class="dl-note reveal">
+      <b>Примечание:</b> сборки пока не подписаны и не нотарифицированы. На macOS при первом запуске выберите <b>Всё равно открыть</b> в разделе
+      «Конфиденциальность и безопасность» (или выполните <code style="font-family:var(--font-mono);font-size:12.5px">xattr -dr com.apple.quarantine</code>);
+      в Windows — «Подробнее → Выполнить в любом случае». Загрузка через
+      <code style="font-family:var(--font-mono);font-size:12.5px">curl -L -O</code> позволяет обойтись без карантинного атрибута macOS.
+    </div>
+  </div>
+</section>
+
+<!-- ============================== faq ============================== -->
+<section class="section-pad" id="faq" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Вопросы</span>
+      <h2 class="section-title">Вопросы, которые могут возникнуть</h2>
+    </div>
+    <div class="faq-grid reveal">
+      <details class="faq-item">
+        <summary>Решает ли AgentMux, что делают мои агенты?<span class="faq-chevron">＋</span></summary>
+        <p>Нет. Цели, промпты и соглашения репозитория остаются за вами. Оркестратор изучает ситуацию и предлагает действия; любая операция, изменяющая хост, выполняется только после вашего явного одобрения.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Что требуется от хостов?<span class="faq-chevron">＋</span></summary>
+        <p>POSIX-совместимая оболочка и tmux на каждом хосте (AgentMux умеет устанавливать tmux там, где его нет), а для удалённых — ещё и SSH. Этот компьютер подходит напрямую на Linux и macOS; в Windows та же машина предлагает два локальных хоста — дистрибутив WSL (где живёт tmux) и нативный Windows (PowerShell; сессии сохраняет встроенный сессионный демон, так что закрытие окна не останавливает и нативную работу). Удалённые Windows-хосты не поддерживаются.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Обязателен ли Ollama?<span class="faq-chevron">＋</span></summary>
+        <p>Нет. Ollama нужен только локальной оркестрации и семантическому поиску по памяти (одна чат-модель плюс одна модель эмбеддингов). Без него всё остальное полностью работоспособно.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Может ли он учитывать или ограничивать расходы агентов на модели?<span class="faq-chevron">＋</span></summary>
+        <p>Нет — и это сознательное решение. Трафик агента идёт напрямую с хоста к тому провайдеру, на которого настроен его CLI. AgentMux не проксирует этот трафик и не читает ключи, поэтому не может ни отчитаться о расходах, ни ограничить бюджет.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Рассчитан ли он на команды?<span class="faq-chevron">＋</span></summary>
+        <p>Один оператор на установку. Состояние, учётные данные и журнал решений хранятся на рабочей станции — без общего сервера, командного аккаунта и центрального хранилища аудита. Два человека, работающие с одним парком, видят одни и те же сессии tmux, но истории у каждого свои.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Останавливает ли удаление чего-либо в AgentMux работу на удалённом хосте?<span class="faq-chevron">＋</span></summary>
+        <p>Никогда. Удаление рабочей области или записи агента убирает только локальную запись — сессия tmux продолжает работать. Единственный элемент управления, уничтожающий работающую сессию, называется Kill, и он сначала запрашивает подтверждение, сообщая, что именно будет потеряно.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== final CTA ============================== -->
+<section class="final">
+  <div class="wrap">
+    <h2 class="reveal">Пусть агенты работают. А вы отдохните.</h2>
+    <p class="reveal">Один бинарный файл, один файл SQLite, ноль серверов. Скачайте и пользуйтесь — лицензия MIT.</p>
+    <div class="hero-ctas reveal">
+      <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">Скачать сейчас<span class="arrow">→</span></a>
+      <a class="btn btn-ghost" href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== footer ============================== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand-col">
+      <div class="footer-brand">
+        <img src="assets/img/icon-256.png" alt="AgentMux">
+        <span>AgentMux</span>
+      </div>
+      <p class="footer-tagline">
+        Настольная панель управления ИИ-агентами для кода. Сессии живут в tmux, а всё
+        состояние — один локальный файл SQLite: без сервера, аккаунта и демона.
+      </p>
+      <div class="footer-social">
+        <a href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        </a>
+        <a href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer" aria-label="Скачать" title="Скачать последний выпуск">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5"/><path d="M4 19h16"/></svg>
+        </a>
+        <a href="https://github.com/tan-zhuo/AgentMux/issues" target="_blank" rel="noopener noreferrer" aria-label="Сообщить о проблеме" title="Сообщить о проблеме">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.8"/></svg>
+        </a>
+        <a href="https://tanzhuo.xyz" target="_blank" rel="noopener noreferrer" aria-label="Блог автора" title="Блог автора — tanzhuo.xyz">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.5 3.6 5.4 3.6 8.5s-1.2 6-3.6 8.5c-2.4-2.5-3.6-5.4-3.6-8.5s1.2-6 3.6-8.5Z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Продукт</h4>
+      <ul>
+        <li><a href="#capabilities">Возможности</a></li>
+        <li><a href="#features">Обзор продукта</a></li>
+        <li><a href="#security">Модель безопасности</a></li>
+        <li><a href="#download">Скачать</a></li>
+        <li><a href="#faq">Вопросы</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Ресурсы</h4>
+      <ul>
+        <li><a href="#quickstart">Начало работы</a></li>
+        <li><a href="docs-ru.html">Документация</a></li>
+        <li><a href="https://github.com/tan-zhuo/AgentMux/blob/main/docs/development.md" target="_blank" rel="noopener noreferrer">Сборка и выпуск<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="https://github.com/tan-zhuo/AgentMux/blob/main/docs/orchestrator-blueprint.md" target="_blank" rel="noopener noreferrer">Устройство оркестратора<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="https://github.com/tan-zhuo/AgentMux/releases" target="_blank" rel="noopener noreferrer">История выпусков<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Сообщество</h4>
+      <ul>
+        <li><a href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">GitHub<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="https://github.com/tan-zhuo/AgentMux/issues" target="_blank" rel="noopener noreferrer">Задачи<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="https://github.com/tan-zhuo/AgentMux/pulls" target="_blank" rel="noopener noreferrer">Участие в разработке<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="https://tanzhuo.xyz" target="_blank" rel="noopener noreferrer">Блог автора<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="index.html">中文</a></li>
+        <li><a href="en.html">English</a></li>
+        <li><a href="ja.html">日本語</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <div class="footer-legal">
+        <span>© 2026 AgentMux</span>
+        <span class="sep">|</span>
+        <a href="https://github.com/tan-zhuo/AgentMux/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">Лицензия MIT</a>
+        <span class="sep">|</span>
+        <span>Создан для долгой вахты</span>
+      </div>
+      <span class="footer-status"><span class="dot"></span>Всё состояние остаётся на вашей машине</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js?v=6"></script>
+</body>
+</html>

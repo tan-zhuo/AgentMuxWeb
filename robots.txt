@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://agentmux.tanzhuo.xyz/sitemap.xml

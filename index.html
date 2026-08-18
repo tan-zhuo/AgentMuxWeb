@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentMux — AI 编程 Agent 的桌面控制平面</title>
+<meta name="description" content="AgentMux 是面向远程主机与本机上 AI 编程 Agent（Claude Code、Codex、Gemini CLI、Aider 等）的桌面控制平面。基于 tmux 的会话持久化、多窗格终端墙、批量下发与回执、人工审批的本地编排。单一二进制，无服务端，MIT 开源。">
+<meta property="og:title" content="AgentMux — AI 编程 Agent 的桌面控制平面">
+<meta property="og:description" content="在构建机、GPU 机、预发机和本机上运维你的编程 Agent。会话由 tmux 保障持久，断网合盖都不中断。单一二进制，MIT 开源。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://agentmux.tanzhuo.xyz/">
+<meta property="og:image" content="https://agentmux.tanzhuo.xyz/assets/img/terminal.png">
+<meta property="og:site_name" content="AgentMux">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AgentMux — AI 编程 Agent 的桌面控制平面">
+<meta name="twitter:description" content="在构建机、GPU 机、预发机和本机上运维你的编程 Agent。会话由 tmux 保障持久。单一二进制，MIT 开源。">
+<meta name="twitter:image" content="https://agentmux.tanzhuo.xyz/assets/img/terminal.png">
+<meta name="keywords" content="AgentMux, AI Agent, Claude Code, Codex, Gemini CLI, Aider, tmux, SSH, 远程开发, Agent 管理, 桌面控制平面, 开源">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://agentmux.tanzhuo.xyz/">
+<link rel="alternate" hreflang="zh-CN" href="https://agentmux.tanzhuo.xyz/">
+<link rel="alternate" hreflang="en" href="https://agentmux.tanzhuo.xyz/en.html">
+<link rel="alternate" hreflang="ja" href="https://agentmux.tanzhuo.xyz/ja.html">
+<link rel="alternate" hreflang="ru" href="https://agentmux.tanzhuo.xyz/ru.html">
+<link rel="alternate" hreflang="x-default" href="https://agentmux.tanzhuo.xyz/">
+<link rel="icon" type="image/png" href="assets/img/icon.png">
+<link rel="stylesheet" href="assets/css/style.css?v=6">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AgentMux",
+  "description": "AI 编程 Agent 的桌面控制平面：在远程主机与本机上运维 Claude Code、Codex、Gemini CLI、Aider 等编程 Agent，基于 tmux 的会话持久化，单一二进制，无服务端。",
+  "url": "https://agentmux.tanzhuo.xyz/",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "macOS 11+, Windows 10+, Linux",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "license": "https://github.com/tan-zhuo/AgentMux/blob/main/LICENSE",
+  "downloadUrl": "https://github.com/tan-zhuo/AgentMux/releases/latest",
+  "author": { "@type": "Person", "name": "tan-zhuo", "url": "https://tanzhuo.xyz" },
+  "softwareHelp": { "@type": "CreativeWork", "url": "https://agentmux.tanzhuo.xyz/docs.html" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "AgentMux 会决定我的 Agent 做什么吗？", "acceptedAnswer": { "@type": "Answer", "text": "不会。目标、提示词与仓库约定始终归你。编排器只做调查和提案，任何会修改主机的动作都需要你显式审批后才会执行。" } },
+    { "@type": "Question", "name": "主机需要满足什么条件？", "acceptedAnswer": { "@type": "Answer", "text": "每台远程主机需要 POSIX shell、tmux 与 SSH（缺 tmux 时 AgentMux 可以代装）。本机在 Linux / macOS 直接可用；Windows 上提供 WSL 与原生 PowerShell 两种本机主机，原生会话由内置守护进程托管。" } },
+    { "@type": "Question", "name": "必须安装 Ollama 吗？", "acceptedAnswer": { "@type": "Answer", "text": "不是。只有本地编排与记忆的语义检索需要 Ollama。不装它，应用的其余全部功能完整可用。" } },
+    { "@type": "Question", "name": "能管控 Agent 的模型花费吗？", "acceptedAnswer": { "@type": "Answer", "text": "不能，这是刻意的边界。Agent 的模型流量从主机直连各家服务商，AgentMux 不代理、也不读取 API Key。" } },
+    { "@type": "Question", "name": "适合团队共用吗？", "acceptedAnswer": { "@type": "Answer", "text": "每份安装服务一位操作者：状态、凭据与决策日志都在本工作站上，没有共享服务端、团队账号或集中审计。" } },
+    { "@type": "Question", "name": "在 AgentMux 里删除东西，会停掉远程的工作吗？", "acceptedAnswer": { "@type": "Answer", "text": "不会。删除工作区或 Agent 记录只是移除本地记录，tmux 会话继续运行。唯一会销毁运行中会话的操作叫 Kill，它会先确认。" } }
+  ]
+}
+</script>
+</head>
+<body>
+
+<!-- ============================== nav ============================== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <img src="assets/img/icon-256.png" alt="AgentMux logo">
+      <span>AgentMux</span>
+    </a>
+    <div class="nav-links">
+      <a href="#capabilities">核心能力</a>
+      <a href="#features">产品一览</a>
+      <a href="#security">安全模型</a>
+      <a href="docs.html">文档</a>
+      <a href="#quickstart">快速上手</a>
+      <a href="#download">下载</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-actions">
+      <div class="lang-menu">
+        <button class="lang-switch" aria-haspopup="true" aria-label="Language">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></svg>
+          中文
+          <svg class="caret" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="lang-drop">
+          <a href="index.html" class="current" lang="zh-CN">中文</a>
+          <a href="en.html" lang="en">English</a>
+          <a href="ja.html" lang="ja">日本語</a>
+          <a href="ru.html" lang="ru">Русский</a>
+        </div>
+      </div>
+      <a class="gh-btn" href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        <span>GitHub</span>
+        <span class="gh-stars" style="display:none"><svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg><span data-gh-stars></span></span>
+      </a>
+      <button class="nav-burger" aria-label="菜单">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================== hero ============================== -->
+<header class="hero" id="top">
+  <div class="hero-backdrop" aria-hidden="true"></div>
+  <div class="hero-grid-lines" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <h1>AI 编程 Agent 的<br><span class="accent">桌面控制平面</span></h1>
+    <p class="hero-sub">
+      在构建机、GPU 机、预发机——以及本机上，运维 Claude Code、Codex、Gemini CLI、Aider 等编程
+      Agent。每个 Agent 跑在所属主机的 <b>tmux</b> 会话里：关闭客户端、合盖休眠、网络中断，
+      工作照常进行。
+    </p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#download">免费下载<span class="arrow">→</span></a>
+      <a class="btn btn-ghost" href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        查看源码
+      </a>
+    </div>
+
+    <div class="showcase">
+      <div class="showcase-glow" aria-hidden="true"></div>
+      <div class="showcase-grid">
+        <div class="term term-fleet">
+          <div class="term-bar">
+            <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+            <span class="term-title">集群总览</span>
+          </div>
+          <div class="term-body">
+            <div class="tree-sect">PROJECTS</div>
+            <div class="tree-line"><span class="ind">▾</span><span class="name">orbit-api</span><span class="meta">2 agents</span></div>
+            <div class="tree-line"><span class="ind">&nbsp;├</span><span class="st st-on"></span><span class="name">claude-code</span><span class="meta">gpu-01</span></div>
+            <div class="tree-line"><span class="ind">&nbsp;└</span><span class="st st-on"></span><span class="name">codex</span><span class="meta">dev-box</span></div>
+            <div class="tree-line"><span class="ind">▾</span><span class="name">novel-reader</span><span class="meta">3 agents</span></div>
+            <div class="tree-line"><span class="ind">&nbsp;├</span><span class="st st-on"></span><span class="name">aider</span><span class="meta">本机</span></div>
+            <div class="tree-line"><span class="ind">&nbsp;├</span><span class="st st-idle"></span><span class="name">gemini-cli</span><span class="meta">staging</span></div>
+            <div class="tree-line"><span class="ind">&nbsp;└</span><span class="st st-off"></span><span class="name">opencode</span><span class="meta">idle</span></div>
+            <div class="tree-sect" style="margin-top:14px">SERVERS</div>
+            <div class="tree-line"><span class="st st-on"></span><span class="name">gpu-01</span><span class="meta">cpu 34% · gpu 81%</span></div>
+            <div class="tree-line"><span class="st st-on"></span><span class="name">dev-box</span><span class="meta">cpu 12% · mem 7.2G</span></div>
+            <div class="tree-line"><span class="st st-on"></span><span class="name">本机</span><span class="meta">tmux · 无需 sshd</span></div>
+          </div>
+        </div>
+        <div class="term">
+          <div class="term-bar">
+            <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+            <span class="term-title">agentmux — 活动流</span>
+          </div>
+          <div class="term-body" data-log>
+            <div class="log-line"><span class="log-tag tag-info">SSH</span><span class="log-text"><b>gpu-01</b> 连接建立 · 主机指纹已固定</span></div>
+            <div class="log-line"><span class="log-tag tag-info">TMUX</span><span class="log-text"><b>claude-code</b> 重新附着 · 滚动缓冲完整保留</span></div>
+            <div class="log-line"><span class="log-tag tag-ok">RECV</span><span class="log-text">批量下发 <b>5/5</b> 送达 · 回执已确认</span></div>
+            <div class="log-line"><span class="log-tag tag-hold">HOLD</span><span class="log-text">编排器提案 <b>restart agent</b> · 等待人工审批</span></div>
+            <div class="log-line"><span class="log-tag tag-info">MEM</span><span class="log-text">检索记忆命中 3 条 · embedding 本地生成</span></div>
+            <div class="log-line"><span class="log-tag tag-ok">OK</span><span class="log-text">集群就绪 · <b>3</b> 台主机 · <b>7</b> 个 agent 在跑</span></div>
+            <div class="tmux-bar"><span>[agentmux/0:fleet*]</span><span>3 hosts · 20:10 · ⌃K</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-cell"><span class="stat-num">6+</span><span class="stat-label">支持的主流 Agent CLI</span></div>
+      <div class="stat-cell"><span class="stat-num">1 个</span><span class="stat-label">二进制文件，零服务端、零守护进程</span></div>
+      <div class="stat-cell"><span class="stat-num">3×3</span><span class="stat-label">终端窗格墙，多主机同屏操控</span></div>
+      <div class="stat-cell"><span class="stat-num">MIT</span><span class="stat-label">100% 开源协议</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================== ecosystem marquee ============================== -->
+<section class="eco">
+  <div class="section-head reveal" style="margin-bottom:0">
+    <span class="kicker">生态与依赖</span>
+    <h2 class="section-title">接入你已经在用的 Agent 与基础设施</h2>
+  </div>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-item hot">Claude Code</span>
+      <span class="marquee-item hot">Codex</span>
+      <span class="marquee-item hot">Gemini CLI</span>
+      <span class="marquee-item hot">OpenCode</span>
+      <span class="marquee-item hot">Aider</span>
+      <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item">tmux</span>
+      <span class="marquee-item">SSH</span>
+      <span class="marquee-item">SFTP</span>
+      <span class="marquee-item">SQLite</span>
+      <span class="marquee-item">Ollama</span>
+      <span class="marquee-item">WSL</span>
+      <span class="marquee-item">macOS</span>
+      <span class="marquee-item">Linux</span>
+      <span class="marquee-item">Windows</span>
+      <span class="marquee-item">NVIDIA GPU 遥测</span>
+      <span class="marquee-item">AES-256-GCM</span>
+      <span class="marquee-item hot">Claude Code</span>
+      <span class="marquee-item hot">Codex</span>
+      <span class="marquee-item hot">Gemini CLI</span>
+      <span class="marquee-item hot">OpenCode</span>
+      <span class="marquee-item hot">Aider</span>
+      <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item">tmux</span>
+      <span class="marquee-item">SSH</span>
+      <span class="marquee-item">SFTP</span>
+      <span class="marquee-item">SQLite</span>
+      <span class="marquee-item">Ollama</span>
+      <span class="marquee-item">WSL</span>
+      <span class="marquee-item">macOS</span>
+      <span class="marquee-item">Linux</span>
+      <span class="marquee-item">Windows</span>
+      <span class="marquee-item">NVIDIA GPU 遥测</span>
+      <span class="marquee-item">AES-256-GCM</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== capabilities ============================== -->
+<section class="section-pad" id="capabilities">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">核心能力</span>
+      <h2 class="section-title">运维一支 Agent 舰队所需要的，都在这里</h2>
+      <p class="section-desc">
+        AgentMux 不持有 Agent 进程，而是连接到主机上的 tmux 会话——持久化由结构保证，
+        而不是由客户端的在线状态保证。
+      </p>
+    </div>
+    <div class="cap-grid">
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></div>
+        <h3>会话持久化</h3>
+        <p>断开客户端、休眠笔记本、网络中断——Agent 照跑不误。重新打开就连回同一个 pane，滚动缓冲区完整保留。四小时的迁移任务不再依赖一条 SSH 不断。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="m7 9 3 3-3 3"/><path d="M12.5 15H17"/></svg></div>
+        <h3>直接的终端访问</h3>
+        <p>每个 Agent 的 pane 是完整终端——颜色、鼠标、选中、搜索——而不是只读的会话记录。可以中途介入、纠正 Agent，再把控制权交回去，无需重启任务。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M3 9.5h18M3 15h18M9.5 3v18M15 9.5V21"/></svg></div>
+        <h3>多会话终端墙</h3>
+        <p>终端区最多拆成 3×3 九个窗格，跨主机同屏、各自独立操作。分隔缝可拖动，双击标签临时全屏，窗格布局随窗口宽度智能折行，下次启动自动恢复。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1a10 10 0 0 1 0-14.2M8.5 15.5a5 5 0 0 1 0-7M19.1 4.9a10 10 0 0 1 0 14.2M15.5 8.5a5 5 0 0 1 0 7"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg></div>
+        <h3>批量下发与送达回执</h3>
+        <p>一条指令发给任意选中的 Agent，每个返回一张回执，确认是否真的送达。对集群的批量操作是可审计的，而不是假定成功。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 4.5 5.6v5.2c0 4.6 3.1 8.4 7.5 9.9 4.4-1.5 7.5-5.3 7.5-9.9V5.6L12 2.8Z"/><path d="m8.8 11.6 2.3 2.3 4.1-4.4"/></svg></div>
+        <h3>本地编排，人工审批</h3>
+        <p>Ollama 本地模型可以接一个目标——比如查明某个 Agent 为何卡住——一次一个工具调用地推进。任何写操作都挂起等待你的显式审批，定时巡检严格只读。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-13"/><path d="M4.5 12c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3"/></svg></div>
+        <h3>本地检索记忆</h3>
+        <p>项目事实、偏好与 Agent 活动被索引，可按原文或语义检索。Embedding 本地生成，内容不出本机；命中已知模式的凭据在入库前自动脱敏。</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== features / screenshots ============================== -->
+<section class="section-pad" id="features" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">产品一览</span>
+      <h2 class="section-title">真实界面，真实工作流</h2>
+      <p class="section-desc">以下全部为应用实拍截图，非概念渲染。</p>
+    </div>
+
+    <div class="demo-banner reveal">
+      <img src="assets/img/demo.gif" alt="AgentMux 操作演示" loading="lazy">
+    </div>
+
+    <div class="feature-rows">
+      <div class="feature-row reveal">
+        <div class="feature-copy">
+          <span class="kicker">终端</span>
+          <h3>连上去，就是一个完整的终端</h3>
+          <p>附着到任何 Agent 的 tmux pane：全彩输出、鼠标报告、搜索与选中。右侧面板同时给出进程状态、最近输出与操作按钮。</p>
+          <ul class="feature-points">
+            <li>Start / Stop / Restart / Attach，一排按钮管完生命周期</li>
+            <li>Agent 退出后留下可用的 shell，而不是销毁会话</li>
+            <li>一台主机十个终端，只走一条 SSH 连接、一次认证</li>
+          </ul>
+        </div>
+        <div class="feature-shot"><img src="assets/img/terminal.png" alt="附着到 Agent 的终端界面" loading="lazy"></div>
+      </div>
+
+      <div class="feature-row flip reveal">
+        <div class="feature-copy">
+          <span class="kicker">协同</span>
+          <h3>对整个舰队说一句话，并知道谁听到了</h3>
+          <p>把同一条指令下发给任意选中的 Agent——跨项目、跨主机。每个 Agent 返回送达回执，批量操作从「假定成功」变成「逐个确认」。</p>
+          <ul class="feature-points">
+            <li>按项目、主机或手动圈选下发目标</li>
+            <li>逐 Agent 的送达状态一目了然</li>
+            <li>失败的投递单独标出，可单独重试</li>
+          </ul>
+        </div>
+        <div class="feature-shot"><img src="assets/img/broadcast.png" alt="批量下发与送达回执" loading="lazy"></div>
+      </div>
+
+      <div class="feature-row reveal">
+        <div class="feature-copy">
+          <span class="kicker">开通与运维</span>
+          <h3>新主机，几分钟内进入工作状态</h3>
+          <p>安装面板先探测主机，只展示它真正能装的 Agent CLI 与运行时，并说明其他项为何不可用。安装在 tmux 内执行，连接中断也不会留下装了一半的包。</p>
+          <ul class="feature-points">
+            <li>CPU（按核/按模式）、内存、磁盘、网络、NVIDIA GPU 遥测</li>
+            <li>SFTP 文件浏览与编辑，原子写入 + 修改冲突检查</li>
+            <li>本机零配置纳管：无需 sshd，无需凭据</li>
+          </ul>
+        </div>
+        <div class="feature-shot"><img src="assets/img/install.png" alt="主机安装面板" loading="lazy"></div>
+      </div>
+
+      <div class="feature-row flip reveal">
+        <div class="feature-copy">
+          <span class="kicker">界面</span>
+          <h3>盯一整天也舒服的界面</h3>
+          <p>默认采用 Apple 系统色板，另有 Nord、Solarized 等六套主题，含浅色模式。信息密度为长时间值守而调校。</p>
+          <ul class="feature-points">
+            <li>Ctrl/⌘ K 命令面板直达一切操作</li>
+            <li>集群树上逐 Agent 的状态与最近输出</li>
+            <li>七套主题，深浅色皆备</li>
+          </ul>
+        </div>
+        <div class="feature-shot"><img src="assets/img/themes.png" alt="多主题界面" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== security ============================== -->
+<section class="security section-pad" id="security">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">安全模型</span>
+      <h2 class="section-title">权限、凭据与审计，都写进了结构里</h2>
+      <p class="section-desc">
+        这些不是配置项，而是设计决定——多数约束无法被关闭。
+      </p>
+    </div>
+    <div class="sec-grid">
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>凭据加密存储</h3>
+        <p>密码与密钥口令以 AES-256-GCM 加密后落盘，密钥保存在系统钥匙串（Keychain / Credential Manager / Secret Service）。钥匙串不可用时降级为 0600 文件并在状态栏明示。</p>
+      </div>
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 4.5 5.6v5.2c0 4.6 3.1 8.4 7.5 9.9 4.4-1.5 7.5-5.3 7.5-9.9V5.6L12 2.8Z"/><path d="M12 8v4M12 15.5v.5"/></svg>主机指纹固定</h3>
+        <p>首次连接即固定主机密钥，之后任何不匹配都会中止连接并给出解释——中间人替换无法静默通过。</p>
+      </div>
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12Z"/><path d="m4 4 16 16"/></svg>密钥不进前端</h3>
+        <p>任何机密都不会跨入 UI 进程——界面只知道「某项机密已设置」，拿不到内容本身。</p>
+      </div>
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M12 9v6"/><circle cx="12" cy="12" r="9"/></svg>工具门禁与风险分级</h3>
+        <p>编排器只能调用固定白名单内的工具，每个工具在声明时就绑定风险等级。执行必须经过唯一的门：风险级 × 主机信任级 × 触发来源共同决定放行与否。</p>
+      </div>
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>无人值守 = 严格只读</h3>
+        <p>定时巡检被无条件拒绝一切非只读工具，该限制不可配置。它可以报告哪个 Agent 停滞了，但没有权力去动它。</p>
+      </div>
+      <div class="sec-card reveal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5h12a2 2 0 0 1 2 2V19a1.5 1.5 0 0 1-1.5 1.5H4V4.5Z"/><path d="M7.5 9h7M7.5 12.5h7M7.5 16h4"/></svg>全程可审计</h3>
+        <p>每次编排运行的每一步都被记录——包括被拒绝、被否决、被搁置的提案。远程主机的输出以「数据」标记进入模型上下文，指令形状的文本会在审批卡片上触发警示。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== scenarios ============================== -->
+<section class="section-pad">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">适用场景</span>
+      <h2 class="section-title">它为这些工作方式而生</h2>
+    </div>
+    <div class="scene-grid">
+      <div class="scene-card reveal"><h3><span class="num">01</span>长任务值守</h3><p>迁移、重构、测试战役——跑得比一个工作日、比一条网络连接都久的任务。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">02</span>多主机舰队</h3><p>三到五十台主机并发跑 Agent，收进一棵树：逐 Agent 状态 + 最近输出。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">03</span>协同变更</h3><p>一次操作指挥整个舰队，并拿到每一份送达确认。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">04</span>主机开通</h3><p>不用手拼安装命令，把一台新机器带到能干活的状态。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">05</span>无人值守巡检</h3><p>定时只读巡检，报告哪些 Agent 停滞了——但无权动手。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">06</span>受限环境</h3><p>规划、embedding 与记忆全部本地运行；不代理 Agent 的模型流量，不读 API Key。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== quickstart ============================== -->
+<section class="section-pad" id="quickstart" style="background:var(--bg-raise);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="quick-layout">
+      <div class="quick-intro reveal">
+        <span class="kicker">快速上手</span>
+        <h2 class="section-title">四步，接管你的第一个 Agent</h2>
+        <p class="section-desc" style="margin-top:16px">
+          远程主机只需要 tmux 和一个 SSH 账号——tmux 缺失时 AgentMux 可以代装。
+          本机更简单：连凭据都不用。
+        </p>
+        <a class="quick-cta" href="docs.html">阅读完整文档<span class="arrow">→</span></a>
+      </div>
+      <ol class="quick-steps">
+        <li class="quick-step reveal">
+          <div class="quick-step-idx">1</div>
+          <div><h3>添加主机</h3><p>远程机：地址、用户，ssh-agent / 密钥 / 密码任选其一，支持跳板机。本机：只要起个名字。</p></div>
+        </li>
+        <li class="quick-step reveal">
+          <div class="quick-step-idx">2</div>
+          <div><h3>添加项目与工作区</h3><p>指定主机上的工作目录。也可以直接浏览主机文件，找到目录就地添加——名字、路径、主机都是现成的。</p></div>
+        </li>
+        <li class="quick-step reveal">
+          <div class="quick-step-idx">3</div>
+          <div><h3>添加 Agent 并启动</h3><p>一个名字加一条启动命令。点 Start，它就跑在该主机的 tmux 会话里了。</p><code>claude --dangerously-skip-permissions</code></div>
+        </li>
+        <li class="quick-step reveal">
+          <div class="quick-step-idx">4</div>
+          <div><h3>⌃K 打开命令面板</h3><p>附着 Agent、开 shell、装 CLI、换主题——最快的路径都在这里。</p><code>Ctrl / ⌘ + K</code></div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="kbd-table reveal">
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>K</kbd></span><span>命令面板</span></div>
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>B</kbd></span><span>显示 / 隐藏集群树</span></div>
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>\</kbd></span><span>新增窗格——有空闲标签立即填入，否则询问附着目标</span></div>
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>⇧</kbd><kbd>\</kbd></span><span>关闭窗格，标签与 shell 保持打开</span></div>
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>⇧</kbd><kbd>↵</kbd></span><span>当前窗格占满区域 / 还原</span></div>
+      <div class="kbd-row"><span><kbd>Ctrl/⌘</kbd><kbd>⌥</kbd><kbd>←</kbd><kbd>→</kbd></span><span>在窗格间移动——全屏时逐个翻阅</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== download ============================== -->
+<section class="section-pad" id="download">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">下载</span>
+      <h2 class="section-title">每个平台一个构建，由 GitHub Actions 从打标提交产出</h2>
+      <p class="section-desc">每个文件附带 .sha256 校验和。</p>
+    </div>
+    <div class="dl-grid">
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.54c-.03-2.71 2.21-4.01 2.31-4.07-1.26-1.84-3.22-2.1-3.91-2.12-1.66-.17-3.25.98-4.09.98-.84 0-2.15-.96-3.54-.93-1.82.03-3.5 1.06-4.44 2.69-1.89 3.28-.48 8.14 1.36 10.8.9 1.3 1.98 2.77 3.39 2.72 1.36-.06 1.87-.88 3.52-.88 1.64 0 2.11.88 3.54.85 1.46-.02 2.39-1.33 3.28-2.64 1.03-1.51 1.46-2.98 1.48-3.05-.03-.02-2.85-1.09-2.88-4.33l-.02-.02ZM14.36 4.6c.75-.91 1.25-2.17 1.12-3.43-1.08.04-2.38.72-3.16 1.62-.69.8-1.3 2.09-1.14 3.32 1.21.09 2.43-.61 3.18-1.51Z"/></svg></div>
+        <h3>macOS</h3>
+        <p class="dl-req">macOS 11+ · Intel 与 Apple Silicon 通用</p>
+        <p class="dl-file">agentmux-macos-universal.zip</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">下载 <span class="arrow">↓</span></a>
+      </div>
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm0 13 7.5 1.1v-7H3v5.9Zm8.5 1.2 9.5 1.3v-8.5h-9.5v7.2Zm0-15.4v7.2H21V3L11.5 4.3Z"/></svg></div>
+        <h3>Windows</h3>
+        <p class="dl-req">Windows 10+ · WSL 与原生 PowerShell 双本机主机</p>
+        <p class="dl-file">agentmux-windows-amd64.zip</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">下载 <span class="arrow">↓</span></a>
+      </div>
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-2.8 0-4 2-4 4.5 0 1.7-.6 3-1.5 4.3C5.4 12.4 4 14.2 4 16.5 4 19.5 6.5 22 12 22s8-2.5 8-5.5c0-2.3-1.4-4.1-2.5-5.7C16.6 9.5 16 8.2 16 6.5 16 4 14.8 2 12 2Z"/><circle cx="9.8" cy="9" r="0.6" fill="currentColor"/><circle cx="14.2" cy="9" r="0.6" fill="currentColor"/><path d="M10.5 11.5c.5.6 2.5.6 3 0"/></svg></div>
+        <h3>Linux</h3>
+        <p class="dl-req">需 GTK3 与 WebKitGTK 4.1 · amd64</p>
+        <p class="dl-file">agentmux-linux-amd64.tar.gz</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">下载 <span class="arrow">↓</span></a>
+      </div>
+    </div>
+    <div class="dl-note reveal">
+      <b>提示：</b>构建暂未进行代码签名/公证。macOS 首次打开需在「隐私与安全性」中选择 <b>仍要打开</b>（或
+      <code style="font-family:var(--font-mono);font-size:12.5px">xattr -dr com.apple.quarantine</code>）；Windows 选择「更多信息 → 仍要运行」。
+      使用 <code style="font-family:var(--font-mono);font-size:12.5px">curl -L -O</code> 下载可避免 macOS 隔离属性。
+    </div>
+  </div>
+</section>
+
+<!-- ============================== faq ============================== -->
+<section class="section-pad" id="faq" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">常见问题</span>
+      <h2 class="section-title">你可能想问</h2>
+    </div>
+    <div class="faq-grid reveal">
+      <details class="faq-item">
+        <summary>AgentMux 会决定我的 Agent 做什么吗？<span class="faq-chevron">＋</span></summary>
+        <p>不会。目标、提示词与仓库约定始终归你。编排器只做调查和提案，任何会修改主机的动作都需要你显式审批后才会执行。</p>
+      </details>
+      <details class="faq-item">
+        <summary>主机需要满足什么条件？<span class="faq-chevron">＋</span></summary>
+        <p>每台主机需要 POSIX shell 和 tmux（缺 tmux 时 AgentMux 可以代装），远程主机另需 SSH。本机在 Linux / macOS 直接可用；Windows 上同一台电脑提供两种本机主机——WSL 发行版（tmux 所在），以及原生 Windows（PowerShell，会话由内置守护进程托管，关窗口同样不停工作）。暂不支持远程 Windows 主机。</p>
+      </details>
+      <details class="faq-item">
+        <summary>必须安装 Ollama 吗？<span class="faq-chevron">＋</span></summary>
+        <p>不是。只有本地编排与记忆的语义检索需要 Ollama（一个对话模型 + 一个 embedding 模型）。不装它，应用的其余全部功能完整可用。</p>
+      </details>
+      <details class="faq-item">
+        <summary>能管控 Agent 的模型花费吗？<span class="faq-chevron">＋</span></summary>
+        <p>不能，这是刻意的边界。Agent 的模型流量从主机直连各家服务商，AgentMux 不代理、也不读取 API Key——因此既报告不了成本，也无法强制预算。</p>
+      </details>
+      <details class="faq-item">
+        <summary>适合团队共用吗？<span class="faq-chevron">＋</span></summary>
+        <p>每份安装服务一位操作者：状态、凭据与决策日志都在本工作站上，没有共享服务端、团队账号或集中审计。两个人管同一批主机会看到同样的 tmux 会话，但各自保留历史。</p>
+      </details>
+      <details class="faq-item">
+        <summary>在 AgentMux 里删除东西，会停掉远程的工作吗？<span class="faq-chevron">＋</span></summary>
+        <p>不会。删除工作区或 Agent 记录只是移除本地记录，tmux 会话继续运行。唯一会销毁运行中会话的操作叫 Kill，它会先确认，并明确说明将失去什么。</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== final CTA ============================== -->
+<section class="final">
+  <div class="wrap">
+    <h2 class="reveal">让 Agent 去跑，让你去休息</h2>
+    <p class="reveal">一个二进制、一份 SQLite、零服务端。下载即用，MIT 开源。</p>
+    <div class="hero-ctas reveal">
+      <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">立即下载<span class="arrow">→</span></a>
+      <a class="btn btn-ghost" href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== footer ============================== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand-col">
+      <div class="footer-brand">
+        <img src="assets/img/icon-256.png" alt="AgentMux">
+        <span>AgentMux</span>
+      </div>
+      <p class="footer-tagline">
+        AI 编程 Agent 的桌面控制平面。会话由 tmux 保障持久，状态是一份本地 SQLite——
+        没有服务端，没有账号，没有守护进程。
+      </p>
+      <div class="footer-social">
+        <a href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        </a>
+        <a href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer" aria-label="下载" title="下载最新版本">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5"/><path d="M4 19h16"/></svg>
+        </a>
+        <a href="https://github.com/tan-zhuo/AgentMux/issues" target="_blank" rel="noopener noreferrer" aria-label="反馈问题" title="反馈问题">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.8"/></svg>
+        </a>
+        <a href="https://tanzhuo.xyz" target="_blank" rel="noopener noreferrer" aria-label="作者博客" title="作者博客 tanzhuo.xyz">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.5 3.6 5.4 3.6 8.5s-1.2 6-3.6 8.5c-2.4-2.5-3.6-5.4-3.6-8.5s1.2-6 3.6-8.5Z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>产品</h4>
+      <ul>
+        <li><a href="#capabilities">核心能力</a></li>
+        <li><a href="#features">产品一览</a></li>
+        <li><a href="#security">安全模型</a></li>
+        <li><a href="#download">下载</a></li>
+        <li><a href="#faq">常见问题</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>资源</h4>
+      <ul>
+        <li><a href="#quickstart">快速上手</a></li>
+        <li><a href="docs.html">使用文档</a></li>
+        <li><a href="https://github.com/tan-zhuo/AgentMux/blob/main/docs/development.md" target="_blank" rel="noopener noreferrer">构建与发布<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="https://github.com/tan-zhuo/AgentMux/blob/main/docs/orchestrator-blueprint.md" target="_blank" rel="noopener noreferrer">编排器设计<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="https://github.com/tan-zhuo/AgentMux/releases" target="_blank" rel="noopener noreferrer">版本历史<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>社区</h4>
+      <ul>
+        <li><a href="https://github.com/tan-zhuo/AgentMux" target="_blank" rel="noopener noreferrer">GitHub<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="https://github.com/tan-zhuo/AgentMux/issues" target="_blank" rel="noopener noreferrer">Issue 反馈<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="https://github.com/tan-zhuo/AgentMux/pulls" target="_blank" rel="noopener noreferrer">参与贡献<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="https://tanzhuo.xyz" target="_blank" rel="noopener noreferrer">作者博客<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
+        <li><a href="en.html">English</a></li>
+        <li><a href="ja.html">日本語</a></li>
+        <li><a href="ru.html">Русский</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <div class="footer-legal">
+        <span>© 2026 AgentMux</span>
+        <span class="sep">|</span>
+        <a href="https://github.com/tan-zhuo/AgentMux/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>
+        <span class="sep">|</span>
+        <span>为长时间值守而设计</span>
+      </div>
+      <span class="footer-status"><span class="dot"></span>所有状态保存在本机</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js?v=6"></script>
+</body>
+</html>
