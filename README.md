@@ -19,15 +19,24 @@ assets/img/           图标与产品实拍截图（来自主仓库 docs/）
 语言切换为导航右上角的下拉菜单；四种语言通过 hreflang 互链，新增语言时记得同步
 所有页面的 hreflang 块、语言下拉与 sitemap。
 
-## SEO 域名占位符
+## 域名与 SEO 策略
 
-canonical / hreflang / og:url / sitemap 里统一使用了占位域名 `https://agentmux.tanzhuo.xyz`。
-正式域名定下来后全局替换一次即可：
+**主域名：`agentmux.pro`** —— canonical / hreflang / og:url / 结构化数据 / sitemap 全部指向它。
 
-```bash
-grep -rl 'agentmux.tanzhuo.xyz' --include='*.html' --include='*.xml' --include='*.txt' . \
-  | xargs sed -i 's|agentmux.tanzhuo.xyz|你的域名|g'
-```
+**辅域名：`agentmux.ink`** —— 必须配置 **301 永久重定向**到 agentmux.pro 的对应路径
+（保留 path，如 `agentmux.ink/docs.html` → `agentmux.pro/docs.html`）。
+两个域名同时提供内容会被搜索引擎判为重复内容、分散权重，切勿双解析到同一站点。
+
+301 配置方式（按托管平台选其一）：
+
+- **Cloudflare**（推荐）：两个域名都接入，agentmux.ink 加 Redirect Rule：
+  `(http.host eq "agentmux.ink")` → 动态重定向 `concat("https://agentmux.pro", http.request.uri.path)`，301。
+- **Nginx / Caddy 自托管**：agentmux.ink 的 server 块只写一条
+  `return 301 https://agentmux.pro$request_uri;`（Caddy：`redir https://agentmux.pro{uri} permanent`）。
+- **GitHub Pages**：Pages 只支持单个自定义域名，绑 agentmux.pro；agentmux.ink 用域名注册商
+  的 URL 转发（选 301）指到 https://agentmux.pro。
+
+上线后到 Google Search Console / Bing Webmaster 提交 `https://agentmux.pro/sitemap.xml`。
 
 ## 本地预览
 
