@@ -95,7 +95,8 @@ const jsonLd = [
       </table></div>
       <h3>被管理的主机</h3>
       <ul class="docs-list">
-        <li><b>远程主机</b>：POSIX shell、<code>tmux</code>、一个 SSH 账号。缺 tmux 不要紧——AgentMux 的安装面板可以代装。暂不支持远程 Windows 主机。</li>
+        <li><b>远程类 Unix 主机（Linux / macOS）</b>：POSIX shell、<code>tmux</code>、一个 SSH 账号。缺 tmux 不要紧——AgentMux 的安装面板可以代装。</li>
+        <li><b>远程 Windows 主机</b>：启用 OpenSSH Server 即可。那里没有 tmux——会话由 AgentMux 自带的守护进程托管：首次使用时经 SFTP 自动部署，协议走 SSH 端口转发，从不经过远端 shell。</li>
         <li><b>本机（Linux / macOS）</b>：只需要本地装有 <code>tmux</code>，无需 sshd、无需凭据。</li>
         <li><b>本机（Windows）</b>：同一台电脑提供两种主机——<b>WSL 发行版</b>（tmux 所在之处），以及<b>原生 Windows</b>（PowerShell、Windows 路径与工具链，适合 MSVC 构建、WPF、运行刚编译出的 .exe）。原生会话由 AgentMux 内置的会话守护进程托管，关窗口同样不会停掉工作。</li>
       </ul>

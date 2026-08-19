@@ -56,7 +56,7 @@ const jsonLd = [
         "name": "Что требуется от хостов?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Удалённым хостам нужны POSIX-совместимая оболочка, tmux и SSH (AgentMux умеет устанавливать tmux там, где его нет). Этот компьютер подходит напрямую на Linux и macOS; в Windows доступны два локальных хоста — WSL и нативный PowerShell, причём нативные сессии сохраняет встроенный сессионный демон."
+          "text": "Удалённым Unix-подобным хостам (Linux / macOS) нужны POSIX-оболочка, tmux и SSH; удалённому Windows-хосту достаточно OpenSSH Server — сессии ведёт демон AgentMux. Локально напрямую подходят Linux и macOS, а Windows предлагает хосты WSL и нативный PowerShell."
         }
       },
       {
@@ -397,8 +397,8 @@ const jsonLd = [
         <span class="kicker">Начало работы</span>
         <h2 class="section-title">Четыре шага до первого управляемого агента</h2>
         <p class="section-desc" style="margin-top:16px">
-          Удалённым хостам нужны только tmux и учётная запись SSH — AgentMux сам установит tmux там,
-          где его нет. С этим компьютером ещё проще: вообще никаких учётных данных.
+          Unix-подобным удалённым хостам нужны только tmux и учётная запись SSH — AgentMux сам установит
+          tmux там, где его нет; удалённому Windows-хосту достаточно включить OpenSSH Server. С этим компьютером ещё проще: вообще никаких учётных данных.
         </p>
         <a class="quick-cta" href="docs-ru.html">Читать полную документацию<span class="arrow">→</span></a>
       </div>
@@ -487,7 +487,7 @@ const jsonLd = [
       </details>
       <details class="faq-item">
         <summary>Что требуется от хостов?<span class="faq-chevron">＋</span></summary>
-        <p>POSIX-совместимая оболочка и tmux на каждом хосте (AgentMux умеет устанавливать tmux там, где его нет), а для удалённых — ещё и SSH. Этот компьютер подходит напрямую на Linux и macOS; в Windows та же машина предлагает два локальных хоста — дистрибутив WSL (где живёт tmux) и нативный Windows (PowerShell; сессии сохраняет встроенный сессионный демон, так что закрытие окна не останавливает и нативную работу). Удалённые Windows-хосты не поддерживаются.</p>
+        <p>Удалённым Unix-подобным хостам (Linux / macOS) нужны POSIX-оболочка, tmux и SSH (AgentMux умеет устанавливать tmux там, где его нет); удалённому Windows-хосту достаточно включённого OpenSSH Server — сессии ведёт собственный сессионный демон AgentMux, развёртываемый по SFTP при первом использовании. Этот компьютер подходит напрямую на Linux и macOS; в Windows та же машина предлагает два локальных хоста — дистрибутив WSL (где живёт tmux) и нативный Windows (PowerShell; тот же демон сохраняет сессии, так что закрытие окна не останавливает и нативную работу).</p>
       </details>
       <details class="faq-item">
         <summary>Обязателен ли Ollama?<span class="faq-chevron">＋</span></summary>

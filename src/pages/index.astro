@@ -54,7 +54,7 @@ const jsonLd = [
         "name": "主机需要满足什么条件？",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "每台远程主机需要 POSIX shell、tmux 与 SSH（缺 tmux 时 AgentMux 可以代装）。本机在 Linux / macOS 直接可用；Windows 上提供 WSL 与原生 PowerShell 两种本机主机，原生会话由内置守护进程托管。"
+          "text": "远程类 Unix 主机（Linux / macOS）需要 POSIX shell、tmux 与 SSH（缺 tmux 时 AgentMux 可以代装）；远程 Windows 主机启用 OpenSSH Server 即可，会话由 AgentMux 的守护进程托管。本机在 Linux / macOS 直接可用；Windows 上提供 WSL 与原生 PowerShell 两种本机主机。"
         }
       },
       {
@@ -395,7 +395,7 @@ const jsonLd = [
         <span class="kicker">快速上手</span>
         <h2 class="section-title">四步，接管你的第一个 Agent</h2>
         <p class="section-desc" style="margin-top:16px">
-          远程主机只需要 tmux 和一个 SSH 账号——tmux 缺失时 AgentMux 可以代装。
+          类 Unix 远程主机只需要 tmux 和一个 SSH 账号——tmux 缺失时 AgentMux 可以代装；远程 Windows 启用 OpenSSH 即可。
           本机更简单：连凭据都不用。
         </p>
         <a class="quick-cta" href="docs.html">阅读完整文档<span class="arrow">→</span></a>
@@ -484,7 +484,7 @@ const jsonLd = [
       </details>
       <details class="faq-item">
         <summary>主机需要满足什么条件？<span class="faq-chevron">＋</span></summary>
-        <p>每台主机需要 POSIX shell 和 tmux（缺 tmux 时 AgentMux 可以代装），远程主机另需 SSH。本机在 Linux / macOS 直接可用；Windows 上同一台电脑提供两种本机主机——WSL 发行版（tmux 所在），以及原生 Windows（PowerShell，会话由内置守护进程托管，关窗口同样不停工作）。暂不支持远程 Windows 主机。</p>
+        <p>远程类 Unix 主机（Linux / macOS）需要 POSIX shell、tmux 与 SSH（缺 tmux 时 AgentMux 可以代装）；远程 Windows 主机启用 OpenSSH Server 即可——会话由 AgentMux 自带的守护进程托管，首次使用时经 SFTP 自动部署。本机在 Linux / macOS 直接可用；Windows 上同一台电脑提供两种本机主机——WSL 发行版（tmux 所在），以及原生 Windows（PowerShell，由同一守护进程持久化，关窗口同样不停工作）。</p>
       </details>
       <details class="faq-item">
         <summary>必须安装 Ollama 吗？<span class="faq-chevron">＋</span></summary>

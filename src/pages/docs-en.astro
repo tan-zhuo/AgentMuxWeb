@@ -96,7 +96,8 @@ const jsonLd = [
       </table></div>
       <h3>Managed hosts</h3>
       <ul class="docs-list">
-        <li><b>Remote hosts</b>: a POSIX shell, <code>tmux</code>, and an SSH account. Missing tmux is fine — the install panel can install it. Remote Windows hosts are not supported.</li>
+        <li><b>Remote Unix-like hosts (Linux / macOS)</b>: a POSIX shell, <code>tmux</code>, and an SSH account. Missing tmux is fine — the install panel can install it.</li>
+        <li><b>Remote Windows hosts</b>: just enable OpenSSH Server. There is no tmux there — sessions are hosted by AgentMux's own session daemon, deployed over SFTP on first use, with its protocol riding an SSH port forward, never a remote shell.</li>
         <li><b>This computer (Linux / macOS)</b>: just a local <code>tmux</code> — no sshd, no credentials.</li>
         <li><b>This computer (Windows)</b>: the same machine offers two hosts — the default <b>WSL distribution</b> (where tmux lives) and <b>native Windows</b> (PowerShell, Windows paths and toolchains, for MSVC builds, WPF, and running the .exe you just built). Native sessions persist through AgentMux's own session daemon, so closing the window doesn't stop native work either.</li>
       </ul>

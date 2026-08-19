@@ -54,7 +54,7 @@ const jsonLd = [
         "name": "What do hosts need?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Remote hosts need a POSIX shell, tmux, and SSH (AgentMux can install tmux where missing). This computer qualifies directly on Linux and macOS; on Windows there are two local hosts — WSL and native PowerShell, with native sessions persisted by a built-in session daemon."
+          "text": "Remote Unix-like hosts (Linux / macOS) need a POSIX shell, tmux, and SSH; a remote Windows host just needs OpenSSH Server — sessions are hosted by AgentMux's session daemon. Locally, Linux and macOS qualify directly, and Windows offers WSL and native PowerShell hosts."
         }
       },
       {
@@ -395,8 +395,8 @@ const jsonLd = [
         <span class="kicker">Get Started</span>
         <h2 class="section-title">Four steps to your first managed agent</h2>
         <p class="section-desc" style="margin-top:16px">
-          Remote hosts need only tmux and an SSH account — AgentMux can install tmux where it's
-          missing. This computer is even simpler: no credentials at all.
+          Unix-like remote hosts need only tmux and an SSH account — AgentMux can install tmux where
+          it's missing; a remote Windows host just needs OpenSSH Server. This computer is even simpler: no credentials at all.
         </p>
         <a class="quick-cta" href="docs-en.html">Read the full docs<span class="arrow">→</span></a>
       </div>
@@ -485,7 +485,7 @@ const jsonLd = [
       </details>
       <details class="faq-item">
         <summary>What do hosts need?<span class="faq-chevron">＋</span></summary>
-        <p>A POSIX shell and tmux on every host (AgentMux can install tmux where it's missing), plus SSH on remote ones. This computer qualifies directly on Linux and macOS; on Windows the same machine offers two local hosts — the WSL distribution (where tmux lives) and native Windows (PowerShell, persisted by a built-in session daemon, so closing the window does not stop native work either). Remote Windows hosts are not supported.</p>
+        <p>Remote Unix-like hosts (Linux / macOS) need a POSIX shell, tmux, and SSH (AgentMux can install tmux where it's missing); a remote Windows host just needs OpenSSH Server enabled — sessions are hosted by AgentMux's own session daemon, deployed over SFTP on first use. This computer qualifies directly on Linux and macOS; on Windows the same machine offers two local hosts — the WSL distribution (where tmux lives) and native Windows (PowerShell, persisted by the same daemon, so closing the window does not stop native work either).</p>
       </details>
       <details class="faq-item">
         <summary>Is Ollama required?<span class="faq-chevron">＋</span></summary>

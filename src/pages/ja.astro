@@ -56,7 +56,7 @@ const jsonLd = [
         "name": "ホストには何が必要ですか？",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "リモートホストにはPOSIXシェル、tmux、SSHが必要です（tmuxがなければAgentMuxがインストールできます）。手元のマシンはLinuxとmacOSではそのまま利用できます。Windowsでは2つのローカルホスト — WSLとネイティブPowerShell — が使え、ネイティブセッションは内蔵のセッションデーモンで永続化されます。"
+          "text": "リモートのUnix系ホスト（Linux / macOS）にはPOSIXシェル、tmux、SSHが必要です。リモートWindowsホストはOpenSSH Serverを有効にするだけで、セッションはAgentMux内蔵のセッションデーモンが担います。ローカルではLinuxとmacOSがそのまま利用でき、WindowsではWSLとネイティブPowerShellの2つのホストを提供します。"
         }
       },
       {
@@ -397,8 +397,8 @@ const jsonLd = [
         <span class="kicker">はじめる</span>
         <h2 class="section-title">最初の管理対象エージェントまで、4ステップ</h2>
         <p class="section-desc" style="margin-top:16px">
-          リモートホストに必要なのはtmuxとSSHアカウントだけ — tmuxがなければAgentMuxが
-          インストールできます。手元のPCはさらに簡単で、認証情報は一切不要です。
+          Unix系のリモートホストに必要なのはtmuxとSSHアカウントだけ — tmuxがなければAgentMuxが
+          インストールできます。リモートWindowsホストはOpenSSH Serverを有効にするだけです。手元のPCはさらに簡単で、認証情報は一切不要です。
         </p>
         <a class="quick-cta" href="docs-ja.html">ドキュメントを読む<span class="arrow">→</span></a>
       </div>
@@ -487,7 +487,7 @@ const jsonLd = [
       </details>
       <details class="faq-item">
         <summary>ホストには何が必要ですか？<span class="faq-chevron">＋</span></summary>
-        <p>各ホストにPOSIXシェルとtmux（tmuxがなければAgentMuxがインストールできます）、リモートホストにはさらにSSHが必要です。手元のマシンはLinuxとmacOSではそのまま利用できます。Windowsでは同じマシンが2つのローカルホストを提供します — tmuxが動くWSLディストリビューションと、ネイティブWindows（PowerShell。内蔵のセッションデーモンで永続化されるため、ウィンドウを閉じてもネイティブの作業は止まりません）。リモートのWindowsホストはサポートされません。</p>
+        <p>リモートのUnix系ホスト（Linux / macOS）にはPOSIXシェル、tmux、SSHが必要です（tmuxがなければAgentMuxがインストールできます）。リモートWindowsホストはOpenSSH Serverを有効にするだけ — セッションはAgentMux内蔵のセッションデーモンが担い、初回利用時にSFTPで自動配備されます。手元のマシンはLinuxとmacOSではそのまま利用できます。Windowsでは同じマシンが2つのローカルホストを提供します — tmuxが動くWSLディストリビューションと、ネイティブWindows（PowerShell。同じデーモンで永続化されるため、ウィンドウを閉じてもネイティブの作業は止まりません）。</p>
       </details>
       <details class="faq-item">
         <summary>Ollamaは必須ですか？<span class="faq-chevron">＋</span></summary>

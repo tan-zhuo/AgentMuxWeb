@@ -96,7 +96,8 @@ const jsonLd = [
       </table></div>
       <h3>管理対象ホスト</h3>
       <ul class="docs-list">
-        <li><b>リモートホスト</b>：POSIXシェル、<code>tmux</code>、SSHアカウント。tmuxがなくても問題ありません — インストールパネルから導入できます。リモートのWindowsホストはサポートされません。</li>
+        <li><b>リモートホスト（Linux / macOSなどUnix系）</b>：POSIXシェル、<code>tmux</code>、SSHアカウント。tmuxがなくても問題ありません — インストールパネルから導入できます。</li>
+        <li><b>リモートWindowsホスト</b>：OpenSSH Serverを有効にするだけです。tmuxのない環境のため、セッションはAgentMux内蔵のセッションデーモンが担います — 初回利用時にSFTPで自動配備され、プロトコルはSSHポートフォワード上を流れ、リモートシェルは一切経由しません。</li>
         <li><b>手元のPC（Linux / macOS）</b>：ローカルの<code>tmux</code>だけ — sshdも認証情報も不要です。</li>
         <li><b>手元のPC（Windows）</b>：同じマシンが2つのホストを提供します — デフォルトの<b>WSLディストリビューション</b>（tmuxが動く場所）と、<b>ネイティブWindows</b>（PowerShell、Windowsのパスとツールチェーン。MSVCビルドやWPF、ビルドしたばかりの.exeの実行に）。ネイティブセッションはAgentMux内蔵のセッションデーモンで永続化されるため、ウィンドウを閉じてもネイティブの作業は止まりません。</li>
       </ul>
