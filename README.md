@@ -1,7 +1,7 @@
 # AgentMux 官网
 
-AgentMux（<https://github.com/tan-zhuo/AgentMux>）的宣传官网。基于 **Astro** 的静态站点，
-产物为纯静态 HTML，默认零客户端框架 JS。
+AgentMux（<https://github.com/tan-zhuo/AgentMux>）的宣传官网。技术栈：**Astro + TypeScript + React 岛屿**。
+产物为纯静态 HTML——静态内容零框架 JS，交互组件以 React 岛屿按需水合。
 
 ## 开发
 
@@ -20,17 +20,21 @@ src/
   layouts/Base.astro    head（SEO/hreflang/OG/JSON-LD）+ 导航 + 脚本（含 Vercel 监控）
   components/Nav.astro  导航（含语言下拉），文案取自 i18n 字典
   components/Footer.astro  页脚（仅落地页使用）
-  i18n/ui.js            四种语言的公共区文案（导航/页脚/无障碍标签）与语言表
+  components/react/     React 岛屿组件（TSX）。GitHubStars.tsx 是范式样例
+  i18n/ui.ts            四种语言的公共区文案与语言表（带类型定义）
   pages/                8 个页面：index/en/ja/ru（落地页）+ docs 四语（正文按语言各自维护）
-  styles/global.css     全站样式（设计系统：深海军蓝 + 信号蓝 + 翠绿，取自应用图标）
-  scripts/site.js       交互（吸顶导航、语言下拉、滚动渐显、Hero 活动流、scrollspy、GitHub 星标）
+  styles/global.css     全站样式（设计系统 + 移动端适配块）
+  scripts/site.ts       原生交互（吸顶导航、语言下拉、滚动渐显、Hero 活动流、scrollspy）
 public/
   assets/img/           图标与产品实拍截图（来自主仓库 docs/）
   sitemap.xml           站点地图（8 个 URL，含 hreflang）
   robots.txt
 ```
 
-改公共区（导航/页脚/SEO 头部）只需动 `src/i18n/ui.js` 或对应组件，一处生效全部 8 页。
+改公共区（导航/页脚/SEO 头部）只需动 `src/i18n/ui.ts` 或对应组件，一处生效全部 8 页。
+需要交互的新功能用 React 写：在 `src/components/react/` 加 `.tsx` 组件，页面里
+`<MyWidget client:load />`（或 `client:visible` 懒水合）挂载——只有该组件水合，
+其余保持静态。类型检查：`npx astro check`。
 新增语言：在 `ui.js` 的 `LANGS` 与 `UI` 加一项，再添加两个 pages 文件即可。
 资产缓存指纹由 Astro 自动处理（`_astro/*.hash.css`），无需手动版本号。
 

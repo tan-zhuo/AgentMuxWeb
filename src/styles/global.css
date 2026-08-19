@@ -1003,3 +1003,54 @@ kbd {
 /* --------------------------------------------------------------- per-language type tuning */
 :lang(ja) .hero h1 { font-size: clamp(28px, 4.3vw, 48px); }
 :lang(ru) .hero h1 { font-size: clamp(28px, 4.3vw, 48px); letter-spacing: -0.01em; }
+
+/* --------------------------------------------------------------- mobile polish */
+.lang-switch { white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .nav-inner { gap: 12px; padding: 0 16px; }
+  .nav-actions { gap: 8px; }
+  .lang-switch { padding: 7px 10px; }
+  .gh-btn { padding: 7px 11px; }
+}
+
+@media (max-width: 560px) {
+  /* 收紧导航右侧：GitHub 只留图标，语言按钮只留地球 + 箭头，确保汉堡钮始终可见 */
+  .gh-label { display: none; }
+  .lang-label { display: none; }
+  .lang-switch .caret { margin-left: -2px; }
+  .brand { font-size: 16px; gap: 8px; }
+  .brand img { width: 26px; height: 26px; }
+}
+
+@media (max-width: 640px) {
+  .hero { padding: calc(var(--nav-h) + 44px) 0 52px; }
+  .hero-sub { font-size: 15.5px; }
+  .hero-ctas { flex-direction: column; align-items: stretch; gap: 11px; padding: 0 6px; }
+  .hero-ctas .btn { width: 100%; justify-content: center; }
+  .showcase { margin-top: 44px; }
+  .term-body { min-height: 0; padding-bottom: 14px; }
+  .stats-row { margin-top: 40px; gap: 10px; }
+  .stat-num { font-size: 24px; }
+  .stat-cell { padding: 14px 10px; }
+  .stat-label { font-size: 12px; }
+
+  .section-pad { padding: 60px 0; }
+  .section-head { margin-bottom: 36px; }
+  .eco { padding: 52px 0 46px; }
+  .marquee { margin-top: 28px; }
+  .cap-card { padding: 22px 20px; }
+  .feature-rows { gap: 56px; }
+  .demo-banner { margin-bottom: 56px; }
+  .quick-step { padding: 18px; gap: 14px; }
+  .kbd-table { margin-top: 30px; }
+  .dl-note { padding: 14px 16px; text-align: left; }
+  .final { padding: 72px 0; }
+  .final .hero-ctas { padding: 0 12px; }
+
+  .docs-shell { padding-top: calc(var(--nav-h) + 28px); }
+  .docs-main section { margin-top: 48px; }
+  .docs-main pre { padding: 13px 14px; }
+  .footer-inner { padding-top: 48px; }
+  .footer-bottom { margin-top: 40px; }
+}

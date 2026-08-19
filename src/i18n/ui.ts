@@ -5,15 +5,66 @@ export const SITE = 'https://agentmux.pro';
 export const GITHUB = 'https://github.com/tan-zhuo/AgentMux';
 export const BLOG = 'https://tanzhuo.xyz';
 
-// 语言顺序即下拉菜单顺序
-export const LANGS = [
-  { code: 'zh', htmlLang: 'zh-CN', hreflang: 'zh-CN', ogLocale: 'zh_CN', label: '中文', landing: 'index.html', docs: 'docs.html' },
-  { code: 'en', htmlLang: 'en',    hreflang: 'en',    ogLocale: 'en_US', label: 'English', landing: 'en.html', docs: 'docs-en.html' },
-  { code: 'ja', htmlLang: 'ja',    hreflang: 'ja',    ogLocale: 'ja_JP', label: '日本語', landing: 'ja.html', docs: 'docs-ja.html' },
-  { code: 'ru', htmlLang: 'ru',    hreflang: 'ru',    ogLocale: 'ru_RU', label: 'Русский', landing: 'ru.html', docs: 'docs-ru.html' },
-];
+export type LangCode = 'zh' | 'en' | 'ja' | 'ru';
+export type PageKind = 'landing' | 'docs';
 
-export const UI = {
+export interface LangMeta {
+  code: LangCode;
+  htmlLang: string;
+  hreflang: string;
+  ogLocale: string;
+  label: string;
+  landing: string;
+  docs: string;
+}
+
+export interface NavStrings {
+  capabilities: string;
+  features: string;
+  security: string;
+  docs: string;
+  quickstart: string;
+  download: string;
+  faq: string;
+}
+
+export interface FooterStrings {
+  tagline: string;
+  social: { github: string; download: string; issues: string; blog: string };
+  productTitle: string;
+  product: { capabilities: string; features: string; security: string; download: string; faq: string };
+  resourcesTitle: string;
+  resources: { quickstart: string; docs: string; dev: string; orchestrator: string; releases: string };
+  communityTitle: string;
+  community: { github: string; issues: string; contribute: string; blog: string };
+  license: string;
+  motto: string;
+  status: string;
+}
+
+export interface UIStrings {
+  nav: NavStrings;
+  langAria: string;
+  menuAria: string;
+  logoAlt: string;
+  footer: FooterStrings;
+}
+
+// 语言顺序即下拉菜单顺序
+export const LANGS: readonly LangMeta[] = [
+  { code: 'zh', htmlLang: 'zh-CN', hreflang: 'zh-CN', ogLocale: 'zh_CN', label: '中文', landing: 'index.html', docs: 'docs.html' },
+  { code: 'en', htmlLang: 'en', hreflang: 'en', ogLocale: 'en_US', label: 'English', landing: 'en.html', docs: 'docs-en.html' },
+  { code: 'ja', htmlLang: 'ja', hreflang: 'ja', ogLocale: 'ja_JP', label: '日本語', landing: 'ja.html', docs: 'docs-ja.html' },
+  { code: 'ru', htmlLang: 'ru', hreflang: 'ru', ogLocale: 'ru_RU', label: 'Русский', landing: 'ru.html', docs: 'docs-ru.html' },
+] as const;
+
+export function langMeta(code: LangCode): LangMeta {
+  const meta = LANGS.find((l) => l.code === code);
+  if (!meta) throw new Error(`Unknown language: ${code}`);
+  return meta;
+}
+
+export const UI: Record<LangCode, UIStrings> = {
   zh: {
     nav: { capabilities: '核心能力', features: '产品一览', security: '安全模型', docs: '文档', quickstart: '快速上手', download: '下载', faq: 'FAQ' },
     langAria: 'Language', menuAria: '菜单', logoAlt: 'AgentMux logo',

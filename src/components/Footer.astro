@@ -1,5 +1,9 @@
 ---
-import { UI, LANGS, GITHUB, BLOG } from '../i18n/ui.js';
+import { UI, LANGS, GITHUB, BLOG, langMeta, type LangCode } from '../i18n/ui';
+
+interface Props {
+  lang: LangCode;
+}
 
 const { lang } = Astro.props;
 const f = UI[lang].footer;
@@ -44,7 +48,7 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
       <h4>{f.resourcesTitle}</h4>
       <ul>
         <li><a href="#quickstart">{f.resources.quickstart}</a></li>
-        <li><a href={LANGS.find((l) => l.code === lang).docs}>{f.resources.docs}</a></li>
+        <li><a href={langMeta(lang).docs}>{f.resources.docs}</a></li>
         <li><a href={`${GITHUB}/blob/main/docs/development.md`} {...ext}>{f.resources.dev}<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
         <li><a href={`${GITHUB}/blob/main/docs/orchestrator-blueprint.md`} {...ext}>{f.resources.orchestrator}<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
         <li><a href={`${GITHUB}/releases`} {...ext}>{f.resources.releases}<svg class="ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>

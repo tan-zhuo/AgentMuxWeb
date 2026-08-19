@@ -1,10 +1,20 @@
 ---
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
-import { SITE, LANGS } from '../i18n/ui.js';
+import { SITE, LANGS, langMeta, type LangCode, type PageKind, type LangMeta } from '../i18n/ui';
 
-// lang: 'zh' | 'en' | 'ja' | 'ru'
-// kind: 'landing' | 'docs' —— 决定 hreflang 组指向落地页还是文档页
+interface Props {
+  lang: LangCode;
+  kind: PageKind; // 决定 hreflang 组指向落地页还是文档页
+  title: string;
+  description: string;
+  keywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogType?: string;
+  jsonLd?: object[];
+}
+
 const {
   lang,
   kind,
@@ -17,11 +27,11 @@ const {
   jsonLd = [],
 } = Astro.props;
 
-const meta = LANGS.find((l) => l.code === lang);
-const fileOf = (l) => (kind === 'docs' ? l.docs : l.landing);
-const urlOf = (l) => SITE + '/' + (fileOf(l) === 'index.html' ? '' : fileOf(l));
+const meta = langMeta(lang);
+const fileOf = (l: LangMeta): string => (kind === 'docs' ? l.docs : l.landing);
+const urlOf = (l: LangMeta): string => SITE + '/' + (fileOf(l) === 'index.html' ? '' : fileOf(l));
 const canonical = urlOf(meta);
-const xDefault = urlOf(LANGS[0]);
+const xDefault = urlOf(LANGS[0]!);
 const ogImage = SITE + '/assets/img/terminal.png';
 ---
 
@@ -55,7 +65,7 @@ const ogImage = SITE + '/assets/img/terminal.png';
 <Nav lang={lang} kind={kind} />
 <slot />
 <script>
-  import '../scripts/site.js';
+  import '../scripts/site';
   import { inject } from '@vercel/analytics';
   import { injectSpeedInsights } from '@vercel/speed-insights';
   if (import.meta.env.PROD) {

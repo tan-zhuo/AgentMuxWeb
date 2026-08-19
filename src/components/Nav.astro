@@ -1,13 +1,19 @@
 ---
-import { UI, LANGS, GITHUB } from '../i18n/ui.js';
+import { UI, LANGS, GITHUB, langMeta, type LangCode, type PageKind, type LangMeta } from '../i18n/ui';
+import GitHubStars from './react/GitHubStars.tsx';
+
+interface Props {
+  lang: LangCode;
+  kind: PageKind;
+}
 
 const { lang, kind } = Astro.props;
 const t = UI[lang].nav;
-const meta = LANGS.find((l) => l.code === lang);
+const meta = langMeta(lang);
 // 落地页内部锚点直接用 #xxx；文档页要跳回本语言落地页
-const a = (anchor) => (kind === 'docs' ? `${meta.landing}#${anchor}` : `#${anchor}`);
+const a = (anchor: string): string => (kind === 'docs' ? `${meta.landing}#${anchor}` : `#${anchor}`);
 const brandHref = kind === 'docs' ? meta.landing : '#top';
-const langFile = (l) => (kind === 'docs' ? l.docs : l.landing);
+const langFile = (l: LangMeta): string => (kind === 'docs' ? l.docs : l.landing);
 ---
 
 <nav class="nav">
@@ -30,7 +36,7 @@ const langFile = (l) => (kind === 'docs' ? l.docs : l.landing);
       <div class="lang-menu">
         <button class="lang-switch" aria-haspopup="true" aria-label={UI[lang].langAria}>
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></svg>
-          {meta.label}
+          <span class="lang-label">{meta.label}</span>
           <svg class="caret" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="lang-drop">
@@ -41,8 +47,8 @@ const langFile = (l) => (kind === 'docs' ? l.docs : l.landing);
       </div>
       <a class="gh-btn" href={GITHUB} target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-        <span>GitHub</span>
-        <span class="gh-stars" style="display:none"><svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg><span data-gh-stars></span></span>
+        <span class="gh-label">GitHub</span>
+        <GitHubStars client:load />
       </a>
       <button class="nav-burger" aria-label={UI[lang].menuAria}>
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
