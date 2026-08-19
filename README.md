@@ -35,7 +35,7 @@ public/
 需要交互的新功能用 React 写：在 `src/components/react/` 加 `.tsx` 组件，页面里
 `<MyWidget client:load />`（或 `client:visible` 懒水合）挂载——只有该组件水合，
 其余保持静态。类型检查：`npx astro check`。
-新增语言：在 `ui.js` 的 `LANGS` 与 `UI` 加一项，再添加两个 pages 文件即可。
+新增语言：在 `ui.ts` 的 `LANGS` 与 `UI` 加一项，再添加两个 pages 文件即可。
 资产缓存指纹由 Astro 自动处理（`_astro/*.hash.css`），无需手动版本号。
 
 ## 部署（Vercel）
