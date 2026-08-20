@@ -3,10 +3,10 @@ import Base from '../layouts/Base.astro';
 
 const meta = {
   "title": "使用文档 — AgentMux 安装、配置与操作教程",
-  "description": "AgentMux 完整使用文档：macOS / Windows / Linux 安装步骤、添加主机与 Agent、终端窗格墙操作、快捷键、批量下发、编排器与 Ollama 配置、故障排查。从下载到日常运维的每一步。",
-  "keywords": "AgentMux, 教程, 安装, 文档, AI Agent 管理, Claude Code, tmux, SSH, 远程开发",
+  "description": "AgentMux 完整使用文档：macOS / Windows / Linux 安装步骤、添加主机与 Agent、终端窗格墙操作、快捷键、批量下发、平板与手机的 serve 模式与安卓 App、远程桌面、自动更新与配置迁移、编排器与 Ollama 配置、故障排查。从下载到日常运维的每一步。",
+  "keywords": "AgentMux, 教程, 安装, 文档, AI Agent 管理, Claude Code, tmux, SSH, 远程开发, serve 模式, 安卓 App, iPad, 平板, 远程桌面, 配置迁移",
   "ogTitle": "AgentMux 使用文档 — 安装、配置与操作教程",
-  "ogDescription": "从下载安装到日常运维：添加主机与 Agent、终端窗格墙、批量下发、编排器配置与故障排查，每一步都有详细说明。",
+  "ogDescription": "从下载安装到日常运维：添加主机与 Agent、终端窗格墙、批量下发、平板与手机接入、自动更新与配置迁移、编排器配置与故障排查，每一步都有详细说明。",
   "ogType": "article"
 };
 
@@ -15,7 +15,7 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "headline": "AgentMux 使用文档 — 安装、配置与操作教程",
-    "description": "AgentMux 完整使用文档：安装、添加主机与 Agent、终端操作、批量下发、编排器配置与故障排查。",
+    "description": "AgentMux 完整使用文档：安装、添加主机与 Agent、终端操作、批量下发、平板与手机接入、更新与迁移、编排器配置与故障排查。",
     "inLanguage": "zh-CN",
     "author": {
       "@type": "Person",
@@ -25,7 +25,7 @@ const jsonLd = [
     "about": {
       "@type": "SoftwareApplication",
       "name": "AgentMux",
-      "operatingSystem": "macOS, Windows, Linux",
+      "operatingSystem": "macOS, Windows, Linux, Android, iPadOS (browser)",
       "applicationCategory": "DeveloperApplication"
     }
   }
@@ -47,9 +47,11 @@ const jsonLd = [
     <a href="#shortcuts">快捷键参考</a>
     <a href="#broadcast">批量下发与回执</a>
     <a href="#hosts">主机运维</a>
+    <a href="#mobile">平板与手机</a>
     <h5>进阶</h5>
     <a href="#orchestrator">编排器与 Ollama</a>
     <a href="#lifecycle">生命周期语义</a>
+    <a href="#updates">更新与迁移</a>
     <a href="#build">从源码构建</a>
     <h5>参考</h5>
     <a href="#troubleshooting">故障排查</a>
@@ -92,6 +94,8 @@ const jsonLd = [
         <tr><td>macOS</td><td>macOS 11 (Big Sur) 及以上，Intel 与 Apple Silicon 均支持（通用二进制）</td></tr>
         <tr><td>Windows</td><td>Windows 10 及以上</td></tr>
         <tr><td>Linux</td><td>GTK3 与 WebKitGTK 4.1 运行时——Debian/Ubuntu 装 <code>libwebkit2gtk-4.1-0</code>，Fedora 装 <code>webkit2gtk4.1</code></td></tr>
+      
+        <tr><td>平板 / 手机</td><td>任意现代浏览器即可——服务端跑在别处（见<a href="#mobile" style="color:var(--blue-soft)">平板与手机</a>）。安卓另有内嵌核心的独立 App：Android 8.0+ · arm64</td></tr>
       </table></div>
       <h3>被管理的主机</h3>
       <ul class="docs-list">
@@ -154,6 +158,20 @@ const jsonLd = [
       <pre><code><span class="cm"># 每个文件都附带 .sha256，下载后比对：</span>
 shasum -a 256 -c agentmux-macos-universal.zip.sha256   <span class="cm"># macOS</span>
 sha256sum -c agentmux-linux-amd64.tar.gz.sha256        <span class="cm"># Linux</span></code></pre>
+
+      <h3>平板 / 服务器版（无头）</h3>
+      <p>
+        同一个应用还有一份<b>完全静态的无头构建</b>：<code>agentmux-server-linux-amd64.tar.gz</code> 与
+        <code>agentmux-server-linux-arm64.tar.gz</code>。它不链接 GTK/WebKit，不需要图形界面，解压后在任何 Linux 服务器上
+        直接运行即可对外提供完整的 Web 界面。用法见<a href="#mobile" style="color:var(--blue-soft)">平板与手机</a>一节。
+      </p>
+
+      <h3>Android</h3>
+      <ol class="docs-list">
+        <li>下载 <code>agentmux-android.apk</code>（Android 8.0+ · arm64），在手机或平板上安装——需要允许「安装未知来源应用」。</li>
+        <li>首次打开会由前台服务拉起内嵌的核心，随后 WebView 连本机 <code>127.0.0.1</code>，无需任何服务端。</li>
+        <li>仓库配置了签名密钥时产出正式签名包，可以覆盖升级；未配置时是 debug 签名包——同样能装，但换签名升级前要先卸载。</li>
+      </ol>
     </section>
 
     <!-- ================================================== quickstart -->
@@ -267,6 +285,12 @@ opencode                  <span class="cm"># OpenCode</span></code></pre>
         （比如缺少某个依赖）。选择要装的项后，安装过程在 tmux 内执行——即使连接中断，也不会留下装了一半的包树。
         tmux 本身缺失时也可以从这里代装。
       </p>
+      <p>
+        可一键安装的清单包括 Claude Code、Codex、Gemini CLI、<b>Grok CLI</b>、OpenCode、Aider、Cursor CLI 等 Agent CLI，
+        以及 Node、Python、tmux、<b>Docker</b> 与 <b>Ollama</b> 等运行时。Docker 提供六种安装方式（官方脚本优先，其次各发行版自带包，
+        macOS 走 Homebrew 的 Docker Desktop），网络需要镜像时会自动重试；装完还会顺手启动守护进程、把当前用户加入 docker 组，
+        并明确提示该组要重新登录才生效。
+      </p>
 
       <h3>主机遥测</h3>
       <p>每台主机的指标在单条命令内采集完成，包含：</p>
@@ -281,7 +305,81 @@ opencode                  <span class="cm"># OpenCode</span></code></pre>
         基于同一条 SSH 连接提供文件浏览器和编辑器。写入是<b>原子的</b>，并带修改时间校验：
         如果同目录下有 Agent 改过这个文件，保存会被拒绝而不是静默覆盖——先看它改了什么再决定。
       </p>
+
+      <h3>远程桌面</h3>
+      <p>
+        有些工作是一块屏幕：坚持要弹窗的安装程序、GUI 测试、需要人盯着看的机器。右键主机选择打开桌面，
+        AgentMux 会依次尝试 <b>3389</b>（RDP）与 <b>5900</b>（VNC）——请求走的是这台主机<b>已有的那条 SSH 连接</b>，
+        因此只监听环回地址的桌面无需对外开放任何端口，也不需要第二套凭据。
+      </p>
+      <ul class="docs-list">
+        <li>应答的那个端口被转发到本机某个端口，然后交给这台电脑上已有的查看器：Windows 的「远程桌面连接」、macOS 的「屏幕共享」、Linux 的 Remmina 或 FreeRDP。</li>
+        <li>AgentMux 自己不画像素、也不实现这两种协议——它提供的是那条私有通路，而这恰恰是查看器自己搞不定的部分。</li>
+        <li>最后一个客户端离开五分钟后通道自动关闭，同时释放持有 SSH 连接的租约。</li>
+        <li>没装任何查看器时，转发保持开启并把地址报给你——有自己客户端的人不该被我们找的那个的缺席挡住。</li>
+        <li>某台主机提供的是哪种桌面会被记住，第二次打开不再询问。这份记忆属于主机而非本机安装，所以它会随<a href="#updates" style="color:var(--blue-soft)">配置导出</a>一起走。</li>
+      </ul>
+
+      <h3>主机硬件规格</h3>
+      <p>
+        指标面板除了「这台机器在干什么」，也回答「这台机器是什么」：CPU 型号、内存条规格、物理磁盘与显卡。
+        这些是静态信息，走一次性读取并按会话缓存，不占用三秒一次的指标轮询。
+      </p>
     </section>
+    <!-- ================================================== mobile -->
+    <section id="mobile">
+      <h2>平板与手机（serve 模式）<a class="anchor" href="#mobile">#</a></h2>
+      <p>
+        同一个可执行文件也能以无窗口的服务端模式运行，把完整的应用提供给任何浏览器——安卓平板、iPad、手机。
+        终端、Agent、工具箱、文件浏览全部可用，不是缩水的只读视图。
+      </p>
+
+      <h3>启动服务端</h3>
+      <pre><code><span class="cm"># 服务器版（agentmux-server-linux-*）：默认监听 :8642</span>
+./agentmux
+
+<span class="cm"># 桌面版进入同一模式</span>
+agentmux --serve --addr 0.0.0.0:8642</code></pre>
+      <p>
+        首次启动会生成访问令牌并打印在日志里，同时保存到数据目录的 <code>serve-token</code>；
+        想自己指定就设环境变量 <code>AGENTMUX_TOKEN</code>。
+      </p>
+      <div class="callout callout-warn">
+        <b>公网访问请加 HTTPS</b>
+        serve 模式本身只做令牌鉴权。内网或 VPN 内使用足够；要从公网访问，请放在 HTTPS 反向代理
+        （Nginx / Caddy / Cloudflare Tunnel 等）之后，不要把明文 HTTP 直接暴露出去。
+      </div>
+
+      <h3>在平板上打开</h3>
+      <ol class="docs-list">
+        <li>浏览器访问 <code>http://主机:8642</code>。</li>
+        <li>输入一次令牌，之后由浏览器保存。</li>
+        <li>iPad：Safari「分享 → 添加到主屏幕」；安卓：Chrome「添加到主屏幕」。之后它就是一个独立 App，没有浏览器地址栏。</li>
+      </ol>
+      <p>
+        关闭浏览器不会停掉任何东西——和关掉桌面窗口一样，Agent 都活在远端的 tmux 里。
+      </p>
+
+      <h3>安卓原生 App</h3>
+      <p>
+        每个 Release 附带 <code>agentmux-android.apk</code>（Android 8.0+ · arm64）。它比上面那条路径更进一步：
+        <b>内嵌了与服务器版同源的完整核心</b>，由前台服务在设备本机拉起，WebView 连 <code>127.0.0.1</code>。
+        SSH 直接从手机或平板发起，配置与密钥存在设备本地——<b>不需要任何一台常开的机器</b>。
+      </p>
+      <ul class="docs-list">
+        <li><b>前台服务是刻意的</b>：没有它，锁屏后安卓会冻结进程并掐断所有 SSH 连接。因此通知栏会有一条常驻通知。</li>
+        <li>Agent 本身活在远端 tmux 里，应用被系统杀掉也不影响它们——重开应用即重连。</li>
+        <li>同一个启动页也保留了远程模式：在普通浏览器里打开（没有原生外壳）时，会改为询问一台 <code>--serve</code> 实例的地址。</li>
+      </ul>
+
+      <h3>为拇指重做的布局</h3>
+      <ul class="docs-list">
+        <li>宽度不足 768px 时，左右两侧的面板变成<b>覆盖式抽屉</b>，一次只开一个，选中标签后自动收起。</li>
+        <li>状态栏的位置让给<b>底部导航栏</b>：集群树、命令面板、详情面板、设置，四个拇指高度的按钮，并尊重系统安全区。</li>
+        <li>对话框与命令面板不再坚持桌面的边距，在没有余量的屏幕上会自适应铺满。</li>
+      </ul>
+    </section>
+
 
     <!-- ================================================== orchestrator -->
     <section id="orchestrator">
@@ -333,10 +431,61 @@ ollama pull nomic-embed-text  <span class="cm"># embedding 模型，用于语义
         <tr><td>Agent 进程退出</td><td>留下一个位于正确目录的可用 shell——会话不会被销毁，你可以直接排查或重启。</td></tr>
         <tr><td>Stop</td><td>停止 Agent 进程，会话与 shell 保留。</td></tr>
         <tr><td><b>Kill</b></td><td>唯一会销毁运行中 tmux 会话的操作。执行前必定弹出确认，并说明将失去什么。</td></tr>
-        <tr><td>网络断开 / 合盖</td><td>Agent 不受影响；重连后附着回原 pane，滚动缓冲完整。</td></tr>
+        <tr><td>网络断开 / 合盖</td><td>Agent 不受影响；连接恢复后自动重新附着回原 pane，滚动缓冲完整。</td></tr>
         <tr><td>空闲十分钟</td><td>无会话持有的 SSH 连接自动关闭，下次操作时自动重建。</td></tr>
       </table></div>
+
+      <h3>Agent 状态标记</h3>
+      <p>
+        在提问的 Agent、跑完等你看结果的 Agent、闲在提示符前的 Agent——过去在树上都只是一个「running」。
+        现在轮询会读每个 pane 并分类，在<b>需要人介入</b>的转变上立起一个持久标记，
+        直到有人真的去看了（打开终端、回答、或手动忽略）才落下。
+      </p>
+      <ul class="docs-list">
+        <li>标记出现在集群树的行上，并向上冒泡到折叠起来的工作区与项目——不展开也能看见哪里需要你。</li>
+        <li>终端标签页与右侧详情面板上同样有。</li>
+      </ul>
+
+      <h3>断线自动重连</h3>
+      <p>
+        终端失去连接不等于任务结束：远端的 tmux 会话还在跑，Agent 还在干活，断掉的只是管道。
+        所以管道会被重建——<b>同一个 shell id、同一份滚动缓冲、同一个 pane</b>，退避从 1 秒逐步拉到 15 秒，
+        约五分钟后放弃自动重试，此时原来的手动重连按钮仍在。
+      </p>
+      <ul class="docs-list">
+        <li>正常退出的会话不会被打扰：退出码是一个决定，不是一次故障。</li>
+        <li>两种 keepalive 各答一个问题——TCP keepalive 让中间设备不要忘记空闲连接；SSH keepalive 证明对端还在应答，且十秒没回就判定失败。</li>
+        <li><b>一次性命令终端不参与重连</b>：重拨意味着把命令再跑一遍，因为 WiFi 闪断而重装一次包不是任何人想要的副作用。</li>
+      </ul>
     </section>
+    <!-- ================================================== updates -->
+    <section id="updates">
+      <h2>更新与迁移<a class="anchor" href="#updates">#</a></h2>
+
+      <h3>自动检查与一键升级</h3>
+      <p>
+        应用在启动后不久、以及此后每六小时检查一次发布源。有新版本时，标题栏下方会出现一行横幅：
+        <b>升级并重启</b>、<b>查看更新说明</b>、或<b>稍后</b>。
+      </p>
+      <ul class="docs-list">
+        <li>升级会下载当前平台对应的资产并显示进度，校验随发布公布的 <code>sha256</code>，然后替换正在运行的可执行文件（macOS 换整个 bundle；Windows 上运行中的程序不能删除，改为改名让位），重启，并在下次启动时清理残留。</li>
+        <li>替换失败会<b>回滚</b>到原来正在运行的那个构建。</li>
+        <li>开发构建永远不会被覆盖——它通过 git 更新，设置里点检查时会直接这么告诉你。</li>
+      </ul>
+
+      <h3>把整套配置带到另一台电脑</h3>
+      <p>
+        设置里可以把<b>全部配置</b>写进一个文件：主机、文件夹、项目、工作区与 Agent 定义，需要的话还可以带上技能库与偏好设置，
+        然后在另一台电脑打开它。
+      </p>
+      <ul class="docs-list">
+        <li><b>加密方式</b>：用你设的口令而不是本机主密钥——主密钥在这台电脑的钥匙串里，带不走，直接复制数据库到对面根本读不出来。Argon2id 把口令变成密钥，AES-256-GCM 封装内容；成本参数必须明文随行才能使用，因此它们是被<b>认证</b>而非隐藏的：把头部改成一个廉价参数会导致文件打不开，而不是变弱。</li>
+        <li><b>SSH 密码与密钥口令</b>：只有你要求时才随行，明文只存在于封装的那一瞬间，到达对面后立即用新机器自己的主密钥重新封存。</li>
+        <li><b>导入永不覆盖</b>：同址的主机、同名的项目、同机同路径的目录，一律保持原样，文件里指向它的东西改为指向这边已有的那份。所以同一个文件导入两次不会多出任何东西，试一次导入也不会有代价。数不清的会明说——不在本机的密钥文件、没能随行的跳板机、这边已被占用的会话名。</li>
+        <li><b>两样东西刻意留在原地</b>：终端布局与 Agent 运行时状态描述的是「这一份安装」而不是配置；编排器是否获准动手，则由每台机器各自决定——一个从别处来的文件不构成那个决定。</li>
+      </ul>
+    </section>
+
 
     <!-- ================================================== build -->
     <section id="build">
@@ -406,6 +555,25 @@ go build -tags gtk3 -o agentmux .</code></pre>
       <p>
         全部状态是应用数据目录下的一个 SQLite 文件（Windows 为 <code>%APPDATA%\AgentMux</code>）。
         备份该目录即备份全部配置；删除它即彻底重置。凭据以 AES-256-GCM 加密存储，密钥在系统钥匙串中。
+      </p>
+
+      <h3>平板打不开 http://主机:8642</h3>
+      <ul class="docs-list">
+        <li>确认服务端是用 <code>--addr 0.0.0.0:8642</code> 起的——只绑定 <code>127.0.0.1</code> 时局域网访问不到。</li>
+        <li>检查服务器防火墙是否放行 8642（云主机还要看安全组）。</li>
+        <li>确认平板与服务端在同一网络，或已经连上同一条 VPN。</li>
+      </ul>
+
+      <h3>忘了 serve 模式的访问令牌</h3>
+      <p>
+        令牌保存在数据目录的 <code>serve-token</code> 文件里，首次启动时也打印在日志中。
+        想换一个：删掉该文件重启，或者启动时用环境变量 <code>AGENTMUX_TOKEN</code> 指定。
+      </p>
+
+      <h3>安卓 App 装不上或无法覆盖升级</h3>
+      <p>
+        先允许「安装未知来源应用」。如果提示签名冲突，说明装的是 debug 签名包（仓库未配置签名密钥时的产物）——
+        先卸载旧版再安装新版即可，Agent 都活在远端 tmux 里，不会受影响。
       </p>
     </section>
 

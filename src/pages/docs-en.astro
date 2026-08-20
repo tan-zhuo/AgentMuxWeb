@@ -3,10 +3,10 @@ import Base from '../layouts/Base.astro';
 
 const meta = {
   "title": "Documentation — AgentMux Setup & Operations Guide",
-  "description": "Complete AgentMux documentation: macOS / Windows / Linux installation, adding hosts and agents, the terminal pane wall, keyboard shortcuts, broadcast, orchestrator setup with Ollama, and troubleshooting.",
-  "keywords": "AgentMux, tutorial, installation, documentation, AI agent management, Claude Code, tmux, SSH, remote development",
+  "description": "Complete AgentMux documentation: macOS / Windows / Linux installation, adding hosts and agents, the terminal pane wall, keyboard shortcuts, broadcast, serve mode for tablets and phones and the Android app, remote desktop, automatic updates and configuration migration, orchestrator setup with Ollama, and troubleshooting.",
+  "keywords": "AgentMux, tutorial, installation, documentation, AI agent management, Claude Code, tmux, SSH, remote development, serve mode, Android app, iPad, tablet, remote desktop, configuration migration",
   "ogTitle": "AgentMux Documentation — Setup & Operations Guide",
-  "ogDescription": "From download to daily operations: hosts, agents, the terminal wall, broadcast, orchestrator configuration, and troubleshooting — every step explained.",
+  "ogDescription": "From download to daily operations: hosts, agents, the terminal wall, broadcast, tablets and phones, updates and migration, orchestrator configuration, and troubleshooting — every step explained.",
   "ogType": "article"
 };
 
@@ -15,7 +15,7 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "headline": "AgentMux Documentation — Setup & Operations Guide",
-    "description": "Complete AgentMux documentation: installation, hosts and agents, terminal operations, broadcast, orchestrator configuration, and troubleshooting.",
+    "description": "Complete AgentMux documentation: installation, hosts and agents, terminal operations, broadcast, tablets and phones, updates and migration, orchestrator configuration, and troubleshooting.",
     "inLanguage": "en",
     "author": {
       "@type": "Person",
@@ -25,7 +25,7 @@ const jsonLd = [
     "about": {
       "@type": "SoftwareApplication",
       "name": "AgentMux",
-      "operatingSystem": "macOS, Windows, Linux",
+      "operatingSystem": "macOS, Windows, Linux, Android, iPadOS (browser)",
       "applicationCategory": "DeveloperApplication"
     }
   }
@@ -47,9 +47,11 @@ const jsonLd = [
     <a href="#shortcuts">Keyboard Shortcuts</a>
     <a href="#broadcast">Broadcast &amp; Receipts</a>
     <a href="#hosts">Host Operations</a>
+    <a href="#mobile">Tablet &amp; Phone</a>
     <h5>Advanced</h5>
     <a href="#orchestrator">Orchestrator &amp; Ollama</a>
     <a href="#lifecycle">Lifecycle Semantics</a>
+    <a href="#updates">Updates &amp; Migration</a>
     <a href="#build">Building from Source</a>
     <h5>Reference</h5>
     <a href="#troubleshooting">Troubleshooting</a>
@@ -93,6 +95,8 @@ const jsonLd = [
         <tr><td>macOS</td><td>macOS 11 (Big Sur) or later; universal binary for Intel and Apple Silicon</td></tr>
         <tr><td>Windows</td><td>Windows 10 or later</td></tr>
         <tr><td>Linux</td><td>GTK3 and WebKitGTK 4.1 at run time — <code>libwebkit2gtk-4.1-0</code> on Debian/Ubuntu, <code>webkit2gtk4.1</code> on Fedora</td></tr>
+      
+        <tr><td>Tablet / phone</td><td>Any modern browser — the server runs elsewhere (see <a href="#mobile" style="color:var(--blue-soft)">Tablet &amp; Phone</a>). Android also has a standalone app with the core embedded: Android 8.0+ · arm64</td></tr>
       </table></div>
       <h3>Managed hosts</h3>
       <ul class="docs-list">
@@ -156,6 +160,21 @@ const jsonLd = [
       <pre><code><span class="cm"># every file ships with a .sha256:</span>
 shasum -a 256 -c agentmux-macos-universal.zip.sha256   <span class="cm"># macOS</span>
 sha256sum -c agentmux-linux-amd64.tar.gz.sha256        <span class="cm"># Linux</span></code></pre>
+
+      <h3>Tablet / server build (headless)</h3>
+      <p>
+        The same application also ships as a <b>fully static headless build</b>:
+        <code>agentmux-server-linux-amd64.tar.gz</code> and <code>agentmux-server-linux-arm64.tar.gz</code>.
+        It links no GTK and no webview and needs no display — unpack it on any Linux server and run it to serve the
+        complete web interface. See <a href="#mobile" style="color:var(--blue-soft)">Tablet &amp; Phone</a> for usage.
+      </p>
+
+      <h3>Android</h3>
+      <ol class="docs-list">
+        <li>Download <code>agentmux-android.apk</code> (Android 8.0+ · arm64) and install it on the phone or tablet — you will need to allow installation from unknown sources.</li>
+        <li>On first launch a foreground service starts the embedded core and the WebView connects to <code>127.0.0.1</code>. No server is involved.</li>
+        <li>When the repository has signing keys configured the APK is properly signed and upgrades in place; otherwise it carries a debug signature — installable all the same, but uninstall the old one before switching signatures.</li>
+      </ol>
     </section>
 
     <section id="quickstart">
@@ -267,6 +286,13 @@ opencode                  <span class="cm"># OpenCode</span></code></pre>
         interrupted connection cannot leave a partial package tree. tmux itself can be installed from
         here when missing.
       </p>
+      <p>
+        One-click install covers the agent CLIs — Claude Code, Codex, Gemini CLI, <b>Grok CLI</b>, OpenCode, Aider,
+        Cursor CLI — and runtimes including Node, Python, tmux, <b>Docker</b> and <b>Ollama</b>. Docker offers six
+        methods (the official script first, then the distributions' own packages, then Docker Desktop through
+        Homebrew), retrying against a mirror where the network needs one. Every engine install ends by starting the
+        daemon and adding the user to the docker group, and says out loud that the group needs a fresh login.
+      </p>
 
       <h3>Host telemetry</h3>
       <p>Per-host metrics are collected in a single command:</p>
@@ -282,7 +308,83 @@ opencode                  <span class="cm"># OpenCode</span></code></pre>
         check: if an agent working in the same directory changed the file, the save is refused rather
         than silently overwriting — look at what changed first, then decide.
       </p>
+
+      <h3>Remote desktop</h3>
+      <p>
+        Some work is a screen: an installer that insists on a window, a GUI test, a machine somebody has to look at.
+        Right-click a host and ask it what it is serving — <b>3389</b> (RDP) and <b>5900</b> (VNC) are dialled through
+        the SSH connection <b>that host already has</b>, so a desktop listening on its own loopback needs nothing
+        opened to the network and no second set of credentials.
+      </p>
+      <ul class="docs-list">
+        <li>The one that answers is forwarded to a port on this computer and handed to whichever viewer this computer has — Remote Desktop Connection on Windows, Screen Sharing on macOS, Remmina or FreeRDP on Linux.</li>
+        <li>AgentMux draws no pixels and speaks neither protocol; what it supplies is the private path, which is the part a viewer cannot supply for itself.</li>
+        <li>The door closes itself five minutes after the last client leaves, which is what releases the SSH lease holding the connection open.</li>
+        <li>If no viewer is installed, the forward is left up and its address reported — a person with their own client should not be stopped by the absence of the one we looked for.</li>
+        <li>Which desktop a host serves is remembered per host, so the second opening asks nothing. That memory belongs to the host rather than to this installation, so it travels with a <a href="#updates" style="color:var(--blue-soft)">configuration export</a>.</li>
+      </ul>
+
+      <h3>Make and model</h3>
+      <p>
+        The metrics panel now answers what a machine <i>is</i>, not only what it is doing: CPU model, DIMM specs,
+        physical drives and graphics adapters. Those are static, so they ride a separate one-shot read cached for the
+        session rather than the three-second ticker.
+      </p>
     </section>
+    <section id="mobile">
+      <h2>Tablet &amp; Phone (serve mode)<a class="anchor" href="#mobile">#</a></h2>
+      <p>
+        The same executable also runs headless, serving the full app to any browser — an Android tablet, an iPad, a
+        phone. Terminals, agents, the toolkit and file browsing all work; it is not a read-only view.
+      </p>
+
+      <h3>Starting the server</h3>
+      <pre><code><span class="cm"># server build (agentmux-server-linux-*): serves on :8642 by default</span>
+./agentmux
+
+<span class="cm"># desktop build, same mode</span>
+agentmux --serve --addr 0.0.0.0:8642</code></pre>
+      <p>
+        The first start generates an access token and prints it in the log, persisting it as <code>serve-token</code>
+        in the data directory. Set <code>AGENTMUX_TOKEN</code> to choose your own.
+      </p>
+      <div class="callout callout-warn">
+        <b>Put HTTPS in front for public access</b>
+        serve mode authenticates with the token alone. On a LAN or over a VPN that is enough; for use over the public
+        internet, put an HTTPS reverse proxy (Nginx, Caddy, a Cloudflare Tunnel) in front rather than exposing plain HTTP.
+      </div>
+
+      <h3>Opening it on a tablet</h3>
+      <ol class="docs-list">
+        <li>Browse to <code>http://host:8642</code>.</li>
+        <li>Enter the token once; the browser keeps it from then on.</li>
+        <li>iPad: Safari's “Share → Add to Home Screen”. Android: Chrome's “Add to Home Screen”. It then runs as a standalone app with no address bar.</li>
+      </ol>
+      <p>
+        Closing the browser stops nothing — exactly like closing the desktop window, because the agents live in remote tmux.
+      </p>
+
+      <h3>The native Android app</h3>
+      <p>
+        Every release attaches <code>agentmux-android.apk</code> (Android 8.0+ · arm64). It goes one step beyond the
+        route above: it <b>embeds the same core the server build ships</b>, started on the device by a foreground
+        service, with the WebView joining it on <code>127.0.0.1</code>. SSH runs from the phone or tablet itself and
+        configuration and keys stay on the device — <b>no always-on machine is needed</b>.
+      </p>
+      <ul class="docs-list">
+        <li><b>The foreground service is deliberate</b>: without it Android freezes the process at screen lock and cuts every SSH connection. That is why a persistent notification is shown.</li>
+        <li>The agents live in remote tmux, so they are unaffected even if the system kills the app — reopening it reconnects.</li>
+        <li>The same launch screen keeps the remote option: opened in a plain browser, with no native shell around it, it asks for the address of an <code>--serve</code> instance instead.</li>
+      </ul>
+
+      <h3>A layout redone for thumbs</h3>
+      <ul class="docs-list">
+        <li>Under 768px the side panels become <b>overlay drawers</b> — one at a time, closing when a tab is picked.</li>
+        <li>The status bar's slot holds a <b>bottom navigation bar</b>: tree, command palette, detail panel and settings as labelled thumb-height buttons, with the safe-area inset respected.</li>
+        <li>Dialogs and the command palette stop insisting on desktop margins where there is no room for any.</li>
+      </ul>
+    </section>
+
 
     <section id="orchestrator">
       <h2>Orchestrator &amp; Ollama<a class="anchor" href="#orchestrator">#</a></h2>
@@ -334,10 +436,62 @@ ollama pull nomic-embed-text  <span class="cm"># embedding model, used for seman
         <tr><td>The agent process exits</td><td>Leaves a usable shell in the correct directory — the session isn't destroyed; investigate or restart in place.</td></tr>
         <tr><td>Stop</td><td>Stops the agent process; session and shell remain.</td></tr>
         <tr><td><b>Kill</b></td><td>The one control that destroys a running tmux session. It always confirms first, stating what is lost.</td></tr>
-        <tr><td>Network drop / lid close</td><td>Agents unaffected; reattach to the same pane with scrollback intact.</td></tr>
+        <tr><td>Network drop / lid close</td><td>Agents unaffected; the terminal reattaches itself to the same pane once the connection is back, scrollback intact.</td></tr>
         <tr><td>Ten idle minutes</td><td>An SSH connection with nothing holding it closes; it's rebuilt automatically on next use.</td></tr>
       </table></div>
+
+      <h3>Agents that are waiting on a person</h3>
+      <p>
+        An agent asking a question, one that finished with results to review, and one sitting at its prompt with no
+        task all read as “running” in the tree before. The poll now reads each pane and classifies it, raising a sticky
+        mark on the transitions <b>a human needs to see</b>, and taking the mark down when someone actually looks —
+        opens the terminal, answers, or dismisses it.
+      </p>
+      <ul class="docs-list">
+        <li>The marks ride on the tree rows and bubble up to collapsed workspaces and projects, so a folded tree still shows where you are needed.</li>
+        <li>They appear on the terminal tabs and on the detail panel as well.</li>
+      </ul>
+
+      <h3>Reconnecting after a drop</h3>
+      <p>
+        A terminal that lost its transport is not over: the tmux session on the far side is still running, the agent
+        inside it is still working, and the only thing that broke was the pipe. So the pipe is rebuilt — <b>same shell
+        id, same scrollback, same pane</b> — backing off from a second to fifteen and giving up after about five
+        minutes, at which point the manual reattach button is still there.
+      </p>
+      <ul class="docs-list">
+        <li>A session that ended on its own terms is left alone: an exit status is a decision, not a failure.</li>
+        <li>Two keepalives, because they answer different questions. TCP keepalive stops the boxes in between from forgetting an idle flow; the SSH one proves the far end is still answering, and gives up on a ping after ten seconds.</li>
+        <li><b>One-shot command terminals are exempt.</b> Dialling back would mean running the command again, and re-running an install because the wifi blinked is a side effect nobody asked for.</li>
+      </ul>
     </section>
+    <section id="updates">
+      <h2>Updates &amp; Migration<a class="anchor" href="#updates">#</a></h2>
+
+      <h3>Update checks and one-click upgrades</h3>
+      <p>
+        The app checks the release feed shortly after launch and every six hours after. A newer version raises a
+        one-line banner under the title bar: <b>upgrade and restart</b>, <b>release notes</b>, or <b>later</b>.
+      </p>
+      <ul class="docs-list">
+        <li>Upgrading downloads the platform's asset with a live progress bar, verifies the published <code>sha256</code>, swaps the running executable (the bundle on macOS; rename-aside on Windows, where a running program cannot be deleted), relaunches, and sweeps up the leftovers on the next start.</li>
+        <li>A failed swap <b>rolls back</b> to the build that was running.</li>
+        <li>A dev build is never overwritten — it updates through git, and the settings dialog says so when asked to check.</li>
+      </ul>
+
+      <h3>Carrying an installation to another machine</h3>
+      <p>
+        Settings can write the <b>whole configuration</b> — hosts, folders, projects, workspaces and agent definitions,
+        with the skill library and the preferences if you want them — into a single file, and open it on the other side.
+      </p>
+      <ul class="docs-list">
+        <li><b>Encryption.</b> The file is sealed with a passphrase rather than with this machine's master key, because that key lives in this computer's keychain and cannot travel: a copy of the database would be unreadable at the other end. Argon2id turns the passphrase into a key and AES-256-GCM seals the contents. The cost parameters have to travel in the clear to be usable at all, so they are <b>authenticated</b> rather than hidden — a header rewritten to something cheap stops the file opening instead of weakening it.</li>
+        <li><b>SSH passwords and key passphrases</b> travel only when asked for, exist in the clear for exactly as long as it takes to seal them, and are re-sealed under the new machine's own master key on arrival.</li>
+        <li><b>An import never overwrites.</b> A host at the same address, a project with the same name, a path on the same machine: each is left exactly as it is, and whatever pointed at it in the file is pointed at the copy that was already here. So importing the same file twice adds nothing, and trying an import costs nothing. What cannot be carried is said instead — a key file that is not on this machine, a jump host that did not travel, a session name already taken here.</li>
+        <li><b>Two things deliberately stay behind.</b> Terminal layout and agent runtime state describe this installation rather than the configuration, and whether the orchestrator may act is decided at each machine — a file arriving from somewhere else is not that decision.</li>
+      </ul>
+    </section>
+
 
     <section id="build">
       <h2>Building from Source<a class="anchor" href="#build">#</a></h2>
@@ -410,6 +564,26 @@ go build -tags gtk3 -o agentmux .</code></pre>
         All state is one SQLite file in the application data directory (<code>%APPDATA%\AgentMux</code>
         on Windows). Back up that directory to back up everything; delete it for a full reset.
         Credentials are stored AES-256-GCM-encrypted, with the key in the OS keychain.
+      </p>
+
+      <h3>The tablet cannot reach http://host:8642</h3>
+      <ul class="docs-list">
+        <li>Check the server was started with <code>--addr 0.0.0.0:8642</code> — bound to <code>127.0.0.1</code> it is unreachable from the network.</li>
+        <li>Check the server's firewall allows 8642 (and the security group, on a cloud host).</li>
+        <li>Check the tablet is on the same network, or on the same VPN.</li>
+      </ul>
+
+      <h3>Lost the serve-mode access token</h3>
+      <p>
+        The token is kept as <code>serve-token</code> in the data directory, and printed in the log on first start.
+        To change it, delete that file and restart, or set <code>AGENTMUX_TOKEN</code> before starting.
+      </p>
+
+      <h3>The Android app will not install or upgrade</h3>
+      <p>
+        Allow installation from unknown sources first. A signature conflict means the installed build carries a debug
+        signature (what the repository produces when no signing key is configured) — uninstall the old app and install
+        the new one. The agents live in remote tmux and are unaffected.
       </p>
     </section>
 

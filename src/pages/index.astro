@@ -4,10 +4,10 @@ import Footer from '../components/Footer.astro';
 
 const meta = {
   "title": "AgentMux — AI 编程 Agent 的桌面控制平面",
-  "description": "AgentMux 是面向远程主机与本机上 AI 编程 Agent（Claude Code、Codex、Gemini CLI、Aider 等）的桌面控制平面。基于 tmux 的会话持久化、多窗格终端墙、批量下发与回执、人工审批的本地编排。单一二进制，无服务端，MIT 开源。",
-  "keywords": "AgentMux, AI Agent, Claude Code, Codex, Gemini CLI, Aider, tmux, SSH, 远程开发, Agent 管理, 桌面控制平面, 开源",
+  "description": "AgentMux 是面向远程主机与本机上 AI 编程 Agent（Claude Code、Codex、Gemini CLI、Grok CLI、Aider 等）的控制平面。基于 tmux 的会话持久化、多窗格终端墙、批量下发与回执、人工审批的本地编排。桌面之外还有无头 serve 模式与内嵌核心的安卓 App，iPad 与安卓平板浏览器即可使用。单一二进制，无服务端，MIT 开源。",
+  "keywords": "AgentMux, AI Agent, Claude Code, Codex, Gemini CLI, Grok CLI, Aider, tmux, SSH, 远程开发, Agent 管理, 控制平面, 安卓 App, iPad, 平板, 手机, 无头服务, 开源",
   "ogTitle": "AgentMux — AI 编程 Agent 的桌面控制平面",
-  "ogDescription": "在构建机、GPU 机、预发机和本机上运维你的编程 Agent。会话由 tmux 保障持久，断网合盖都不中断。单一二进制，MIT 开源。",
+  "ogDescription": "在构建机、GPU 机、预发机和本机上运维你的编程 Agent。会话由 tmux 保障持久，断网合盖都不中断。现已支持 iPad、安卓平板与手机——安卓有内嵌核心的独立 App。单一二进制，MIT 开源。",
   "ogType": "website"
 };
 
@@ -16,10 +16,10 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "AgentMux",
-    "description": "AI 编程 Agent 的桌面控制平面：在远程主机与本机上运维 Claude Code、Codex、Gemini CLI、Aider 等编程 Agent，基于 tmux 的会话持久化，单一二进制，无服务端。",
+    "description": "AI 编程 Agent 的控制平面：在远程主机与本机上运维 Claude Code、Codex、Gemini CLI、Grok CLI、Aider 等编程 Agent，基于 tmux 的会话持久化。桌面、无头 serve 模式与安卓 App 三种形态，单一二进制，无服务端。",
     "url": "https://agentmux.pro/",
     "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "macOS 11+, Windows 10+, Linux",
+    "operatingSystem": "macOS 11+, Windows 10+, Linux, Android 8+, iPadOS (browser)",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -88,6 +88,22 @@ const jsonLd = [
           "@type": "Answer",
           "text": "不会。删除工作区或 Agent 记录只是移除本地记录，tmux 会话继续运行。唯一会销毁运行中会话的操作叫 Kill，它会先确认。"
         }
+      },
+      {
+        "@type": "Question",
+        "name": "AgentMux 可以在平板或手机上用吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "可以。同一个二进制能以无头 serve 模式运行（专用服务器版 agentmux-server-linux-amd64/arm64，或桌面版加 --serve），平板浏览器打开 http://主机:8642 输入一次令牌即可使用全部功能，并可「添加到主屏幕」当独立 App。安卓还可以直接安装 agentmux-android.apk，它内嵌完整核心，SSH 从设备直接发起，不需要任何常开的机器。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "安卓 App 和 serve 模式有什么区别？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "serve 模式下核心运行在你的一台机器上，平板与手机作为客户端共享同一份状态；安卓 APK 把核心装进设备本身，由前台服务保活，配置与密钥存在设备本地，完全不依赖常开的机器。"
+        }
       }
     ]
   }
@@ -101,11 +117,12 @@ const jsonLd = [
   <div class="hero-backdrop" aria-hidden="true"></div>
   <div class="hero-grid-lines" aria-hidden="true"></div>
   <div class="hero-inner">
+    <a class="hero-badge" href="#mobile"><span class="tag">NEW</span> 安卓 App 与 iPad 支持已上线<span class="arrow">→</span></a>
     <h1>AI 编程 Agent 的<br><span class="accent">桌面控制平面</span></h1>
     <p class="hero-sub">
-      在构建机、GPU 机、预发机——以及本机上，运维 Claude Code、Codex、Gemini CLI、Aider 等编程
-      Agent。每个 Agent 跑在所属主机的 <b>tmux</b> 会话里：关闭客户端、合盖休眠、网络中断，
-      工作照常进行。
+      在构建机、GPU 机、预发机——以及本机上，运维 Claude Code、Codex、Gemini CLI、Grok CLI、Aider
+      等编程 Agent。每个 Agent 跑在所属主机的 <b>tmux</b> 会话里：关闭客户端、合盖休眠、网络中断，
+      工作照常进行。现在，平板与手机上也一样。
     </p>
     <div class="hero-ctas">
       <a class="btn btn-primary" href="#download">免费下载<span class="arrow">→</span></a>
@@ -157,8 +174,8 @@ const jsonLd = [
     </div>
 
     <div class="stats-row">
-      <div class="stat-cell"><span class="stat-num">6+</span><span class="stat-label">支持的主流 Agent CLI</span></div>
-      <div class="stat-cell"><span class="stat-num">1 个</span><span class="stat-label">二进制文件，零服务端、零守护进程</span></div>
+      <div class="stat-cell"><span class="stat-num">7 种</span><span class="stat-label">开箱支持的主流 Agent CLI</span></div>
+      <div class="stat-cell"><span class="stat-num">1 个</span><span class="stat-label">二进制：桌面 · 无头服务端 · 安卓 App</span></div>
       <div class="stat-cell"><span class="stat-num">3×3</span><span class="stat-label">终端窗格墙，多主机同屏操控</span></div>
       <div class="stat-cell"><span class="stat-num">MIT</span><span class="stat-label">100% 开源协议</span></div>
     </div>
@@ -179,6 +196,7 @@ const jsonLd = [
       <span class="marquee-item hot">OpenCode</span>
       <span class="marquee-item hot">Aider</span>
       <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item hot">Grok CLI</span>
       <span class="marquee-item">tmux</span>
       <span class="marquee-item">SSH</span>
       <span class="marquee-item">SFTP</span>
@@ -188,6 +206,9 @@ const jsonLd = [
       <span class="marquee-item">macOS</span>
       <span class="marquee-item">Linux</span>
       <span class="marquee-item">Windows</span>
+      <span class="marquee-item">Android</span>
+      <span class="marquee-item">iPadOS</span>
+      <span class="marquee-item">Docker</span>
       <span class="marquee-item">NVIDIA GPU 遥测</span>
       <span class="marquee-item">AES-256-GCM</span>
       <span class="marquee-item hot">Claude Code</span>
@@ -196,6 +217,7 @@ const jsonLd = [
       <span class="marquee-item hot">OpenCode</span>
       <span class="marquee-item hot">Aider</span>
       <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item hot">Grok CLI</span>
       <span class="marquee-item">tmux</span>
       <span class="marquee-item">SSH</span>
       <span class="marquee-item">SFTP</span>
@@ -205,6 +227,9 @@ const jsonLd = [
       <span class="marquee-item">macOS</span>
       <span class="marquee-item">Linux</span>
       <span class="marquee-item">Windows</span>
+      <span class="marquee-item">Android</span>
+      <span class="marquee-item">iPadOS</span>
+      <span class="marquee-item">Docker</span>
       <span class="marquee-item">NVIDIA GPU 遥测</span>
       <span class="marquee-item">AES-256-GCM</span>
     </div>
@@ -252,6 +277,21 @@ const jsonLd = [
         <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-13"/><path d="M4.5 12c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3"/></svg></div>
         <h3>本地检索记忆</h3>
         <p>项目事实、偏好与 Agent 活动被索引，可按原文或语义检索。Embedding 本地生成，内容不出本机；命中已知模式的凭据在入库前自动脱敏。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="11.5" height="18" rx="2"/><rect x="16.5" y="8.5" width="5" height="12.5" rx="1.5"/><path d="M7 18h3.5"/></svg></div>
+        <h3>平板与手机随身接入<span class="new-tag">NEW</span></h3>
+        <p>同一个二进制可以无头运行，平板浏览器打开就是完整的 AgentMux——终端、Agent、工具箱、文件浏览一个不少。安卓另有内嵌完整核心的独立 App：SSH 直接从设备发起，不依赖任何一台常开的机器。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.2 20a1.9 1.9 0 0 0 3.6 0"/></svg></div>
+        <h3>需要人时它会举手<span class="new-tag">NEW</span></h3>
+        <p>在提问、跑完等你看结果、还是闲在提示符前——过去在树上都只是「running」。现在轮询会读每个 pane 并分类，需要人介入的转变亮起标记，有人真的去看了才落下。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5V8.5m0 0 4.5 4.5M12 8.5 7.5 13"/><path d="M4.5 4h15"/></svg></div>
+        <h3>一键升级与整机迁移<span class="new-tag">NEW</span></h3>
+        <p>启动后与每六小时检查一次新版：下载、校验 sha256、原地替换重启，失败自动回滚。整套配置也能加密成一个文件带去另一台电脑，导入永不覆盖已有条目。</p>
       </article>
     </div>
   </div>
@@ -326,6 +366,107 @@ const jsonLd = [
         </div>
         <div class="feature-shot"><img src="assets/img/themes.png" alt="多主题界面" loading="lazy"></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== tablet &amp; phone ============================== -->
+<section class="section-pad mob-sec" id="mobile">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">新增 · 平板与手机</span>
+      <h2 class="section-title">同一个 AgentMux，装进平板和手机</h2>
+      <p class="section-desc">桌面之外多了两条路径：无头 serve 模式让任何浏览器成为完整客户端；安卓则有内嵌核心的独立 App。两者用的是同一份前端与同一个核心，不是缩水版。</p>
+    </div>
+    <div class="mob-layout">
+      <div class="mob-copy">
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></svg></div>
+          <div>
+            <h3>无头 serve 模式</h3>
+            <p>Release 附带专用服务器版 <code>agentmux-server-linux-&#123;amd64,arm64&#125;</code>——完全静态，不需要 GTK/WebKit，也不需要图形界面，复制到任何 Linux 服务器裸启动即服务。桌面版加 <code>--serve</code> 进入同一模式。首次启动生成访问令牌并打印在日志里（存于数据目录 <code>serve-token</code>，也可用 <code>AGENTMUX_TOKEN</code> 指定）。</p>
+            <div class="mob-cmd"><span class="cm"># 服务器版：默认监听 :8642</span><br>
+./agentmux<br>
+<span class="cm"># 桌面版同款</span><br>
+agentmux --serve --addr <b>0.0.0.0:8642</b></div>
+          </div>
+        </div>
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M10.3 18.6h3.4"/></svg></div>
+          <div>
+            <h3>iPad 与安卓平板：开浏览器就能用</h3>
+            <p>平板浏览器访问 <code>http://主机:8642</code>，输入一次令牌——终端、Agent、工具箱、文件浏览全部可用。iPad 上「分享 → 添加到主屏幕」、安卓上「添加到主屏幕」，之后它就是一个独立 App。关闭浏览器不会停掉任何东西——和关掉桌面窗口一样，Agent 都活在远端 tmux 里。</p>
+          </div>
+        </div>
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 18c0 .55.45 1 1 1h1v3.2a1.4 1.4 0 0 0 2.8 0V19h2.4v3.2a1.4 1.4 0 0 0 2.8 0V19h1c.55 0 1-.45 1-1V8H6v10ZM3.4 8A1.4 1.4 0 0 0 2 9.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 3.4 8ZM20.6 8a1.4 1.4 0 0 0-1.4 1.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 20.6 8ZM15.5 2.2 16.8.9a.35.35 0 1 0-.5-.5l-1.47 1.47A5.9 5.9 0 0 0 12 1.25c-.85 0-1.65.18-2.36.49L8.17.26a.35.35 0 1 0-.5.5l1.3 1.3A5.6 5.6 0 0 0 6 7h12a5.6 5.6 0 0 0-2.5-4.8ZM9.5 4.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"/></svg></div>
+          <div>
+            <h3>安卓原生 App：不依赖任何一台常开的机器</h3>
+            <p>每个 Release 附带 <code>agentmux-android.apk</code>（Android 8.0+ · arm64），内嵌与服务器版同源的完整核心，由前台服务拉起——锁屏也不会被冻结，SSH 直接从设备发起，配置与密钥留在本机。手机与平板的布局也重做过：窄屏下侧栏改为覆盖式抽屉，底部导航栏把集群树、命令面板、详情与设置放到拇指够得到的位置，并尊重安全区。</p>
+          </div>
+        </div>
+      </div>
+      <div class="mob-devices reveal">
+        <div class="dev dev-tablet">
+          <div class="dev-screen">
+            <div class="dev-bar"><span><span class="dot"></span>agentmux · 平板</span><span>:8642</span></div>
+            <div class="dev-body">
+              <div class="dev-tree">
+                <b>PROJECTS</b>
+                ▾ orbit-api<br>&nbsp;├ claude<br>&nbsp;└ codex
+                <b>SERVERS</b>
+                gpu-01<br>dev-box
+              </div>
+              <div class="dev-term">
+                <div>$ claude --resume</div>
+                <div class="ok">✓ 已重新附着 · 滚动缓冲保留</div>
+                <div>› 正在重建索引…</div>
+                <div class="hold">⏸ 等待你的答复</div>
+                <div>$ <span class="cur"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dev dev-phone">
+          <div class="dev-screen">
+            <div class="dev-bar"><span><span class="dot"></span>APK</span><span>arm64</span></div>
+            <div class="dev-body">
+              <div class="dev-term">
+                <div>$ codex</div>
+                <div class="ok">✓ ssh gpu-01</div>
+                <div>› 补丁已应用</div>
+                <div>$ <span class="cur"></span></div>
+              </div>
+              <div class="dev-nav">
+                <span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h7M4 12h10M4 18h7"/></svg>集群树</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3"/></svg>⌘K</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>详情</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6"/></svg>设置</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mob-note reveal"><b>安全提示：</b> serve 模式默认只做令牌鉴权。内网或 VPN 内使用，令牌本身已经足够；要经公网访问，请放在 HTTPS 反向代理之后。</div>
+  </div>
+</section>
+
+<!-- ============================== what's new ============================== -->
+<section class="section-pad" id="whatsnew" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">最近更新</span>
+      <h2 class="section-title">这一轮还多了这些</h2>
+      <p class="section-desc">除了平板与手机，8 月这一轮更新还落地了以下能力。</p>
+    </div>
+    <div class="scene-grid">
+      <div class="scene-card reveal"><h3><span class="num">01</span>断线自动重连</h3><p>终端掉线不等于任务结束——远端 tmux 还在跑。管道会被重建：同一个 shell id、同一份滚动缓冲、同一个 pane，退避从 1 秒到 15 秒，约五分钟后仍保留手动重连按钮。TCP 与 SSH 双 keepalive 各答一个问题；一次性命令终端不会被重跑。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">02</span>远程桌面直达</h3><p>有些活必须看见画面。右键主机，3389 与 5900 经它已有的那条 SSH 连接转发到本机，交给系统自带的查看器（远程桌面连接 / 屏幕共享 / Remmina）。只监听环回的桌面因此无需对外开放任何端口。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">03</span>一键升级</h3><p>启动后与每六小时检查一次发布源，有新版本就在标题栏下方拉起一行横幅：升级重启、看更新说明、或稍后。下载带进度条并校验发布的 sha256，替换失败自动回滚到正在运行的那个版本。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">04</span>配置加密迁移</h3><p>主机、目录、项目、工作区与 Agent 定义写进一个口令加密的文件（Argon2id + AES-256-GCM），在另一台电脑打开。导入永不覆盖：同址主机、同名项目、同机同路径一律保留原样，同一个文件导入两次不会多出任何东西。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">05</span>主机硬件规格</h3><p>指标面板不再只讲主机在干什么，也讲它是什么：CPU 型号、内存条规格、物理磁盘与显卡。这些是静态信息，走一次性读取并按会话缓存，不占三秒一次的轮询。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">06</span>工具箱与界面语言</h3><p>一键安装新增 Grok CLI、Docker（六种方式，网络需要时自动切镜像，装完顺手起守护进程并加用户组）与 Ollama；界面新增繁體中文——按台湾用语重写的完整词表，不是简繁字符转换。</p></div>
     </div>
   </div>
 </section>
@@ -436,8 +577,8 @@ const jsonLd = [
   <div class="wrap">
     <div class="section-head reveal">
       <span class="kicker">下载</span>
-      <h2 class="section-title">每个平台一个构建，由 GitHub Actions 从打标提交产出</h2>
-      <p class="section-desc">每个文件附带 .sha256 校验和。</p>
+      <h2 class="section-title">桌面、服务器与安卓，每个平台一个构建</h2>
+      <p class="section-desc">全部由 GitHub Actions 从打了 tag 的 commit 产出，每个文件附带 .sha256 校验和。</p>
     </div>
     <div class="dl-grid">
       <div class="dl-card reveal">
@@ -459,6 +600,22 @@ const jsonLd = [
         <h3>Linux</h3>
         <p class="dl-req">需 GTK3 与 WebKitGTK 4.1 · amd64</p>
         <p class="dl-file">agentmux-linux-amd64.tar.gz</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">下载 <span class="arrow">↓</span></a>
+      </div>
+    </div>
+    <div class="dl-grid dl-grid-2">
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h5M11 16.5h5"/></svg></div>
+        <h3>平板 / 服务器（无头）<span class="new-tag">NEW</span></h3>
+        <p class="dl-req">任意 Linux · amd64 与 arm64 · 无需 GTK/WebKit 与显示器</p>
+        <p class="dl-file">agentmux-server-linux-amd64.tar.gz<br>agentmux-server-linux-arm64.tar.gz</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">下载 <span class="arrow">↓</span></a>
+      </div>
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 18c0 .55.45 1 1 1h1v3.2a1.4 1.4 0 0 0 2.8 0V19h2.4v3.2a1.4 1.4 0 0 0 2.8 0V19h1c.55 0 1-.45 1-1V8H6v10ZM3.4 8A1.4 1.4 0 0 0 2 9.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 3.4 8ZM20.6 8a1.4 1.4 0 0 0-1.4 1.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 20.6 8ZM15.5 2.2 16.8.9a.35.35 0 1 0-.5-.5l-1.47 1.47A5.9 5.9 0 0 0 12 1.25c-.85 0-1.65.18-2.36.49L8.17.26a.35.35 0 1 0-.5.5l1.3 1.3A5.6 5.6 0 0 0 6 7h12a5.6 5.6 0 0 0-2.5-4.8ZM9.5 4.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"/></svg></div>
+        <h3>Android<span class="new-tag">NEW</span></h3>
+        <p class="dl-req">Android 8.0+ · arm64 · 内嵌完整核心，独立运行</p>
+        <p class="dl-file">agentmux-android.apk</p>
         <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">下载 <span class="arrow">↓</span></a>
       </div>
     </div>
@@ -501,6 +658,18 @@ const jsonLd = [
       <details class="faq-item">
         <summary>在 AgentMux 里删除东西，会停掉远程的工作吗？<span class="faq-chevron">＋</span></summary>
         <p>不会。删除工作区或 Agent 记录只是移除本地记录，tmux 会话继续运行。唯一会销毁运行中会话的操作叫 Kill，它会先确认，并明确说明将失去什么。</p>
+      </details>
+      <details class="faq-item">
+        <summary>平板或手机上怎么用？<span class="faq-chevron">＋</span></summary>
+        <p>两条路径。其一，在任意一台 Linux 上跑无头服务端（专用的 <code>agentmux-server-linux-&#123;amd64,arm64&#125;</code>，或桌面版加 <code>--serve</code>），平板浏览器访问 <code>http://主机:8642</code> 并输入一次令牌，再「添加到主屏幕」当独立 App 用——iPad 走的就是这条。其二，安卓可以直接装 <code>agentmux-android.apk</code>，它内嵌了完整核心，什么服务端都不用。</p>
+      </details>
+      <details class="faq-item">
+        <summary>安卓 APK 和 serve 模式有什么区别？<span class="faq-chevron">＋</span></summary>
+        <p>serve 模式下核心跑在你的某台机器上，平板只是客户端——好处是手机、平板、桌面看到的是同一份状态。APK 把核心装进了设备本身：SSH 从手机直接发起，配置与密钥存在设备本地，不需要任何一台常开的机器。前台服务保活是必须的——没有它，锁屏后安卓会冻结进程并掐断所有 SSH 连接。</p>
+      </details>
+      <details class="faq-item">
+        <summary>serve 模式暴露在公网安全吗？<span class="faq-chevron">＋</span></summary>
+        <p>它默认只做令牌鉴权（首次启动生成，存在数据目录的 <code>serve-token</code>）。内网或 VPN 内使用足够；要经公网访问，请放在 HTTPS 反向代理之后，别把明文 HTTP 直接对外。</p>
       </details>
     </div>
   </div>

@@ -4,10 +4,10 @@ import Footer from '../components/Footer.astro';
 
 const meta = {
   "title": "AgentMux — A Desktop Control Plane for AI Coding Agents",
-  "description": "AgentMux is a desktop control plane for AI coding agents — Claude Code, Codex, Gemini CLI, Aider, and more — on remote hosts and this one. tmux-backed session persistence, a multi-pane terminal wall, broadcast with delivery receipts, and human-approved local orchestration. One binary, no server, MIT licensed.",
-  "keywords": "AgentMux, AI agent, Claude Code, Codex, Gemini CLI, Aider, tmux, SSH, remote development, agent management, desktop control plane, open source",
+  "description": "AgentMux is a control plane for AI coding agents — Claude Code, Codex, Gemini CLI, Grok CLI, Aider, and more — on remote hosts and this one. tmux-backed session persistence, a multi-pane terminal wall, broadcast with delivery receipts, and human-approved local orchestration. Beyond the desktop there is a headless serve mode and a standalone Android app, so iPads and Android tablets work too. One binary, no server, MIT licensed.",
+  "keywords": "AgentMux, AI agent, Claude Code, Codex, Gemini CLI, Grok CLI, Aider, tmux, SSH, remote development, agent management, control plane, Android app, iPad, tablet, phone, headless server, open source",
   "ogTitle": "AgentMux — A Desktop Control Plane for AI Coding Agents",
-  "ogDescription": "Operate your coding agents on build servers, GPU boxes, staging hosts, and this computer. Sessions survive disconnects by construction. One binary, MIT licensed.",
+  "ogDescription": "Operate your coding agents on build servers, GPU boxes, staging hosts, and this computer. Sessions survive disconnects by construction. Now on iPad, Android tablets and phones too — with a standalone Android app that carries its own core. One binary, MIT licensed.",
   "ogType": "website"
 };
 
@@ -16,10 +16,10 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "AgentMux",
-    "description": "A desktop control plane for AI coding agents: operate Claude Code, Codex, Gemini CLI, Aider, and more on remote hosts and this computer, with tmux-backed session persistence. One binary, no server.",
+    "description": "A control plane for AI coding agents: operate Claude Code, Codex, Gemini CLI, Grok CLI, Aider, and more on remote hosts and this computer, with tmux-backed session persistence. Desktop, headless serve mode and a standalone Android app. One binary, no server.",
     "url": "https://agentmux.pro/en.html",
     "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "macOS 11+, Windows 10+, Linux",
+    "operatingSystem": "macOS 11+, Windows 10+, Linux, Android 8+, iPadOS (browser)",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -88,6 +88,22 @@ const jsonLd = [
           "@type": "Answer",
           "text": "Never. Removing a workspace or agent record only removes the local record — the tmux session keeps running. The one control that destroys a running session is named Kill, and it confirms first."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "Can AgentMux be used on a tablet or a phone?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The same binary runs in headless serve mode (the dedicated agentmux-server-linux-amd64/arm64 build, or the desktop build with --serve). Open http://host:8642 in a tablet browser, enter the access token once, and every feature works; \"Add to Home Screen\" installs it as a standalone app. On Android you can also install agentmux-android.apk, which embeds the full core so SSH runs from the device and no always-on machine is needed."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between the Android app and serve mode?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "In serve mode the core runs on one of your machines and tablets and phones act as clients sharing the same state. The Android APK embeds the core on the device, kept alive by a foreground service, with configuration and keys stored locally and no dependency on an always-on machine."
+        }
       }
     ]
   }
@@ -101,11 +117,13 @@ const jsonLd = [
   <div class="hero-backdrop" aria-hidden="true"></div>
   <div class="hero-grid-lines" aria-hidden="true"></div>
   <div class="hero-inner">
+    <a class="hero-badge" href="#mobile"><span class="tag">NEW</span> Android app and iPad support have landed<span class="arrow">→</span></a>
     <h1>A Desktop Control Plane<br>for <span class="accent">AI Coding Agents</span></h1>
     <p class="hero-sub">
-      Operate Claude Code, Codex, Gemini CLI, Aider, and more — on build servers, GPU boxes,
-      staging hosts, and this computer. Every agent runs inside a <b>tmux</b> session on its host:
-      close the client, suspend the laptop, lose the network — work continues.
+      Operate Claude Code, Codex, Gemini CLI, Grok CLI, Aider, and more — on build servers, GPU
+      boxes, staging hosts, and this computer. Every agent runs inside a <b>tmux</b> session on its
+      host: close the client, suspend the laptop, lose the network — work continues. Now from a
+      tablet or a phone, too.
     </p>
     <div class="hero-ctas">
       <a class="btn btn-primary" href="#download">Download Free<span class="arrow">→</span></a>
@@ -157,9 +175,9 @@ const jsonLd = [
     </div>
 
     <div class="stats-row">
-      <div class="stat-cell"><span class="stat-num">6+</span><span class="stat-label">Mainstream agent CLIs supported</span></div>
-      <div class="stat-cell"><span class="stat-num">1</span><span class="stat-label">Binary — no server, no daemon, no account</span></div>
-      <div class="stat-cell"><span class="stat-num">3×3</span><span class="stat-label">Terminal wall across hosts, on one screen</span></div>
+      <div class="stat-cell"><span class="stat-num">7</span><span class="stat-label">agent CLIs supported out of the box</span></div>
+      <div class="stat-cell"><span class="stat-num">1</span><span class="stat-label">binary: desktop · headless server · Android app</span></div>
+      <div class="stat-cell"><span class="stat-num">3×3</span><span class="stat-label">terminal wall, several hosts on one screen</span></div>
       <div class="stat-cell"><span class="stat-num">MIT</span><span class="stat-label">100% open source</span></div>
     </div>
   </div>
@@ -179,6 +197,7 @@ const jsonLd = [
       <span class="marquee-item hot">OpenCode</span>
       <span class="marquee-item hot">Aider</span>
       <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item hot">Grok CLI</span>
       <span class="marquee-item">tmux</span>
       <span class="marquee-item">SSH</span>
       <span class="marquee-item">SFTP</span>
@@ -188,6 +207,9 @@ const jsonLd = [
       <span class="marquee-item">macOS</span>
       <span class="marquee-item">Linux</span>
       <span class="marquee-item">Windows</span>
+      <span class="marquee-item">Android</span>
+      <span class="marquee-item">iPadOS</span>
+      <span class="marquee-item">Docker</span>
       <span class="marquee-item">NVIDIA GPU telemetry</span>
       <span class="marquee-item">AES-256-GCM</span>
       <span class="marquee-item hot">Claude Code</span>
@@ -196,6 +218,7 @@ const jsonLd = [
       <span class="marquee-item hot">OpenCode</span>
       <span class="marquee-item hot">Aider</span>
       <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item hot">Grok CLI</span>
       <span class="marquee-item">tmux</span>
       <span class="marquee-item">SSH</span>
       <span class="marquee-item">SFTP</span>
@@ -205,6 +228,9 @@ const jsonLd = [
       <span class="marquee-item">macOS</span>
       <span class="marquee-item">Linux</span>
       <span class="marquee-item">Windows</span>
+      <span class="marquee-item">Android</span>
+      <span class="marquee-item">iPadOS</span>
+      <span class="marquee-item">Docker</span>
       <span class="marquee-item">NVIDIA GPU telemetry</span>
       <span class="marquee-item">AES-256-GCM</span>
     </div>
@@ -252,6 +278,21 @@ const jsonLd = [
         <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-13"/><path d="M4.5 12c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3"/></svg></div>
         <h3>Retrieval memory, kept local</h3>
         <p>Project facts, preferences, and agent activity are indexed for retrieval by wording or by meaning. Embeddings are computed locally; nothing leaves the machine. Credentials matching known patterns are redacted before storage.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="11.5" height="18" rx="2"/><rect x="16.5" y="8.5" width="5" height="12.5" rx="1.5"/><path d="M7 18h3.5"/></svg></div>
+        <h3>Tablet and phone, wherever you are<span class="new-tag">NEW</span></h3>
+        <p>The same binary runs headless, so a tablet browser is a complete AgentMux — terminals, agents, the toolkit, file browsing, all of it. Android goes further with a standalone app that carries the whole core: SSH runs from the device, and no always-on machine is needed.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.2 20a1.9 1.9 0 0 0 3.6 0"/></svg></div>
+        <h3>It raises a hand when it needs you<span class="new-tag">NEW</span></h3>
+        <p>An agent asking a question, one that finished with results to review and one idle at its prompt all read as “running” before. The poll now reads each pane and classifies it, marks the transitions a person needs to see, and takes the mark down when somebody actually looks.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5V8.5m0 0 4.5 4.5M12 8.5 7.5 13"/><path d="M4.5 4h15"/></svg></div>
+        <h3>One-click upgrades, and a portable install<span class="new-tag">NEW</span></h3>
+        <p>It checks for new releases shortly after launch and every six hours: download, verify the published sha256, swap in place, relaunch — and roll back if the swap fails. The whole configuration also travels to another computer as one encrypted file, and an import never overwrites what is already there.</p>
       </article>
     </div>
   </div>
@@ -326,6 +367,107 @@ const jsonLd = [
         </div>
         <div class="feature-shot"><img src="assets/img/themes.png" alt="Themes" loading="lazy"></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== tablet &amp; phone ============================== -->
+<section class="section-pad mob-sec" id="mobile">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">New · tablet & phone</span>
+      <h2 class="section-title">The same AgentMux, in your hands</h2>
+      <p class="section-desc">Two paths beyond the desktop: headless serve mode turns any browser into a complete client, and Android has a standalone app carrying its own core. Both run the same frontend on the same core — neither is a cut-down view.</p>
+    </div>
+    <div class="mob-layout">
+      <div class="mob-copy">
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></svg></div>
+          <div>
+            <h3>Headless serve mode</h3>
+            <p>Releases ship a dedicated server build, <code>agentmux-server-linux-&#123;amd64,arm64&#125;</code> — fully static, with no GTK, no webview and no display needed. Copy it to any Linux server and run it. The desktop build enters the same mode with <code>--serve</code>. The first start generates an access token and prints it in the log (kept as <code>serve-token</code> in the data directory; <code>AGENTMUX_TOKEN</code> overrides it).</p>
+            <div class="mob-cmd"><span class="cm"># server build: serves on :8642 by default</span><br>
+./agentmux<br>
+<span class="cm"># desktop build, same thing</span><br>
+agentmux --serve --addr <b>0.0.0.0:8642</b></div>
+          </div>
+        </div>
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M10.3 18.6h3.4"/></svg></div>
+          <div>
+            <h3>iPad and Android tablets: just open a browser</h3>
+            <p>Point the tablet at <code>http://host:8642</code>, enter the token once, and everything works — terminals, agents, the toolkit, file browsing. “Add to Home Screen” (Safari on iPad, Chrome on Android) installs it as a standalone app. Closing the browser stops nothing, exactly like closing the desktop window: the agents live in remote tmux.</p>
+          </div>
+        </div>
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 18c0 .55.45 1 1 1h1v3.2a1.4 1.4 0 0 0 2.8 0V19h2.4v3.2a1.4 1.4 0 0 0 2.8 0V19h1c.55 0 1-.45 1-1V8H6v10ZM3.4 8A1.4 1.4 0 0 0 2 9.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 3.4 8ZM20.6 8a1.4 1.4 0 0 0-1.4 1.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 20.6 8ZM15.5 2.2 16.8.9a.35.35 0 1 0-.5-.5l-1.47 1.47A5.9 5.9 0 0 0 12 1.25c-.85 0-1.65.18-2.36.49L8.17.26a.35.35 0 1 0-.5.5l1.3 1.3A5.6 5.6 0 0 0 6 7h12a5.6 5.6 0 0 0-2.5-4.8ZM9.5 4.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"/></svg></div>
+          <div>
+            <h3>The native Android app needs no always-on machine</h3>
+            <p>Every release attaches <code>agentmux-android.apk</code> (Android 8.0+ · arm64) with the same core the server build ships, embedded and started by a foreground service — foreground because Android freezes background processes at screen lock, and the core holds the SSH connections. The layout was reworked for small screens too: under 768px the side panels become overlay drawers, and a bottom navigation bar puts the tree, the command palette, the detail panel and settings where a thumb actually reaches, safe-area inset respected.</p>
+          </div>
+        </div>
+      </div>
+      <div class="mob-devices reveal">
+        <div class="dev dev-tablet">
+          <div class="dev-screen">
+            <div class="dev-bar"><span><span class="dot"></span>agentmux · tablet</span><span>:8642</span></div>
+            <div class="dev-body">
+              <div class="dev-tree">
+                <b>PROJECTS</b>
+                ▾ orbit-api<br>&nbsp;├ claude<br>&nbsp;└ codex
+                <b>SERVERS</b>
+                gpu-01<br>dev-box
+              </div>
+              <div class="dev-term">
+                <div>$ claude --resume</div>
+                <div class="ok">✓ reattached · scrollback intact</div>
+                <div>› reindexing…</div>
+                <div class="hold">⏸ waiting for you</div>
+                <div>$ <span class="cur"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dev dev-phone">
+          <div class="dev-screen">
+            <div class="dev-bar"><span><span class="dot"></span>APK</span><span>arm64</span></div>
+            <div class="dev-body">
+              <div class="dev-term">
+                <div>$ codex</div>
+                <div class="ok">✓ ssh gpu-01</div>
+                <div>› patch applied</div>
+                <div>$ <span class="cur"></span></div>
+              </div>
+              <div class="dev-nav">
+                <span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h7M4 12h10M4 18h7"/></svg>Tree</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3"/></svg>⌘K</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>Panel</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6"/></svg>Settings</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mob-note reveal"><b>Security note:</b> serve mode authenticates with the token alone. On a LAN or over a VPN that is enough; for use over the public internet, put an HTTPS reverse proxy in front of it.</div>
+  </div>
+</section>
+
+<!-- ============================== what's new ============================== -->
+<section class="section-pad" id="whatsnew" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">What's new</span>
+      <h2 class="section-title">And this round also brought</h2>
+      <p class="section-desc">Beyond tablets and phones, the August round landed the following.</p>
+    </div>
+    <div class="scene-grid">
+      <div class="scene-card reveal"><h3><span class="num">01</span>Reconnects on its own</h3><p>A terminal that lost its transport is not over — the tmux session on the far side is still running. The pipe is rebuilt with the same shell id, the same scrollback and the same pane, backing off from one second to fifteen and leaving the manual button after about five minutes. Two keepalives, TCP and SSH, answer different questions; one-shot command terminals are exempt, because re-running an install is a side effect nobody asked for.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">02</span>Remote desktop over the connection it already has</h3><p>Some work is a screen. Right-click a host and 3389 or 5900 is dialled through the SSH connection that host already has, forwarded to a port here and handed to whichever viewer this computer has — Remote Desktop Connection, Screen Sharing, Remmina. A desktop listening on its own loopback needs nothing opened to the network.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">03</span>One-click upgrades</h3><p>The app checks the release feed shortly after launch and every six hours after. A newer version raises a one-line banner under the title bar: upgrade and restart, release notes, or later. Upgrading downloads with a progress bar, verifies the published sha256, swaps the running executable, and rolls back to the build that was running if the swap fails.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">04</span>Carry an installation, encrypted</h3><p>Hosts, folders, projects, workspaces and agent definitions go into a single passphrase-encrypted file (Argon2id + AES-256-GCM) and open on the other side. An import never overwrites: a host at the same address, a project with the same name, a path on the same machine — each is left exactly as it is, so importing twice adds nothing.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">05</span>What a host is, not just what it is doing</h3><p>The metrics panel now reports CPU model, DIMM specs, physical drives and graphics adapters alongside utilisation. Those are static, so they ride a one-shot read cached for the session rather than the three-second ticker.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">06</span>More toolkit, more languages</h3><p>One-click install now covers Grok CLI, Docker (six methods, retrying against a mirror where the network needs one, then starting the daemon and adding the user to the group) and Ollama. The interface adds Traditional Chinese — a full catalogue in Taiwan terminology, not a character-for-character conversion.</p></div>
     </div>
   </div>
 </section>
@@ -436,8 +578,8 @@ const jsonLd = [
   <div class="wrap">
     <div class="section-head reveal">
       <span class="kicker">Download</span>
-      <h2 class="section-title">One build per platform, produced by GitHub Actions from the tagged commit</h2>
-      <p class="section-desc">Every file ships with a .sha256 alongside.</p>
+      <h2 class="section-title">Desktop, server and Android — one build per platform</h2>
+      <p class="section-desc">All produced by GitHub Actions from a tagged commit, each file with a .sha256 alongside.</p>
     </div>
     <div class="dl-grid">
       <div class="dl-card reveal">
@@ -459,6 +601,22 @@ const jsonLd = [
         <h3>Linux</h3>
         <p class="dl-req">GTK3 &amp; WebKitGTK 4.1 required · amd64</p>
         <p class="dl-file">agentmux-linux-amd64.tar.gz</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">Download <span class="arrow">↓</span></a>
+      </div>
+    </div>
+    <div class="dl-grid dl-grid-2">
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h5M11 16.5h5"/></svg></div>
+        <h3>Tablet / server (headless)<span class="new-tag">NEW</span></h3>
+        <p class="dl-req">Any Linux · amd64 and arm64 · no GTK, no webview, no display</p>
+        <p class="dl-file">agentmux-server-linux-amd64.tar.gz<br>agentmux-server-linux-arm64.tar.gz</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">Download <span class="arrow">↓</span></a>
+      </div>
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 18c0 .55.45 1 1 1h1v3.2a1.4 1.4 0 0 0 2.8 0V19h2.4v3.2a1.4 1.4 0 0 0 2.8 0V19h1c.55 0 1-.45 1-1V8H6v10ZM3.4 8A1.4 1.4 0 0 0 2 9.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 3.4 8ZM20.6 8a1.4 1.4 0 0 0-1.4 1.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 20.6 8ZM15.5 2.2 16.8.9a.35.35 0 1 0-.5-.5l-1.47 1.47A5.9 5.9 0 0 0 12 1.25c-.85 0-1.65.18-2.36.49L8.17.26a.35.35 0 1 0-.5.5l1.3 1.3A5.6 5.6 0 0 0 6 7h12a5.6 5.6 0 0 0-2.5-4.8ZM9.5 4.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"/></svg></div>
+        <h3>Android<span class="new-tag">NEW</span></h3>
+        <p class="dl-req">Android 8.0+ · arm64 · embeds the full core, runs standalone</p>
+        <p class="dl-file">agentmux-android.apk</p>
         <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">Download <span class="arrow">↓</span></a>
       </div>
     </div>
@@ -502,6 +660,18 @@ const jsonLd = [
       <details class="faq-item">
         <summary>Does deleting something in AgentMux stop remote work?<span class="faq-chevron">＋</span></summary>
         <p>Never. Removing a workspace or agent record only removes the local record — the tmux session keeps running. The one control that destroys a running session is named Kill, and it confirms first, stating what is lost.</p>
+      </details>
+      <details class="faq-item">
+        <summary>How do I use it on a tablet or a phone?<span class="faq-chevron">＋</span></summary>
+        <p>Two ways. Run the headless server on any Linux machine — the dedicated <code>agentmux-server-linux-&#123;amd64,arm64&#125;</code> build, or the desktop build with <code>--serve</code> — then open <code>http://host:8642</code> on the tablet, enter the token once and “Add to Home Screen” for a standalone app. That is the iPad route. On Android you can instead install <code>agentmux-android.apk</code>, which embeds the full core and needs no server at all.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What is the difference between the Android APK and serve mode?<span class="faq-chevron">＋</span></summary>
+        <p>In serve mode the core runs on one of your machines and the tablet is a client, so phone, tablet and desktop see the same state. The APK puts the core on the device itself: SSH runs from the phone, configuration and keys stay local, and no always-on machine is involved. The foreground service is deliberate — without it Android freezes the process at screen lock and cuts every SSH connection.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Is serve mode safe to expose to the internet?<span class="faq-chevron">＋</span></summary>
+        <p>It authenticates with an access token alone, generated on first start and kept as <code>serve-token</code> in the data directory. That is enough on a LAN or over a VPN; for public access, put an HTTPS reverse proxy in front rather than exposing plain HTTP.</p>
       </details>
     </div>
   </div>

@@ -4,10 +4,10 @@ import Footer from '../components/Footer.astro';
 
 const meta = {
   "title": "AgentMux — AIコーディングエージェントのデスクトップコントロールプレーン",
-  "description": "AgentMuxは、Claude Code、Codex、Gemini CLI、AiderなどのAIコーディングエージェントをリモートホストと手元のマシンで運用するためのデスクトップコントロールプレーンです。tmuxによるセッション永続化、マルチペインのターミナルウォール、送達確認付きブロードキャスト、人間の承認を前提としたローカルオーケストレーション。シングルバイナリ、サーバー不要、MITライセンス。",
-  "keywords": "AgentMux, AIエージェント, Claude Code, Codex, Gemini CLI, Aider, tmux, SSH, リモート開発, エージェント管理, デスクトップコントロールプレーン, オープンソース",
+  "description": "AgentMuxは、Claude Code、Codex、Gemini CLI、Grok CLI、AiderなどのAIコーディングエージェントをリモートホストと手元のマシンで運用するためのコントロールプレーンです。tmuxによるセッション永続化、マルチペインのターミナルウォール、送達確認付きブロードキャスト、人間の承認を前提としたローカルオーケストレーション。デスクトップに加えてヘッドレスのserveモードとコア内蔵のAndroidアプリがあり、iPadやAndroidタブレットからも使えます。シングルバイナリ、サーバー不要、MITライセンス。",
+  "keywords": "AgentMux, AIエージェント, Claude Code, Codex, Gemini CLI, Grok CLI, Aider, tmux, SSH, リモート開発, エージェント管理, コントロールプレーン, Androidアプリ, iPad, タブレット, スマホ, ヘッドレスサーバー, オープンソース",
   "ogTitle": "AgentMux — AIコーディングエージェントのデスクトップコントロールプレーン",
-  "ogDescription": "ビルドサーバー、GPUマシン、ステージングホスト、そして手元のPCでコーディングエージェントを運用。セッションは設計上、切断後も継続します。シングルバイナリ、MITライセンス。",
+  "ogDescription": "ビルドサーバー、GPUマシン、ステージングホスト、そして手元のPCでコーディングエージェントを運用。セッションは設計上、切断後も継続します。iPad・Androidタブレット・スマホにも対応し、Androidにはコア内蔵の単体アプリも。シングルバイナリ、MITライセンス。",
   "ogType": "website"
 };
 
@@ -16,11 +16,11 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "AgentMux",
-    "description": "AIコーディングエージェントのためのデスクトップコントロールプレーン。Claude Code、Codex、Gemini CLI、Aiderなどをリモートホストと手元のマシンで運用でき、セッションはtmuxで永続化されます。シングルバイナリ、サーバー不要。",
+    "description": "AIコーディングエージェントのためのコントロールプレーン。Claude Code、Codex、Gemini CLI、Grok CLI、Aiderなどをリモートホストと手元のマシンで運用でき、セッションはtmuxで永続化されます。デスクトップ、ヘッドレスのserveモード、Androidアプリの3形態。シングルバイナリ、サーバー不要。",
     "inLanguage": "ja",
     "url": "https://agentmux.pro/ja.html",
     "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "macOS 11+, Windows 10+, Linux",
+    "operatingSystem": "macOS 11+, Windows 10+, Linux, Android 8+, iPadOS (browser)",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -90,6 +90,22 @@ const jsonLd = [
           "@type": "Answer",
           "text": "止まりません。ワークスペースやエージェントのレコードを削除しても、消えるのはローカルの記録だけで、tmuxセッションは動き続けます。実行中のセッションを破棄する唯一の操作はKillという名前で、必ず事前に確認します。"
         }
+      },
+      {
+        "@type": "Question",
+        "name": "AgentMuxはタブレットやスマホで使えますか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "使えます。同じバイナリがヘッドレスのserveモードで動作します（専用のagentmux-server-linux-amd64/arm64、またはデスクトップ版に--serve）。タブレットのブラウザでhttp://ホスト:8642を開き、アクセストークンを一度入力すればすべての機能が使え、「ホーム画面に追加」で単体アプリになります。Androidではagentmux-android.apkを直接インストールすることもでき、コアを内蔵しているためSSHは端末から直接発行され、常時起動のマシンは不要です。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Androidアプリとserveモードの違いは何ですか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "serveモードではコアがあなたのマシンで動き、タブレットやスマホはクライアントとして同じ状態を共有します。Android APKはコアを端末に内蔵し、フォアグラウンドサービスで維持します。設定と鍵は端末内に保存され、常時起動のマシンに依存しません。"
+        }
       }
     ]
   }
@@ -103,11 +119,13 @@ const jsonLd = [
   <div class="hero-backdrop" aria-hidden="true"></div>
   <div class="hero-grid-lines" aria-hidden="true"></div>
   <div class="hero-inner">
+    <a class="hero-badge" href="#mobile"><span class="tag">NEW</span> AndroidアプリとiPad対応が登場<span class="arrow">→</span></a>
     <h1><span class="accent">AIコーディングエージェント</span>のための<br>デスクトップコントロールプレーン</h1>
     <p class="hero-sub">
-      Claude Code、Codex、Gemini CLI、Aiderなどを、ビルドサーバー、GPUマシン、
+      Claude Code、Codex、Gemini CLI、Grok CLI、Aiderなどを、ビルドサーバー、GPUマシン、
       ステージングホスト、そして手元のPCで運用。各エージェントはホスト上の<b>tmux</b>セッション内で動作します。
       クライアントを閉じても、ノートPCをスリープさせても、ネットワークが切れても — 作業は続きます。
+      いまはタブレットやスマホからでも同じように。
     </p>
     <div class="hero-ctas">
       <a class="btn btn-primary" href="#download">無料ダウンロード<span class="arrow">→</span></a>
@@ -159,9 +177,9 @@ const jsonLd = [
     </div>
 
     <div class="stats-row">
-      <div class="stat-cell"><span class="stat-num">6+</span><span class="stat-label">主要なエージェントCLIに対応</span></div>
-      <div class="stat-cell"><span class="stat-num">1</span><span class="stat-label">シングルバイナリ — サーバーもデーモンもアカウントも不要</span></div>
-      <div class="stat-cell"><span class="stat-num">3×3</span><span class="stat-label">複数ホストのターミナルウォールを1画面に</span></div>
+      <div class="stat-cell"><span class="stat-num">7種</span><span class="stat-label">標準対応の主要エージェントCLI</span></div>
+      <div class="stat-cell"><span class="stat-num">1つ</span><span class="stat-label">バイナリ：デスクトップ · ヘッドレスサーバー · Androidアプリ</span></div>
+      <div class="stat-cell"><span class="stat-num">3×3</span><span class="stat-label">ターミナルウォール、複数ホストを一画面で</span></div>
       <div class="stat-cell"><span class="stat-num">MIT</span><span class="stat-label">100%オープンソース</span></div>
     </div>
   </div>
@@ -181,6 +199,7 @@ const jsonLd = [
       <span class="marquee-item hot">OpenCode</span>
       <span class="marquee-item hot">Aider</span>
       <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item hot">Grok CLI</span>
       <span class="marquee-item">tmux</span>
       <span class="marquee-item">SSH</span>
       <span class="marquee-item">SFTP</span>
@@ -190,6 +209,9 @@ const jsonLd = [
       <span class="marquee-item">macOS</span>
       <span class="marquee-item">Linux</span>
       <span class="marquee-item">Windows</span>
+      <span class="marquee-item">Android</span>
+      <span class="marquee-item">iPadOS</span>
+      <span class="marquee-item">Docker</span>
       <span class="marquee-item">NVIDIA GPUテレメトリ</span>
       <span class="marquee-item">AES-256-GCM</span>
       <span class="marquee-item hot">Claude Code</span>
@@ -198,6 +220,7 @@ const jsonLd = [
       <span class="marquee-item hot">OpenCode</span>
       <span class="marquee-item hot">Aider</span>
       <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item hot">Grok CLI</span>
       <span class="marquee-item">tmux</span>
       <span class="marquee-item">SSH</span>
       <span class="marquee-item">SFTP</span>
@@ -207,6 +230,9 @@ const jsonLd = [
       <span class="marquee-item">macOS</span>
       <span class="marquee-item">Linux</span>
       <span class="marquee-item">Windows</span>
+      <span class="marquee-item">Android</span>
+      <span class="marquee-item">iPadOS</span>
+      <span class="marquee-item">Docker</span>
       <span class="marquee-item">NVIDIA GPUテレメトリ</span>
       <span class="marquee-item">AES-256-GCM</span>
     </div>
@@ -254,6 +280,21 @@ const jsonLd = [
         <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-13"/><path d="M4.5 12c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3"/></svg></div>
         <h3>ローカルに閉じた検索メモリ</h3>
         <p>プロジェクトの事実、好み、エージェントの活動をインデックス化し、語句でも意味でも検索できます。埋め込みはローカルで計算され、データがマシンの外に出ることはありません。既知のパターンに一致する認証情報は、保存前にマスキングされます。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="11.5" height="18" rx="2"/><rect x="16.5" y="8.5" width="5" height="12.5" rx="1.5"/><path d="M7 18h3.5"/></svg></div>
+        <h3>タブレットとスマホで、どこでも<span class="new-tag">NEW</span></h3>
+        <p>同じバイナリがヘッドレスで動くため、タブレットのブラウザがそのまま完全なAgentMuxになります — ターミナル、エージェント、ツールキット、ファイル閲覧まで一通り。Androidにはコアそのものを内蔵した単体アプリもあり、SSHは端末から直接。常時起動のマシンは一台も要りません。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.2 20a1.9 1.9 0 0 0 3.6 0"/></svg></div>
+        <h3>人が必要なときは手を挙げます<span class="new-tag">NEW</span></h3>
+        <p>質問しているエージェント、結果を確認してほしいエージェント、プロンプトで待機中のエージェント — 以前はすべて「running」でした。現在はポーリングが各ペインを読んで分類し、人の対応が必要な変化にマークを立て、実際に誰かが見た時点でマークを下ろします。</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5V8.5m0 0 4.5 4.5M12 8.5 7.5 13"/><path d="M4.5 4h15"/></svg></div>
+        <h3>ワンクリック更新と、まるごと移行<span class="new-tag">NEW</span></h3>
+        <p>起動直後と6時間ごとに新しいリリースを確認し、ダウンロード、公開されたsha256の検証、その場での置き換え、再起動まで自動。失敗すれば元のビルドへロールバックします。設定一式も暗号化ファイル1つで別のPCへ移せ、インポートは既存項目を決して上書きしません。</p>
       </article>
     </div>
   </div>
@@ -328,6 +369,107 @@ const jsonLd = [
         </div>
         <div class="feature-shot"><img src="assets/img/themes.png" alt="テーマ" loading="lazy"></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== tablet &amp; phone ============================== -->
+<section class="section-pad mob-sec" id="mobile">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">新機能 · タブレットとスマホ</span>
+      <h2 class="section-title">同じAgentMuxを、タブレットとスマホに</h2>
+      <p class="section-desc">デスクトップに加えて経路が2つ増えました。ヘッドレスのserveモードはあらゆるブラウザを完全なクライアントにし、Androidにはコアを内蔵した単体アプリがあります。どちらも同じフロントエンドと同じコア — 機能を削った簡易版ではありません。</p>
+    </div>
+    <div class="mob-layout">
+      <div class="mob-copy">
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></svg></div>
+          <div>
+            <h3>ヘッドレスのserveモード</h3>
+            <p>リリースにはサーバー専用ビルド <code>agentmux-server-linux-&#123;amd64,arm64&#125;</code> が付属します。完全な静的バイナリで、GTKもWebViewもディスプレイも不要 — 任意のLinuxサーバーにコピーして起動するだけ。デスクトップ版は <code>--serve</code> で同じモードに入ります。初回起動時にアクセストークンが生成されログに出力されます（データディレクトリの <code>serve-token</code> に保存、<code>AGENTMUX_TOKEN</code> で上書き可）。</p>
+            <div class="mob-cmd"><span class="cm"># サーバー版：既定で :8642 を待ち受け</span><br>
+./agentmux<br>
+<span class="cm"># デスクトップ版も同じ</span><br>
+agentmux --serve --addr <b>0.0.0.0:8642</b></div>
+          </div>
+        </div>
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M10.3 18.6h3.4"/></svg></div>
+          <div>
+            <h3>iPadとAndroidタブレット：ブラウザを開くだけ</h3>
+            <p>タブレットで <code>http://ホスト:8642</code> を開き、トークンを一度入力すれば、ターミナル、エージェント、ツールキット、ファイル閲覧のすべてが使えます。iPadはSafariの「共有 → ホーム画面に追加」、AndroidはChromeの「ホーム画面に追加」で単体アプリに。ブラウザを閉じても何も止まりません — デスクトップの窓を閉じるのと同じで、エージェントはリモートのtmuxの中で生きています。</p>
+          </div>
+        </div>
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 18c0 .55.45 1 1 1h1v3.2a1.4 1.4 0 0 0 2.8 0V19h2.4v3.2a1.4 1.4 0 0 0 2.8 0V19h1c.55 0 1-.45 1-1V8H6v10ZM3.4 8A1.4 1.4 0 0 0 2 9.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 3.4 8ZM20.6 8a1.4 1.4 0 0 0-1.4 1.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 20.6 8ZM15.5 2.2 16.8.9a.35.35 0 1 0-.5-.5l-1.47 1.47A5.9 5.9 0 0 0 12 1.25c-.85 0-1.65.18-2.36.49L8.17.26a.35.35 0 1 0-.5.5l1.3 1.3A5.6 5.6 0 0 0 6 7h12a5.6 5.6 0 0 0-2.5-4.8ZM9.5 4.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"/></svg></div>
+          <div>
+            <h3>Androidネイティブアプリ：常時起動のマシンは不要</h3>
+            <p>各リリースに <code>agentmux-android.apk</code>（Android 8.0+ · arm64）が付属します。サーバー版と同一のコアを内蔵し、フォアグラウンドサービスとして起動 — 画面ロック後もAndroidに凍結されず、SSHは端末から直接、設定と鍵は端末内に残ります。小さな画面向けにレイアウトも作り直しました。768px未満ではサイドパネルがオーバーレイのドロワーになり、画面下のナビゲーションバーがツリー、コマンドパレット、詳細、設定を親指の届く位置に置きます（セーフエリア対応）。</p>
+          </div>
+        </div>
+      </div>
+      <div class="mob-devices reveal">
+        <div class="dev dev-tablet">
+          <div class="dev-screen">
+            <div class="dev-bar"><span><span class="dot"></span>agentmux · タブレット</span><span>:8642</span></div>
+            <div class="dev-body">
+              <div class="dev-tree">
+                <b>PROJECTS</b>
+                ▾ orbit-api<br>&nbsp;├ claude<br>&nbsp;└ codex
+                <b>SERVERS</b>
+                gpu-01<br>dev-box
+              </div>
+              <div class="dev-term">
+                <div>$ claude --resume</div>
+                <div class="ok">✓ 再アタッチ済 · スクロールバック保持</div>
+                <div>› インデックス再構築中…</div>
+                <div class="hold">⏸ 応答を待っています</div>
+                <div>$ <span class="cur"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dev dev-phone">
+          <div class="dev-screen">
+            <div class="dev-bar"><span><span class="dot"></span>APK</span><span>arm64</span></div>
+            <div class="dev-body">
+              <div class="dev-term">
+                <div>$ codex</div>
+                <div class="ok">✓ ssh gpu-01</div>
+                <div>› パッチ適用済</div>
+                <div>$ <span class="cur"></span></div>
+              </div>
+              <div class="dev-nav">
+                <span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h7M4 12h10M4 18h7"/></svg>ツリー</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3"/></svg>⌘K</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>詳細</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6"/></svg>設定</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mob-note reveal"><b>セキュリティ上の注意：</b> serveモードの認証はトークンのみです。LANやVPN内であれば十分ですが、インターネット越しに使う場合はHTTPSのリバースプロキシを前段に置いてください。</div>
+  </div>
+</section>
+
+<!-- ============================== what's new ============================== -->
+<section class="section-pad" id="whatsnew" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">最近の更新</span>
+      <h2 class="section-title">この更新では、ほかにも</h2>
+      <p class="section-desc">タブレットとスマホ対応に加えて、8月の更新では次の機能が入りました。</p>
+    </div>
+    <div class="scene-grid">
+      <div class="scene-card reveal"><h3><span class="num">01</span>切断からの自動再接続</h3><p>ターミナルが回線を失っても作業は終わっていません — 向こう側のtmuxセッションは動き続けています。パイプは同じshell id、同じスクロールバック、同じペインで張り直され、待機は1秒から15秒へと伸び、約5分後には従来の手動ボタンが残ります。TCPとSSHの2つのkeepaliveはそれぞれ別の問いに答えます。一度きりのコマンド端末は対象外です — Wi-Fiが瞬断しただけでインストールをやり直すのは誰も望まないからです。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">02</span>リモートデスクトップも既存の接続から</h3><p>画面が必要な作業もあります。ホストを右クリックすると3389と5900が、そのホストが既に張っているSSH接続を通ってこのPCへ転送され、このPCにあるビューア（リモートデスクトップ接続 / 画面共有 / Remmina）に渡されます。ループバックだけを待ち受けるデスクトップでも、ネットワークに何も開ける必要はありません。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">03</span>ワンクリック更新</h3><p>起動直後と6時間ごとにリリースを確認し、新しい版があればタイトルバーの下に1行のバナーが出ます：更新して再起動、リリースノート、あとで。更新は進捗バー付きでダウンロードし、公開されたsha256を検証して実行ファイルを置き換え、失敗すれば動作していたビルドへ戻します。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">04</span>設定を暗号化して持ち運ぶ</h3><p>ホスト、フォルダ、プロジェクト、ワークスペース、エージェント定義をパスフレーズで暗号化した1つのファイルに書き出し（Argon2id + AES-256-GCM）、別のPCで開きます。インポートは決して上書きしません：同じアドレスのホスト、同じ名前のプロジェクト、同じマシンの同じパスはそのまま残るので、同じファイルを二度取り込んでも何も増えません。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">05</span>ホストが「何であるか」も</h3><p>メトリクスパネルは稼働状況だけでなく、CPUのモデル名、メモリモジュールの仕様、物理ドライブ、グラフィックスアダプタも表示します。これらは静的な情報なので、3秒ごとのポーリングではなく、セッション内でキャッシュされる一度きりの読み取りで取得します。</p></div>
+      <div class="scene-card reveal"><h3><span class="num">06</span>ツールキットと表示言語</h3><p>ワンクリックインストールにGrok CLI、Docker（6通りの方法。ネットワークが必要とする場合はミラーで再試行し、最後にデーモンを起動してユーザーをグループに追加）、Ollamaが加わりました。UIには繁體中文が追加 — 台湾の用語で書き起こした完全な辞書であり、簡体字からの文字変換ではありません。</p></div>
     </div>
   </div>
 </section>
@@ -438,8 +580,8 @@ const jsonLd = [
   <div class="wrap">
     <div class="section-head reveal">
       <span class="kicker">ダウンロード</span>
-      <h2 class="section-title">各プラットフォームに1ビルド、タグ付きコミットからGitHub Actionsが生成</h2>
-      <p class="section-desc">すべてのファイルに.sha256が付属します。</p>
+      <h2 class="section-title">デスクトップ、サーバー、Android — 各プラットフォームに1ビルド</h2>
+      <p class="section-desc">すべてタグ付きコミットからGitHub Actionsが生成し、各ファイルに.sha256が付属します。</p>
     </div>
     <div class="dl-grid">
       <div class="dl-card reveal">
@@ -461,6 +603,22 @@ const jsonLd = [
         <h3>Linux</h3>
         <p class="dl-req">GTK3とWebKitGTK 4.1が必要 · amd64</p>
         <p class="dl-file">agentmux-linux-amd64.tar.gz</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">ダウンロード <span class="arrow">↓</span></a>
+      </div>
+    </div>
+    <div class="dl-grid dl-grid-2">
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h5M11 16.5h5"/></svg></div>
+        <h3>タブレット / サーバー（ヘッドレス）<span class="new-tag">NEW</span></h3>
+        <p class="dl-req">任意のLinux · amd64とarm64 · GTK/WebView・ディスプレイ不要</p>
+        <p class="dl-file">agentmux-server-linux-amd64.tar.gz<br>agentmux-server-linux-arm64.tar.gz</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">ダウンロード <span class="arrow">↓</span></a>
+      </div>
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 18c0 .55.45 1 1 1h1v3.2a1.4 1.4 0 0 0 2.8 0V19h2.4v3.2a1.4 1.4 0 0 0 2.8 0V19h1c.55 0 1-.45 1-1V8H6v10ZM3.4 8A1.4 1.4 0 0 0 2 9.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 3.4 8ZM20.6 8a1.4 1.4 0 0 0-1.4 1.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 20.6 8ZM15.5 2.2 16.8.9a.35.35 0 1 0-.5-.5l-1.47 1.47A5.9 5.9 0 0 0 12 1.25c-.85 0-1.65.18-2.36.49L8.17.26a.35.35 0 1 0-.5.5l1.3 1.3A5.6 5.6 0 0 0 6 7h12a5.6 5.6 0 0 0-2.5-4.8ZM9.5 4.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"/></svg></div>
+        <h3>Android<span class="new-tag">NEW</span></h3>
+        <p class="dl-req">Android 8.0+ · arm64 · コア内蔵で単体動作</p>
+        <p class="dl-file">agentmux-android.apk</p>
         <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">ダウンロード <span class="arrow">↓</span></a>
       </div>
     </div>
@@ -504,6 +662,18 @@ const jsonLd = [
       <details class="faq-item">
         <summary>AgentMuxで何かを削除すると、リモートの作業は止まりますか？<span class="faq-chevron">＋</span></summary>
         <p>止まりません。ワークスペースやエージェントのレコードを削除しても、消えるのはローカルの記録だけで、tmuxセッションは動き続けます。実行中のセッションを破棄する唯一の操作はKillという名前で、何が失われるかを提示して必ず事前に確認します。</p>
+      </details>
+      <details class="faq-item">
+        <summary>タブレットやスマホではどう使いますか？<span class="faq-chevron">＋</span></summary>
+        <p>2通りあります。1つはヘッドレスサーバーを任意のLinuxで動かす方法（専用の <code>agentmux-server-linux-&#123;amd64,arm64&#125;</code>、またはデスクトップ版に <code>--serve</code>）。タブレットで <code>http://ホスト:8642</code> を開いてトークンを一度入力し、「ホーム画面に追加」すれば単体アプリになります — iPadはこちらです。もう1つはAndroidで <code>agentmux-android.apk</code> を直接インストールする方法で、コアを内蔵しているためサーバーは一切不要です。</p>
+      </details>
+      <details class="faq-item">
+        <summary>Android APKとserveモードの違いは？<span class="faq-chevron">＋</span></summary>
+        <p>serveモードではコアがあなたのどこかのマシンで動き、タブレットはクライアントです。そのためスマホ・タブレット・デスクトップが同じ状態を共有します。APKはコアを端末そのものに載せます：SSHはスマホから直接発行され、設定と鍵は端末内に残り、常時起動のマシンは関係しません。フォアグラウンドサービスは意図的なものです — これがないと画面ロック後にAndroidがプロセスを凍結し、すべてのSSH接続が切れてしまいます。</p>
+      </details>
+      <details class="faq-item">
+        <summary>serveモードをインターネットに公開しても安全ですか？<span class="faq-chevron">＋</span></summary>
+        <p>認証はアクセストークンのみです（初回起動時に生成され、データディレクトリの <code>serve-token</code> に保存されます）。LANやVPN内なら十分ですが、インターネット越しに使う場合は平文HTTPを直接晒さず、HTTPSのリバースプロキシを前段に置いてください。</p>
       </details>
     </div>
   </div>

@@ -4,10 +4,10 @@ import Footer from '../components/Footer.astro';
 
 const meta = {
   "title": "AgentMux — настольная панель управления ИИ-агентами для кода",
-  "description": "AgentMux — настольная панель управления ИИ-агентами для написания кода: Claude Code, Codex, Gemini CLI, Aider и другие, на удалённых хостах и на этом компьютере. Сессии живут в tmux, многопанельная стена терминалов, рассылка с подтверждениями доставки и локальная оркестрация с обязательным одобрением человека. Один бинарный файл, без сервера, лицензия MIT.",
-  "keywords": "AgentMux, ИИ-агент, Claude Code, Codex, Gemini CLI, Aider, tmux, SSH, удалённая разработка, управление агентами, настольная панель управления, открытый исходный код",
+  "description": "AgentMux — панель управления ИИ-агентами для написания кода: Claude Code, Codex, Gemini CLI, Grok CLI, Aider и другие, на удалённых хостах и на этом компьютере. Сессии живут в tmux, многопанельная стена терминалов, рассылка с подтверждениями доставки и локальная оркестрация с обязательным одобрением человека. Помимо десктопа есть headless-режим serve и автономное приложение для Android, так что iPad и планшеты на Android тоже работают. Один бинарный файл, без сервера, лицензия MIT.",
+  "keywords": "AgentMux, ИИ-агент, Claude Code, Codex, Gemini CLI, Grok CLI, Aider, tmux, SSH, удалённая разработка, управление агентами, панель управления, приложение для Android, iPad, планшет, телефон, headless-сервер, открытый исходный код",
   "ogTitle": "AgentMux — настольная панель управления ИИ-агентами для кода",
-  "ogDescription": "Управляйте агентами для написания кода на сборочных серверах, GPU-машинах, staging-хостах и на этом компьютере. Сессии переживают обрывы связи по самой своей конструкции. Один бинарный файл, лицензия MIT.",
+  "ogDescription": "Управляйте агентами для написания кода на сборочных серверах, GPU-машинах, staging-хостах и на этом компьютере. Сессии переживают обрывы связи по самой своей конструкции. Теперь и с iPad, планшетов и телефонов на Android — с автономным приложением, несущим собственное ядро. Один бинарный файл, лицензия MIT.",
   "ogType": "website"
 };
 
@@ -16,11 +16,11 @@ const jsonLd = [
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "AgentMux",
-    "description": "Настольная панель управления ИИ-агентами для написания кода: Claude Code, Codex, Gemini CLI, Aider и другие на удалённых хостах и на этом компьютере, с сессиями, живущими в tmux. Один бинарный файл, без сервера.",
+    "description": "Панель управления ИИ-агентами для написания кода: Claude Code, Codex, Gemini CLI, Grok CLI, Aider и другие на удалённых хостах и на этом компьютере, с сессиями, живущими в tmux. Десктоп, headless-режим serve и автономное приложение для Android. Один бинарный файл, без сервера.",
     "url": "https://agentmux.pro/ru.html",
     "inLanguage": "ru",
     "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "macOS 11+, Windows 10+, Linux",
+    "operatingSystem": "macOS 11+, Windows 10+, Linux, Android 8+, iPadOS (browser)",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -90,6 +90,22 @@ const jsonLd = [
           "@type": "Answer",
           "text": "Никогда. Удаление рабочей области или записи агента убирает только локальную запись — сессия tmux продолжает работать. Единственный элемент управления, уничтожающий работающую сессию, называется Kill, и он сначала запрашивает подтверждение."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "Можно ли пользоваться AgentMux на планшете или телефоне?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Да. Тот же бинарник работает в headless-режиме serve (отдельная сборка agentmux-server-linux-amd64/arm64 или десктопная сборка с ключом --serve). Откройте в браузере планшета http://хост:8642, один раз введите токен доступа — и доступны все возможности; добавление на экран «Домой» превращает это в отдельное приложение. На Android можно также установить agentmux-android.apk: он несёт полное ядро внутри, SSH идёт прямо с устройства, и постоянно включённая машина не требуется."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Чем приложение для Android отличается от режима serve?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "В режиме serve ядро работает на одной из ваших машин, а планшеты и телефоны выступают клиентами и видят одно и то же состояние. APK для Android встраивает ядро в устройство и поддерживает его foreground-сервисом; конфигурация и ключи хранятся локально, зависимости от постоянно включённой машины нет."
+        }
       }
     ]
   }
@@ -103,11 +119,13 @@ const jsonLd = [
   <div class="hero-backdrop" aria-hidden="true"></div>
   <div class="hero-grid-lines" aria-hidden="true"></div>
   <div class="hero-inner">
+    <a class="hero-badge" href="#mobile"><span class="tag">NEW</span> Приложение для Android и поддержка iPad уже здесь<span class="arrow">→</span></a>
     <h1>Настольная панель управления<br><span class="accent">ИИ-агентами для кода</span></h1>
     <p class="hero-sub">
-      Управляйте Claude Code, Codex, Gemini CLI, Aider и другими агентами — на сборочных серверах,
-      GPU-машинах, staging-хостах и на этом компьютере. Каждый агент работает в сессии <b>tmux</b> на своём хосте:
-      закройте клиент, отправьте ноутбук в сон, потеряйте сеть — работа продолжится.
+      Управляйте Claude Code, Codex, Gemini CLI, Grok CLI, Aider и другими агентами — на сборочных
+      серверах, GPU-машинах, staging-хостах и на этом компьютере. Каждый агент работает в сессии <b>tmux</b> на своём
+      хосте: закройте клиент, отправьте ноутбук в сон, потеряйте сеть — работа продолжится. Теперь и с планшета
+      или телефона.
     </p>
     <div class="hero-ctas">
       <a class="btn btn-primary" href="#download">Скачать бесплатно<span class="arrow">→</span></a>
@@ -159,10 +177,10 @@ const jsonLd = [
     </div>
 
     <div class="stats-row">
-      <div class="stat-cell"><span class="stat-num">6+</span><span class="stat-label">Поддерживаемых популярных агентских CLI</span></div>
-      <div class="stat-cell"><span class="stat-num">1</span><span class="stat-label">Бинарный файл — без сервера, демона и аккаунта</span></div>
-      <div class="stat-cell"><span class="stat-num">3×3</span><span class="stat-label">Стена терминалов с разных хостов на одном экране</span></div>
-      <div class="stat-cell"><span class="stat-num">MIT</span><span class="stat-label">Исходный код открыт на 100%</span></div>
+      <div class="stat-cell"><span class="stat-num">7</span><span class="stat-label">агентских CLI поддержаны из коробки</span></div>
+      <div class="stat-cell"><span class="stat-num">1</span><span class="stat-label">бинарник: десктоп · headless-сервер · приложение для Android</span></div>
+      <div class="stat-cell"><span class="stat-num">3×3</span><span class="stat-label">стена терминалов, несколько хостов на одном экране</span></div>
+      <div class="stat-cell"><span class="stat-num">MIT</span><span class="stat-label">100% открытый исходный код</span></div>
     </div>
   </div>
 </header>
@@ -181,6 +199,7 @@ const jsonLd = [
       <span class="marquee-item hot">OpenCode</span>
       <span class="marquee-item hot">Aider</span>
       <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item hot">Grok CLI</span>
       <span class="marquee-item">tmux</span>
       <span class="marquee-item">SSH</span>
       <span class="marquee-item">SFTP</span>
@@ -190,6 +209,9 @@ const jsonLd = [
       <span class="marquee-item">macOS</span>
       <span class="marquee-item">Linux</span>
       <span class="marquee-item">Windows</span>
+      <span class="marquee-item">Android</span>
+      <span class="marquee-item">iPadOS</span>
+      <span class="marquee-item">Docker</span>
       <span class="marquee-item">Телеметрия NVIDIA GPU</span>
       <span class="marquee-item">AES-256-GCM</span>
       <span class="marquee-item hot">Claude Code</span>
@@ -198,6 +220,7 @@ const jsonLd = [
       <span class="marquee-item hot">OpenCode</span>
       <span class="marquee-item hot">Aider</span>
       <span class="marquee-item hot">Cursor CLI</span>
+      <span class="marquee-item hot">Grok CLI</span>
       <span class="marquee-item">tmux</span>
       <span class="marquee-item">SSH</span>
       <span class="marquee-item">SFTP</span>
@@ -207,6 +230,9 @@ const jsonLd = [
       <span class="marquee-item">macOS</span>
       <span class="marquee-item">Linux</span>
       <span class="marquee-item">Windows</span>
+      <span class="marquee-item">Android</span>
+      <span class="marquee-item">iPadOS</span>
+      <span class="marquee-item">Docker</span>
       <span class="marquee-item">Телеметрия NVIDIA GPU</span>
       <span class="marquee-item">AES-256-GCM</span>
     </div>
@@ -254,6 +280,21 @@ const jsonLd = [
         <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-13"/><path d="M4.5 12c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3"/></svg></div>
         <h3>Поисковая память — только локально</h3>
         <p>Факты о проектах, предпочтения и активность агентов индексируются для поиска по формулировке или по смыслу. Эмбеддинги вычисляются локально; ничего не покидает машину. Учётные данные, совпадающие с известными шаблонами, вымарываются до сохранения.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="11.5" height="18" rx="2"/><rect x="16.5" y="8.5" width="5" height="12.5" rx="1.5"/><path d="M7 18h3.5"/></svg></div>
+        <h3>Планшет и телефон — всегда с собой<span class="new-tag">NEW</span></h3>
+        <p>Тот же бинарник умеет работать без графики, так что браузер на планшете — это полноценный AgentMux: терминалы, агенты, набор инструментов, файловый браузер. У Android есть отдельное приложение с встроенным ядром: SSH идёт прямо с устройства, и постоянно включённая машина не нужна вовсе.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.2 20a1.9 1.9 0 0 0 3.6 0"/></svg></div>
+        <h3>Он поднимает руку, когда нужен человек<span class="new-tag">NEW</span></h3>
+        <p>Агент, задавший вопрос, агент, закончивший работу, и агент, простаивающий у приглашения, раньше выглядели одинаково — «running». Теперь опрос читает каждую панель и классифицирует её, отмечает переходы, которые должен увидеть человек, и снимает отметку, когда кто-то действительно посмотрел.</p>
+      </article>
+      <article class="cap-card reveal">
+        <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5V8.5m0 0 4.5 4.5M12 8.5 7.5 13"/><path d="M4.5 4h15"/></svg></div>
+        <h3>Обновление в один клик и переезд целиком<span class="new-tag">NEW</span></h3>
+        <p>Приложение проверяет новые выпуски вскоре после запуска и затем каждые шесть часов: загрузка, проверка опубликованного sha256, замена на месте, перезапуск — и откат, если замена не удалась. Всю конфигурацию можно перенести на другой компьютер одним зашифрованным файлом, и импорт никогда ничего не перезаписывает.</p>
       </article>
     </div>
   </div>
@@ -328,6 +369,107 @@ const jsonLd = [
         </div>
         <div class="feature-shot"><img src="assets/img/themes.png" alt="Темы оформления" loading="lazy"></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== tablet &amp; phone ============================== -->
+<section class="section-pad mob-sec" id="mobile">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Новое · планшет и телефон</span>
+      <h2 class="section-title">Тот же AgentMux — в планшете и телефоне</h2>
+      <p class="section-desc">Помимо десктопа появились два пути: headless-режим serve превращает любой браузер в полноценный клиент, а у Android есть автономное приложение со своим ядром. Оба используют тот же фронтенд и то же ядро — это не урезанная версия.</p>
+    </div>
+    <div class="mob-layout">
+      <div class="mob-copy">
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></svg></div>
+          <div>
+            <h3>Headless-режим serve</h3>
+            <p>К выпускам прилагается отдельная серверная сборка <code>agentmux-server-linux-&#123;amd64,arm64&#125;</code> — полностью статичная, без GTK, без webview и без дисплея: скопируйте её на любой Linux-сервер и запустите. Десктопная сборка входит в тот же режим с ключом <code>--serve</code>. При первом запуске генерируется токен доступа и печатается в лог (хранится как <code>serve-token</code> в каталоге данных; <code>AGENTMUX_TOKEN</code> переопределяет его).</p>
+            <div class="mob-cmd"><span class="cm"># серверная сборка: по умолчанию слушает :8642</span><br>
+./agentmux<br>
+<span class="cm"># десктопная сборка, то же самое</span><br>
+agentmux --serve --addr <b>0.0.0.0:8642</b></div>
+          </div>
+        </div>
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M10.3 18.6h3.4"/></svg></div>
+          <div>
+            <h3>iPad и планшеты на Android: достаточно браузера</h3>
+            <p>Откройте на планшете <code>http://хост:8642</code>, один раз введите токен — и всё работает: терминалы, агенты, набор инструментов, файловый браузер. «На экран «Домой»» (Safari на iPad, Chrome на Android) установит это как отдельное приложение. Закрытие браузера ничего не останавливает — ровно как закрытие окна на десктопе: агенты живут в удалённом tmux.</p>
+          </div>
+        </div>
+        <div class="mob-item reveal">
+          <div class="mob-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 18c0 .55.45 1 1 1h1v3.2a1.4 1.4 0 0 0 2.8 0V19h2.4v3.2a1.4 1.4 0 0 0 2.8 0V19h1c.55 0 1-.45 1-1V8H6v10ZM3.4 8A1.4 1.4 0 0 0 2 9.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 3.4 8ZM20.6 8a1.4 1.4 0 0 0-1.4 1.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 20.6 8ZM15.5 2.2 16.8.9a.35.35 0 1 0-.5-.5l-1.47 1.47A5.9 5.9 0 0 0 12 1.25c-.85 0-1.65.18-2.36.49L8.17.26a.35.35 0 1 0-.5.5l1.3 1.3A5.6 5.6 0 0 0 6 7h12a5.6 5.6 0 0 0-2.5-4.8ZM9.5 4.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"/></svg></div>
+          <div>
+            <h3>Приложение для Android не зависит от включённой машины</h3>
+            <p>К каждому выпуску приложен <code>agentmux-android.apk</code> (Android 8.0+ · arm64) с тем же ядром, что и в серверной сборке: оно встроено и запускается foreground-сервисом — именно foreground, потому что при блокировке экрана Android замораживает фоновые процессы, а ядро держит SSH-соединения. Раскладку переделали и под маленькие экраны: уже 768px боковые панели становятся выдвижными поверх содержимого, а нижняя панель навигации ставит дерево, палитру команд, детали и настройки туда, куда дотягивается большой палец, с учётом безопасной зоны.</p>
+          </div>
+        </div>
+      </div>
+      <div class="mob-devices reveal">
+        <div class="dev dev-tablet">
+          <div class="dev-screen">
+            <div class="dev-bar"><span><span class="dot"></span>agentmux · планшет</span><span>:8642</span></div>
+            <div class="dev-body">
+              <div class="dev-tree">
+                <b>PROJECTS</b>
+                ▾ orbit-api<br>&nbsp;├ claude<br>&nbsp;└ codex
+                <b>SERVERS</b>
+                gpu-01<br>dev-box
+              </div>
+              <div class="dev-term">
+                <div>$ claude --resume</div>
+                <div class="ok">✓ переподключено · буфер сохранён</div>
+                <div>› переиндексация…</div>
+                <div class="hold">⏸ ждёт вашего ответа</div>
+                <div>$ <span class="cur"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dev dev-phone">
+          <div class="dev-screen">
+            <div class="dev-bar"><span><span class="dot"></span>APK</span><span>arm64</span></div>
+            <div class="dev-body">
+              <div class="dev-term">
+                <div>$ codex</div>
+                <div class="ok">✓ ssh gpu-01</div>
+                <div>› патч применён</div>
+                <div>$ <span class="cur"></span></div>
+              </div>
+              <div class="dev-nav">
+                <span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h7M4 12h10M4 18h7"/></svg>Дерево</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3"/></svg>⌘K</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>Инфо</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6"/></svg>Опции</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mob-note reveal"><b>О безопасности:</b> режим serve проверяет только токен. В локальной сети или через VPN этого достаточно; для доступа из интернета поставьте перед ним обратный прокси с HTTPS.</div>
+  </div>
+</section>
+
+<!-- ============================== what's new ============================== -->
+<section class="section-pad" id="whatsnew" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Недавние обновления</span>
+      <h2 class="section-title">В этот раз появилось и вот что</h2>
+      <p class="section-desc">Помимо планшетов и телефонов, августовское обновление принесло следующее.</p>
+    </div>
+    <div class="scene-grid">
+      <div class="scene-card reveal"><h3><span class="num">01</span>Автоматическое переподключение</h3><p>Терминал, потерявший транспорт, — это ещё не конец работы: сессия tmux на той стороне продолжает выполняться. Канал восстанавливается с тем же идентификатором shell, тем же буфером прокрутки и той же панелью, с задержкой от секунды до пятнадцати; примерно через пять минут остаётся прежняя кнопка ручного переподключения. Два keepalive, TCP и SSH, отвечают на разные вопросы. Однократные командные терминалы исключены: перезапускать установку из-за моргнувшего Wi-Fi никто не просил.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">02</span>Удалённый рабочий стол по уже открытому соединению</h3><p>Иногда нужна именно картинка. Правый клик по хосту — и 3389 или 5900 пробрасывается через то самое SSH-соединение, которое у хоста уже есть, на порт этого компьютера и передаётся тому клиенту, который здесь установлен: «Подключение к удалённому рабочему столу», «Общий экран», Remmina. Рабочему столу, слушающему только петлю, ничего не нужно открывать наружу.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">03</span>Обновление в один клик</h3><p>Приложение проверяет ленту выпусков вскоре после запуска и затем каждые шесть часов. Новая версия поднимает однострочный баннер под заголовком: обновить и перезапустить, заметки к выпуску или позже. Загрузка идёт с индикатором прогресса, публикуемый sha256 проверяется, исполняемый файл заменяется на месте, а при неудачной замене всё откатывается к работавшей сборке.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">04</span>Перенос установки в зашифрованном файле</h3><p>Хосты, каталоги, проекты, рабочие области и определения агентов записываются в один файл, зашифрованный парольной фразой (Argon2id + AES-256-GCM), и открываются на другой машине. Импорт никогда не перезаписывает: хост по тому же адресу, проект с тем же именем, путь на той же машине остаются как есть — тот же файл, импортированный дважды, ничего не добавит.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">05</span>Чем хост является, а не только чем он занят</h3><p>Панель метрик теперь показывает не только загрузку, но и модель процессора, характеристики модулей памяти, физические диски и видеоадаптеры. Это статические сведения, поэтому они читаются один раз и кешируются на сессию, а не идут через трёхсекундный опрос.</p></div>
+      <div class="scene-card reveal"><h3><span class="num">06</span>Больше инструментов и языков</h3><p>Установка в один клик теперь охватывает Grok CLI, Docker (шесть способов, с повтором через зеркало там, где этого требует сеть, и последующим запуском демона и добавлением пользователя в группу) и Ollama. В интерфейсе появился традиционный китайский — полный словарь на тайваньской терминологии, а не посимвольная конвертация.</p></div>
     </div>
   </div>
 </section>
@@ -438,8 +580,8 @@ const jsonLd = [
   <div class="wrap">
     <div class="section-head reveal">
       <span class="kicker">Скачать</span>
-      <h2 class="section-title">Одна сборка на платформу — собрана GitHub Actions из помеченного тегом коммита</h2>
-      <p class="section-desc">К каждому файлу прилагается .sha256.</p>
+      <h2 class="section-title">Десктоп, сервер и Android — одна сборка на платформу</h2>
+      <p class="section-desc">Все собраны GitHub Actions из помеченного тегом коммита, к каждому файлу прилагается .sha256.</p>
     </div>
     <div class="dl-grid">
       <div class="dl-card reveal">
@@ -461,6 +603,22 @@ const jsonLd = [
         <h3>Linux</h3>
         <p class="dl-req">Требуются GTK3 и WebKitGTK 4.1 · amd64</p>
         <p class="dl-file">agentmux-linux-amd64.tar.gz</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">Скачать <span class="arrow">↓</span></a>
+      </div>
+    </div>
+    <div class="dl-grid dl-grid-2">
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h5M11 16.5h5"/></svg></div>
+        <h3>Планшет / сервер (headless)<span class="new-tag">NEW</span></h3>
+        <p class="dl-req">Любой Linux · amd64 и arm64 · без GTK, webview и дисплея</p>
+        <p class="dl-file">agentmux-server-linux-amd64.tar.gz<br>agentmux-server-linux-arm64.tar.gz</p>
+        <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">Скачать <span class="arrow">↓</span></a>
+      </div>
+      <div class="dl-card reveal">
+        <div class="dl-os-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 18c0 .55.45 1 1 1h1v3.2a1.4 1.4 0 0 0 2.8 0V19h2.4v3.2a1.4 1.4 0 0 0 2.8 0V19h1c.55 0 1-.45 1-1V8H6v10ZM3.4 8A1.4 1.4 0 0 0 2 9.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 3.4 8ZM20.6 8a1.4 1.4 0 0 0-1.4 1.4v6.9a1.4 1.4 0 0 0 2.8 0V9.4A1.4 1.4 0 0 0 20.6 8ZM15.5 2.2 16.8.9a.35.35 0 1 0-.5-.5l-1.47 1.47A5.9 5.9 0 0 0 12 1.25c-.85 0-1.65.18-2.36.49L8.17.26a.35.35 0 1 0-.5.5l1.3 1.3A5.6 5.6 0 0 0 6 7h12a5.6 5.6 0 0 0-2.5-4.8ZM9.5 4.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"/></svg></div>
+        <h3>Android<span class="new-tag">NEW</span></h3>
+        <p class="dl-req">Android 8.0+ · arm64 · встроенное ядро, работает автономно</p>
+        <p class="dl-file">agentmux-android.apk</p>
         <a class="btn btn-primary" href="https://github.com/tan-zhuo/AgentMux/releases/latest" target="_blank" rel="noopener noreferrer">Скачать <span class="arrow">↓</span></a>
       </div>
     </div>
@@ -504,6 +662,18 @@ const jsonLd = [
       <details class="faq-item">
         <summary>Останавливает ли удаление чего-либо в AgentMux работу на удалённом хосте?<span class="faq-chevron">＋</span></summary>
         <p>Никогда. Удаление рабочей области или записи агента убирает только локальную запись — сессия tmux продолжает работать. Единственный элемент управления, уничтожающий работающую сессию, называется Kill, и он сначала запрашивает подтверждение, сообщая, что именно будет потеряно.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Как пользоваться на планшете или телефоне?<span class="faq-chevron">＋</span></summary>
+        <p>Двумя способами. Запустите headless-сервер на любой машине с Linux — отдельная сборка <code>agentmux-server-linux-&#123;amd64,arm64&#125;</code> или десктопная сборка с ключом <code>--serve</code> — затем откройте на планшете <code>http://хост:8642</code>, один раз введите токен и добавьте страницу на экран «Домой», чтобы получить отдельное приложение. Именно так это работает на iPad. На Android можно вместо этого установить <code>agentmux-android.apk</code>: он несёт ядро внутри и никакого сервера не требует.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Чем приложение для Android отличается от режима serve?<span class="faq-chevron">＋</span></summary>
+        <p>В режиме serve ядро работает на одной из ваших машин, а планшет — клиент, поэтому телефон, планшет и десктоп видят одно и то же состояние. APK помещает ядро на само устройство: SSH идёт прямо с телефона, конфигурация и ключи остаются локально, и постоянно включённая машина не нужна. Foreground-сервис здесь принципиален — без него Android заморозит процесс при блокировке экрана и оборвёт все SSH-соединения.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Безопасно ли выставлять режим serve в интернет?<span class="faq-chevron">＋</span></summary>
+        <p>Он проверяет только токен доступа, который создаётся при первом запуске и хранится как <code>serve-token</code> в каталоге данных. В локальной сети или через VPN этого достаточно; для доступа из интернета поставьте перед ним обратный прокси с HTTPS, а не выставляйте наружу обычный HTTP.</p>
       </details>
     </div>
   </div>
